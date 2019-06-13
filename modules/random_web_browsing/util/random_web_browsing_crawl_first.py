@@ -12,7 +12,6 @@ import random
 import time
 import sys
 import os
-from fake_useragent import UserAgent
 
 def crawlThenBrowse(url = "https://ncl.sg", timeAllowed = 1000, \
                 maxDepth = 10, onlySameDomain = True, debug = False, \
@@ -30,14 +29,6 @@ def crawlThenBrowse(url = "https://ncl.sg", timeAllowed = 1000, \
     if debug:
         print(listOfPages)
         
-    if (fakeUserAgent):
-        try:
-            from fake_useragent import UserAgent
-            ua = UserAgent()
-            ua.update()
-        except:
-            print("Error initializing fake user agent, using default python UA")
-            fakeUserAgent = False
     
     currTime = time.time()
     endTime = currTime + timeAllowed
@@ -52,8 +43,6 @@ def crawlThenBrowse(url = "https://ncl.sg", timeAllowed = 1000, \
     
     currPid = os.getpid()
     
-    if (fakeUserAgent):
-        fakeUAgentHeader = { 'User-Agent' : ua.random }
     
     #if have multiple instances, shouldnt use time as seed
     #since both will start at same time --> same random seq

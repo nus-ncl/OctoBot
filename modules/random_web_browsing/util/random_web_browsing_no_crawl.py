@@ -3,19 +3,19 @@ goodRequests = 0
 badRequests = 0
 
 MAX_DEPTH = 10 #hardcoded for now, change later
-MIN_SLEEP_TIME = 3
-MAX_SLEEP_TIME = 5
 
-from util.helper_functions import *
+SLEEP_MEAN = 10
+SLEEP_SD = 3
+
+from util.scrapper import *
 import random
-#import config
 import time
 import sys
 import os
 
 def randomBrowsing(url = "https://ncl.sg", timeAllowed = 1000, \
-                maxDepth = MAX_DEPTH, debug = False, sleep = True, \
-                noOfInstances = 1, onlySameDomain = True):
+                maxDepth = MAX_DEPTH, debug = False, sleep = False, \
+                onlySameDomain = True):
                 
     linkStack = [url]
     
@@ -24,20 +24,27 @@ def randomBrowsing(url = "https://ncl.sg", timeAllowed = 1000, \
     currTime = time.time()
     endTime = currTime + timeAllowed
     
-    parentPid = os.getpid()
-    
-    while (noOfInstances > 1 and os.getpid() == parentPid):
-        os.fork()
-    
-    random.seed(os.getpid())
-    
     currUrl = url
     
+    blackList = set()
     while (currDepth < maxDepth and time.time() < endTime):
         
-        listOfPages = crawl(url = currUrl, maxDepth = 1, \
-                onlySameDomain = onlySameDomain, \
-                debug = debug)
+        try:
+            listOfPages = crawl(url = currUrl, \
+                sameDomain = onlySameDomain)
+            
+            linkStack.append(currUrl)
+        except:
+            blackList.add(currUrl)
+            if (len(linkStack) > 0):
+                newUrl = linkStack.pop()
+                if (newUrl == currUrl):
+                    currUrl = url;
+                else:
+                    currUrl = newUrl
+            else:
+                currUrl = url
+            continue
         print(listOfPages)
                 
         try: #check if listOfPages is non empty
@@ -54,19 +61,17 @@ def randomBrowsing(url = "https://ncl.sg", timeAllowed = 1000, \
                 
         randomUrl = listOfPages[randomIdx]
         
+        while (randomUrl in blackList):
+            if (len(listOfPages) == 1):
+                randomUrl = url
+                continue
+            randomIdx = random.randint(0, len(listOfPages) - 1)
+            randomUrl = listOfPages[randomIdx]
+            
         currUrl = randomUrl
-        linkStack.append(currUrl)
+        print(currUrl)
         
-        randomSleepTime = 0
-        if (sleep):
-            randomSleepTime = random.randint(MIN_SLEEP_TIME, MAX_SLEEP_TIME)
-            time.sleep(randomSleepTime)
         
-        if (debug):
-            print("List of URLs")
-            print(listOfPages)
-            print("Currently at {}".format(randomUrl))
-            print("Slept for %d" % randomSleepTime)
         currDepth += 1
 
            

@@ -12,13 +12,28 @@ import tldextract as tl
 import time
 import os, time, sys, re
 
+import numpy as np
+
 SAME_DOMAIN = True
 start_urls = []
 allowed_domains = []
 
 DEBUG = 0
-
+agent = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'   
 q = mp.Queue()   
+
+#a truncated normal in range (0, inf) 
+def sleepTimeNormal(mean, sd):
+    t = -1
+    while (t <= 0):
+        t = np.random.normal(mean, sd)
+    time.sleep(t)
+
+def sleepTimeUnif(start, end):
+
+    t = random.random() * (end - start) + start
+    time.sleep(t)
+
 
 class Crawler(scrapy.Spider):
     name = 'all'
@@ -35,15 +50,20 @@ class Crawler(scrapy.Spider):
     
     custom_settings = {
         'LOG_LEVEL': logging.WARNING,
-        'DOWNLOAD_DELAY': 0.5,
-        'HTTPCACHE_ENABLED': True
-        #'DEPTH_LEVEL': 5
+        'DOWNLOAD_DELAY': 5,
+        'HTTPCACHE_ENABLED': True,
+        'DEPTH_LEVEL': 5
     }
     
     def parse(self, response):
+        
         #print("Existing settings: %s" % self.settings.attributes.keys())
         le = LinkExtractor()
         fromThisIteration = []
+        try: 
+            le.extract_links(response)
+        except:
+            raise Exception("dssdsafsfds sds")
         for link in le.extract_links(response):
             if (SAME_DOMAIN and getDomain(link.url) not in self.allowed_domains):
                 continue
@@ -88,7 +108,7 @@ try:
 except:
      agent = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)' 
 '''
-agent = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'     
+  
 def _getLinksDriver(url, q):
         
 
@@ -119,12 +139,17 @@ def getLinks(url):
         coll.append(q.get())
     return coll
 
-def crawl(url, depth, sameDomain = True):
+
+def crawl(url, depth = 1, sameDomain = True, sleep_param1 = 10, sleep_param2 = 3, \
+        sleepNormal = True):
     
     global SAME_DOMAIN
     SAME_DOMAIN = sameDomain
     
-    setOfLinks = [url]
+    if (type(url) != list):
+        setOfLinks = [url]
+    else:
+        setOfLinks = url
     
     alreadyProcessed = set()
     
@@ -152,6 +177,14 @@ def crawl(url, depth, sameDomain = True):
         
         linksFromLastIteration = newLinks.copy()
         currDepth += 1
+        
+        if (depth > 1):
+            if (sleepNormal):
+                sleepTimeNormal(sleep_param1, sleep_param2)
+            else:
+                a = min(sleep_param1, sleep_param2)
+                b = max(sleep_param1, sleep_param2)
+                sleepTimeUnif(a, b)
         
     return list(set(setOfLinks))
         
