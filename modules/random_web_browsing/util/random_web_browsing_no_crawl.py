@@ -29,11 +29,14 @@ def randomBrowsing(url = "https://ncl.sg", timeAllowed = 1000, \
     blackList = set()
     while (currDepth < maxDepth and time.time() < endTime):
         
+        goBack = False
         try:
             listOfPages = crawl(url = currUrl, \
                 sameDomain = onlySameDomain)
-            
-            linkStack.append(currUrl)
+            if (len(listOfPages) > 1):
+                linkStack.append(currUrl)
+            else:
+                goBack = True 
         except:
             blackList.add(currUrl)
             if (len(linkStack) > 0):
@@ -67,54 +70,14 @@ def randomBrowsing(url = "https://ncl.sg", timeAllowed = 1000, \
                 continue
             randomIdx = random.randint(0, len(listOfPages) - 1)
             randomUrl = listOfPages[randomIdx]
-            
-        currUrl = randomUrl
+        
+        if (goBack):
+            currUrl = linkStack.pop()
+        else:
+            currUrl = randomUrl
         print(currUrl)
         
         
         currDepth += 1
 
            
-
-    
-if __name__ == "__main__":
-    
-    import argparse
-    
-    parser = argparse.ArgumentParser(description = \
-        "Arguments for program")
-    
-    parser.add_argument('url', type=str, \
-                    help='Target Website')
-                    
-    parser.add_argument('-t', type = int, \
-            help='Time given to crawl website (sec)', default = 1000)
-    
-    parser.add_argument('-d', type = int, \
-            help='How deep to crawl website from entrypoint', default = 3)
-            
-    parser.add_argument('-i', type = int, \
-            help='How many seperate instances to browse website \
-            (using forking)', default = 1)          
-
-    parser.add_argument('-s', type = int, \
-            help='Set to 0 to allow it to crawl to diff. domain',\
-            default = 1)            
-    
-    parser.add_argument('--debug', type = int, \
-            help='Set to 1 for debug output', default = 0)    
-
-    args = parser.parse_args()
-    
-        
-    randomBrowsing(url = args.url, \
-                timeAllowed = args.t, \
-                maxDepth = args.d, \
-                debug = args.debug, \
-                noOfInstances = args.i)
-    
-        
-            
-            
-            
-        
