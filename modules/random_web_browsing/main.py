@@ -23,9 +23,6 @@ if __name__ == "__main__":
     parser.add_argument('-d', type = int, \
             help='How deep to crawl website from entrypoint', default = 3)
 
-    parser.add_argument('-i', type = int, \
-            help='How many seperate instances to browse website \
-            (using forking)', default = 1)
 
     parser.add_argument('-s', type = int, \
             help='Set to 0 to allow it to crawl to diff. domain',\
@@ -42,17 +39,15 @@ if __name__ == "__main__":
                 timeAllowed = args.t, \
                 maxDepth = args.d, \
                 onlySameDomain = args.s, \
-                debug = args.debug, \
-                noOfInstances = args.i)
+                debug = args.debug)
         
                 
-    elif (args.c == 2):
+    elif (args.c == 0):
         from util.random_web_browsing_no_crawl import *
         randomBrowsing(url = args.u, \
                 timeAllowed = args.t, \
                 maxDepth = args.d, \
-                debug = args.debug, \
-                noOfInstances = args.i)
+                debug = args.debug)
                 
     else:
         raise Exception ("Invalid argument for -c")

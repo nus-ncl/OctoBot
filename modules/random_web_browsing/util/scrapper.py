@@ -11,6 +11,7 @@ import logging
 import tldextract as tl
 import time
 import os, time, sys, re
+import requests
 
 import numpy as np
 
@@ -67,7 +68,12 @@ class Crawler(scrapy.Spider):
         for link in le.extract_links(response):
             if (SAME_DOMAIN and getDomain(link.url) not in self.allowed_domains):
                 continue
-      
+            try:
+                r = requests.get(link.url)
+                if (not r.encoding):
+                    continue
+            except:
+                continue
             linkToAppend = re.sub(r";jsessionid=[^?]*", "", link.url)
             fromThisIteration.append(linkToAppend)
             q.put(linkToAppend)

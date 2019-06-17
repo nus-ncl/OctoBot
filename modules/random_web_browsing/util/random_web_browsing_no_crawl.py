@@ -14,7 +14,7 @@ import sys
 import os
 
 def randomBrowsing(url = "https://ncl.sg", timeAllowed = 1000, \
-                maxDepth = MAX_DEPTH, debug = False, sleep = False, \
+                maxDepth = MAX_DEPTH, debug = False, sleep = True, \
                 onlySameDomain = True):
                 
     linkStack = [url]
