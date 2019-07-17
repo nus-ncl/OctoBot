@@ -8,18 +8,13 @@ import io
 
 firstTimeAdding = True
 
+
 with open("template.yaml", "r") as stream:
     try:
         z = yaml.safe_load(stream)
     except:
         pass
 
-
-
-with io.open('x.yaml', 'w', encoding = 'utf8') as f:
-    yaml.dump(z, f, default_flow_style = False, \
-        allow_unicode = True)
-        
        
 def changeApiVersion(api):
     z['apiVersion'] = api
@@ -87,7 +82,7 @@ def writeToFile(filename):
     with io.open(filename, "w") as f:
         yaml.dump(z, f, default_flow_style = False, \
         explicit_start=True,\
-        allow_unicode = True)
+        allow_unicode = True, sort_keys=False)
         
     f.close()
     
@@ -208,8 +203,9 @@ def interactive():
                     
         
         print("\n")
-    
-    
+
+   
+   
     
 if __name__ == "__main__":
     interactive()
