@@ -16,5 +16,6 @@ spec:
       - name: 
         image: 
         command: 
+        imagePullPolicy: IfNotPresent
       nodeSelector:
         ostype: linux

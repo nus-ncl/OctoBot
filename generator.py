@@ -32,7 +32,7 @@ def changeName(name):
     
     
 def updateReplicas(n):
-    z['spec']['replicas'] = n
+    z['spec']['replicas'] = int(n)
 
 def updateSelector(selector):
     z['spec']['selector']['matchlabels']['app'] = selector 
@@ -48,7 +48,6 @@ def addContainer(arg):
         toAppend['name'] = name
         toAppend['image'] = image
         toAppend['command'] = list(command)
-        toAppend['imagePullPolicy'] = "IfNotPresent"
         c.append(toAppend)
     except Exception as e:
         print(e)
@@ -114,14 +113,14 @@ def parse(x):
             "changeName":changeName, \
             "updateReplicas":updateReplicas, \
             "addContainer":addContainer, \
+            "updateSelector": updateSelector,\
             "getName":getName, \
             "getContainers": getContainers, \
             "deleteContainer": deleteContainer, \
             "writeToFile": writeToFile, \
             "getApiVersion": getApiVersion,\
             "getSelector": getSelector,\
-            "updateSelector": updateSelector}
-    
+            "getReplicas": getReplicas}
     try:
         splitted = x.split(" ")
         args = splitted[1:]
@@ -149,6 +148,7 @@ def printSyntax(command):
         "getApiVersion": "getApiVersion",\
         "getSelector": "getSelector",\
         "updateSelector": "updateSelector <selector name>",\
+        "getReplicas": "getReplicas (returns the number of replicas",\
         "exit": "exit (exits the program)"}
     
     try:
@@ -161,13 +161,14 @@ def help(arg):
             "changeName":changeName, \
             "updateReplicas":updateReplicas, \
             "addContainer":addContainer, \
+            "updateSelector": updateSelector,\
             "getName":getName, \
             "getContainers": getContainers, \
             "deleteContainer": deleteContainer, \
             "writeToFile": writeToFile, \
             "getApiVersion": getApiVersion,\
             "getSelector": getSelector,\
-            "updateSelector": updateSelector}
+            "getReplicas": getReplicas}
         
 
     
@@ -184,7 +185,7 @@ def interactive():
     print("Type help to display available commands")
     
     while True:
-        x = input()
+        x = input().strip() 
         splitted = x.split()
         command = splitted[0]
         
