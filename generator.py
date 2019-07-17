@@ -31,6 +31,9 @@ def changeName(name):
     
 def updateReplicas(n):
     z['spec']['replicas'] = n
+
+def updateSelector(selector):
+    z['spec']['selector']['matchlabels']['app'] = selector 
     
 
 def addContainer(arg):
@@ -43,6 +46,7 @@ def addContainer(arg):
         toAppend['name'] = name
         toAppend['image'] = image
         toAppend['command'] = list(command)
+        toAppend['imagePullPolicy'] = "IfNotPresent"
         c.append(toAppend)
     except Exception as e:
         print(e)
@@ -69,7 +73,9 @@ def deleteContainer(index):
     except Exception as e:
         raise(e)
     
-
+def getSelector():
+    return z['spec']['selector']['matchlabels']['app']
+    
 def writeToFile(filename):
 
     with io.open(filename, "w") as f:
@@ -105,7 +111,9 @@ def parse(x):
             "getContainers": getContainers, \
             "deleteContainer": deleteContainer, \
             "writeToFile": writeToFile, \
-            "getApiVersion": getApiVersion}
+            "getApiVersion": getApiVersion,\
+            "getSelector": getSelector,\
+            "updateSelector": updateSelector}
     
     try:
         splitted = x.split(" ")
@@ -132,6 +140,8 @@ def printSyntax(command):
         "deleteContainer": "deleteContainer <container index from getContainers>", \
         "writeToFile": "writeToFile <filename>",\
         "getApiVersion": "getApiVersion",\
+        "getSelector": "getSelector",\
+        "updateSelector": "updateSelector <selector name>",\
         "exit": "exit (exits the program)"}
     
     try:
@@ -141,19 +151,22 @@ def printSyntax(command):
             
 def help(arg):
     commands = {"changeApiVersion":changeApiVersion, \
-        "changeName":changeName, \
-        "updateReplicas":updateReplicas, \
-        "addContainer":addContainer, \
-        "getName":getName, \
-        "getContainers": getContainers, \
-        "deleteContainer": deleteContainer, \
-        "writeToFile": writeToFile, \
-        "exit": ""}
+            "changeName":changeName, \
+            "updateReplicas":updateReplicas, \
+            "addContainer":addContainer, \
+            "getName":getName, \
+            "getContainers": getContainers, \
+            "deleteContainer": deleteContainer, \
+            "writeToFile": writeToFile, \
+            "getApiVersion": getApiVersion,\
+            "getSelector": getSelector,\
+            "updateSelector": updateSelector}
         
-    print("List of Commands")
-    print(list(commands.keys()))
+
     
     if (arg is False):
+        print("List of Commands")
+        print(list(commands.keys()))    
         print("Type help <commandName> for help on syntax")
         print("Example - help changeName")
     else:
