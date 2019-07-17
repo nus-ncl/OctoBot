@@ -6,6 +6,8 @@ import sys
 import yaml
 import io
 
+firstTimeAdding = True
+
 with open("template.yaml", "r") as stream:
     try:
         z = yaml.safe_load(stream)
@@ -53,6 +55,11 @@ def addContainer(arg):
         print("syntax - addContainer <name> <image> <command>")
         print("eg - addContainer container1 ubuntu ping 1.1.1.1")
         raise(e)
+    
+    global firstTimeAdding
+    if (firstTimeAdding):
+        deleteContainer(0)
+        firstTimeAdding = False 
 
 def getContainers():
     return (z['spec']['template']['spec']['containers'])

@@ -1,0 +1,24 @@
+---
+apiVersion: '123467'
+kind: Deployment
+metadata:
+  name: helloworld
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: linux
+  template:
+    metadata:
+      labels:
+        app: linux
+    spec:
+      containers:
+      - command:
+        - ping
+        - 1.1.1.1
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        name: container1
+      nodeSelector:
+        ostype: linux

@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloWorld
+spec:
+  replicas: '123'
+  selector:
+    matchLabels:
+      app: linux
+  template:
+    metadata:
+      labels:
+        app: linux
+    spec:
+      containers:
+      - command: null
+        image: null
+        name: null
+      - command:
+        - echo
+        - helloworld
+        image: ubuntu
+        imagePullPolicy: IfNotPresent
+        name: container1
+      nodeSelector:
+        ostype: linux
