@@ -104,3 +104,7 @@ def runFile(filename):
             print(e)
             raise(e)
     
+    else:
+        #wait for child process to terminate
+        os.waitpid(pid, 0)
+    

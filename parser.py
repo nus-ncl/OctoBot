@@ -86,6 +86,7 @@ def help(arg):
 def interactive():
     
     print("Type help to display available commands")
+    print("Type \"exit\" to exit the program")
     
     while True:
         printPrompt()
