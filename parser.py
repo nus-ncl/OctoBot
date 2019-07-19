@@ -22,7 +22,8 @@ def parse(x):
             "getApiVersion": getApiVersion, \
             "getSelector": getSelector, \
             "getClients": getReplicas, \
-            "runFile": runFile}
+            "runFile": runFile,\
+            "checkStatus": checkStatus}
     try:
         splitted = x.split(" ")
         args = splitted[1:]
@@ -56,6 +57,7 @@ def printSyntax(command):
         "updateSelector": "updateSelector <selector name>",\
         "getClients": "getClients (returns the number of clients)",\
         "runFile": "runFile <path to yaml config file>",\
+        "checkStatus": "Get status of the workers",\
         "exit": "exit (exits the program)"}
     
     try:
@@ -76,6 +78,7 @@ def help(arg):
             "getApiVersion": getApiVersion, \
             "getSelector": getSelector, \
             "getClients": getReplicas, \
+            "checkStatus": checkStatus,\
             "runFile": runFile}
         
 

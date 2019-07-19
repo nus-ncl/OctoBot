@@ -109,4 +109,22 @@ def runFile(filename):
     else:
         #wait for child process to terminate
         os.waitpid(pid, 0)
+
+def checkStatus():
+    try:
+        pid = os.fork()
+    except Exception as e:
+        raise (e)
+        
+    if (pid == 0):
+        command = "kubectl get pods"
+        params = command.split(" ")
+        
+        try:
+            os.execvp(params[0], params)
+        except Exception as e:
+            raise e
+            
+    else:
+        os.waitpid(pid, 0)
     
