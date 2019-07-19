@@ -1,25 +1,28 @@
+#!/usr/bin/python3
+
 import sys
 from utils import *
 
 def printPrompt():
     ''' Use filename as prompt header'''
+    
     currFileName = sys.argv[0]
-    print("{}:~$ ".format(currFileName), end = "") 
+    print("{}:~$ ".format(currFileName), end="")
         
 def parse(x):
     
     commands = {"changeApiVersion":changeApiVersion, \
             "changeName":changeName, \
-            "updateReplicas":updateReplicas, \
-            "addContainer":addContainer, \
+            "updateClient":updateReplicas, \
+            "addWorker":addContainer, \
             "updateSelector": updateSelector,\
             "getName":getName, \
-            "getContainers": getContainers, \
-            "deleteContainer": deleteContainer, \
+            "getWorkers": getContainers, \
+            "deleteWorker": deleteContainer, \
             "writeToFile": writeToFile, \
-            "getApiVersion": getApiVersion,\
-            "getSelector": getSelector,\
-            "getReplicas": getReplicas,\
+            "getApiVersion": getApiVersion, \
+            "getSelector": getSelector, \
+            "getClients": getReplicas, \
             "runFile": runFile}
     try:
         splitted = x.split(" ")
@@ -39,16 +42,16 @@ def parse(x):
 def printSyntax(command):
     commands = {"changeApiVersion":"changeApiVersion <version>", \
         "changeName":"changeName <name>", \
-        "updateReplicas": "updateReplicas <# replicas>", \
-        "addContainer": "addContainer <name> <image> <commands...>", \
+        "updateClients": "updateClients <# clients>", \
+        "addWorker": "addWorker <name> <image> <commands...>", \
         "getName": "getName (this prints the name of the current project)", \
-        "getContainers": "getContainers (this lists out all the containers)", \
-        "deleteContainer": "deleteContainer <container index from getContainers>", \
+        "getWorkers": "getWorkers (this lists out all the containers)", \
+        "deleteWorker": "deleteContainer <container index from getContainers>", \
         "writeToFile": "writeToFile <filename>",\
         "getApiVersion": "getApiVersion",\
         "getSelector": "getSelector",\
         "updateSelector": "updateSelector <selector name>",\
-        "getReplicas": "getReplicas (returns the number of replicas",\
+        "getClients": "getClients (returns the number of clients)",\
         "runFile": "runFile <path to yaml config file>",\
         "exit": "exit (exits the program)"}
     
@@ -60,16 +63,16 @@ def printSyntax(command):
 def help(arg):
     commands = {"changeApiVersion":changeApiVersion, \
             "changeName":changeName, \
-            "updateReplicas":updateReplicas, \
-            "addContainer":addContainer, \
+            "updateClient":updateReplicas, \
+            "addWorker":addContainer, \
             "updateSelector": updateSelector,\
             "getName":getName, \
-            "getContainers": getContainers, \
-            "deleteContainer": deleteContainer, \
+            "getWorkers": getContainers, \
+            "deleteWorker": deleteContainer, \
             "writeToFile": writeToFile, \
-            "getApiVersion": getApiVersion,\
-            "getSelector": getSelector,\
-            "getReplicas": getReplicas,\
+            "getApiVersion": getApiVersion, \
+            "getSelector": getSelector, \
+            "getClients": getReplicas, \
             "runFile": runFile}
         
 
@@ -90,10 +93,14 @@ def interactive():
     
     while True:
         printPrompt()
-        x = input().strip() 
+        x = input().strip()
+        
+        if (not x):
+            continue
+            
         splitted = x.split()
         command = splitted[0]
-        
+
         if command == "exit":
             break
         
@@ -107,7 +114,8 @@ def interactive():
                 ret = parse(x)
                 if (ret is not None):
                     print(ret)
-            except:
+            except Exception as e:
+                print(e)
                 print("Operation \"{}\" not successful\n".\
                     format(x))
                     
