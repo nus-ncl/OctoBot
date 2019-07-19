@@ -100,9 +100,6 @@ def runFile(filename):
         commandToExecute = "kubectl apply -f %s" % filename
         params = commandToExecute.split(" ")
         
-        p = os.fork()
-        if (p):
-            os.execvp("cat", ["cat", filename])
         try:
             os.execvp(params[0], params)
         except Exception as e:

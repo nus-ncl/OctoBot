@@ -4,8 +4,7 @@ import sys
 from utils import *
 
 def printPrompt():
-    ''' Use filename as prompt header'''
-    
+    ''' Use filename as prompt header'''   
     currFileName = sys.argv[0]
     print("{}:~$ ".format(currFileName), end="")
         
@@ -27,7 +26,11 @@ def parse(x):
     try:
         splitted = x.split(" ")
         args = splitted[1:]
-        func = commands[splitted[0]]
+        try:
+            func = commands[splitted[0]]
+        except:
+            raise Exception("Command {} not found".\
+                format(func))
         if (len(args) == 0):
             return func()
         elif (len(args) == 1):
@@ -115,7 +118,6 @@ def interactive():
                 if (ret is not None):
                     print(ret)
             except Exception as e:
-                print(e)
                 print("Operation \"{}\" not successful\n".\
                     format(x))
                     
