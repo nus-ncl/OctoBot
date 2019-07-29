@@ -194,9 +194,34 @@ def checkStatus():
             "api/v1/namespaces/default/pods"
         
         resp = requests.get(url)
-        
-        parseStatusJson(resp.json())
+        if resp.status_code != 200:
+            # This means something went wrong.
+            raise Exception("Error with code " + \
+                str(resp.status_code))
+                
+        else:
+            print("Success with status code 200, \
+                    parsing response...")
+            
+            parseStatusJson(resp.json())
             
     else:
         os.waitpid(pid, 0)
+
+def deletePod(podName):
+    
+    url = "http://localhost:{}/".format(K8S_PORT) + \
+            "api/v1/namespaces/default/pods/{}".format(podName)
+    
+    try:
+        
+        resp = requests.delete(url)
+        
+        if (resp.status_code not in (200, 202)):
+            raise Exception("Error with code " + \
+                str(resp.status_code))
+        else:
+            print("Successfully deleted pod".format(podName))
+    except Exception as e:
+        raise e
     

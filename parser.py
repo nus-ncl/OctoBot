@@ -16,6 +16,7 @@ commands = {"changeName":changeName, \
         "openProxy": openProxy,\
         "runFile": runFile,\
         "checkStatus": checkStatus,\
+        "deletePod": deletePod,\
         "exit": sys.exit\
     }
         
@@ -64,6 +65,7 @@ def printSyntax(command):
         "openProxy": "openProxy (opens a api proxy on port \
                     specified using setPort)",\
         "checkStatus": "checkStatus (lists down all pods and worker",\
+        "deletePod": "deletePod <pod name from checkStatus",\
         "exit": "exit (exits the program)"\
         }
     
