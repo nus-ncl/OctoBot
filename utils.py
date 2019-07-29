@@ -7,15 +7,22 @@ import os
 import sys
 import yaml
 import io
+import time
+import requests
 
 firstTimeAdding = True
 
+#some random high value port, can change using setPort command 
+K8S_PORT = 12321  
+
+'''
+open template file to fill in values later
+'''
 with open("template.yaml", "r") as stream:
     try:
         z = yaml.safe_load(stream)
     except:
         pass
-
        
 def changeApiVersion(api):
     z['apiVersion'] = api
@@ -87,6 +94,59 @@ def writeToFile(filename):
         
     f.close()
 
+def openProxy():
+    
+    
+    try:
+        pid = os.fork()
+    except Exception as e:
+        raise (e)
+        
+    if (pid == 0):
+        command = "kubectl proxy -p {}".format(K8S_PORT)
+        params = command.split(" ")
+        
+        try:
+            os.execvp(params[0], params)
+        except Exception as e:
+            raise e
+            
+    else:
+        
+        time.sleep(10)
+        #let child sleep in background
+
+def setPort(p):
+    
+    global K8S_PORT
+    K8S_PORT = int(p)
+
+def pushYamlFile(filename):
+    try:
+            
+        u = "http://localhost:{}/".format(K8S_PORT) +\
+            "apis/apps/v1/namespaces/default/deployments"
+            
+        print(u)
+        with open(filename, "r") as stream:
+            try:
+                s = stream
+                z = yaml.safe_load(stream)
+                print(z)
+            except:
+                pass
+   
+        resp = requests.post(u, json = z)
+        if resp.status_code != 201:
+            # This means something went wrong.
+            raise Exception("Error with code " + \
+                str(resp.status_code))
+        else:
+            print("Success with status code 201")
+            
+    except Exception as e:
+        print(e)
+        
 def runFile(filename):
     
     try:
@@ -96,20 +156,32 @@ def runFile(filename):
         raise(e)
     
     if (pid == 0): #run in child process
-    
-        commandToExecute = "kubectl apply -f %s" % filename
-        params = commandToExecute.split(" ")
         
-        try:
-            os.execvp(params[0], params)
-        except Exception as e:
-            print(e)
-            raise(e)
-    
+        #push it to server
+        pushYamlFile(filename)
+        
     else:
+        
         #wait for child process to terminate
         os.waitpid(pid, 0)
 
+def parseStatusJson(dct):
+    
+    for pods in dct['items']:
+        
+        name = pods["metadata"]["name"]
+        
+        workers = pods["spec"]["containers"]
+        
+        print("Pod name: {}".format(name))
+        
+        for w in workers:
+            print("Worker Name:{}".format(w["name"]))
+            print("Worker Image:{}".format(w["image"]))
+            print("Worker command:{}\n".format(w["command"]))
+        
+        print("==================")
+        
 def checkStatus():
     try:
         pid = os.fork()
@@ -117,13 +189,13 @@ def checkStatus():
         raise (e)
         
     if (pid == 0):
-        command = "kubectl get pods"
-        params = command.split(" ")
         
-        try:
-            os.execvp(params[0], params)
-        except Exception as e:
-            raise e
+        url = "http://localhost:{}/".format(K8S_PORT) + \
+            "api/v1/namespaces/default/pods"
+        
+        resp = requests.get(url)
+        
+        parseStatusJson(resp.json())
             
     else:
         os.waitpid(pid, 0)

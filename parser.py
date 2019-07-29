@@ -22,16 +22,24 @@ def parse(x):
             "getApiVersion": getApiVersion, \
             "getSelector": getSelector, \
             "getClients": getReplicas, \
+            "checkStatus": checkStatus,\
+            "setPort": setPort,\
+            "openProxy": openProxy,\
             "runFile": runFile,\
-            "checkStatus": checkStatus}
+            "checkStatus": checkStatus,\
+            "exit": sys.exit}
+        
+
     try:
         splitted = x.split(" ")
         args = splitted[1:]
         try:
             func = commands[splitted[0]]
         except:
+            print(Exception("Command {} not found".\
+                format(splitted[0])))
             raise Exception("Command {} not found".\
-                format(func))
+                format(splitted[0]))
         if (len(args) == 0):
             return func()
         elif (len(args) == 1):
@@ -40,7 +48,6 @@ def parse(x):
             return func(args)
             
     except Exception as e:
-        print(e)
         raise (e)
 
 def printSyntax(command):
@@ -58,7 +65,11 @@ def printSyntax(command):
         "getClients": "getClients (returns the number of clients)",\
         "runFile": "runFile <path to yaml config file>",\
         "checkStatus": "Get status of the workers",\
-        "exit": "exit (exits the program)"}
+        "setPort": "setPort <port for API to run on>",\
+        "openProxy": "openProxy (opens a api proxy on port \
+                    specified using setPort)",\
+        "exit": "exit (exits the program)"\
+        }
     
     try:
         print(commands[command])
@@ -79,6 +90,8 @@ def help(arg):
             "getSelector": getSelector, \
             "getClients": getReplicas, \
             "checkStatus": checkStatus,\
+            "setPort": setPort,\
+            "openProxy": openProxy,\
             "runFile": runFile}
         
 
@@ -121,8 +134,9 @@ def interactive():
                 if (ret is not None):
                     print(ret)
             except Exception as e:
+                print(e)
                 print("Operation \"{}\" not successful\n".\
                     format(x))
-                    
+                continue    
         
 
