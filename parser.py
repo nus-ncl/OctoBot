@@ -3,6 +3,22 @@
 import sys
 from utils import *
 
+commands = {"changeName":changeName, \
+        "updateClient":updateReplicas, \
+        "addWorker":addContainer, \
+        "getName":getName, \
+        "getWorkers": getContainers, \
+        "deleteWorker": deleteContainer, \
+        "writeToFile": writeToFile, \
+        "getClients": getReplicas, \
+        "checkStatus": checkStatus,\
+        "setPort": setPort,\
+        "openProxy": openProxy,\
+        "runFile": runFile,\
+        "checkStatus": checkStatus,\
+        "exit": sys.exit\
+    }
+        
 def printPrompt():
     ''' Use filename as prompt header'''   
     currFileName = sys.argv[0]
@@ -10,24 +26,7 @@ def printPrompt():
         
 def parse(x):
     
-    commands = {"changeApiVersion":changeApiVersion, \
-            "changeName":changeName, \
-            "updateClient":updateReplicas, \
-            "addWorker":addContainer, \
-            "updateSelector": updateSelector,\
-            "getName":getName, \
-            "getWorkers": getContainers, \
-            "deleteWorker": deleteContainer, \
-            "writeToFile": writeToFile, \
-            "getApiVersion": getApiVersion, \
-            "getSelector": getSelector, \
-            "getClients": getReplicas, \
-            "checkStatus": checkStatus,\
-            "setPort": setPort,\
-            "openProxy": openProxy,\
-            "runFile": runFile,\
-            "checkStatus": checkStatus,\
-            "exit": sys.exit}
+    global commands
         
 
     try:
@@ -51,23 +50,20 @@ def parse(x):
         raise (e)
 
 def printSyntax(command):
-    commands = {"changeApiVersion":"changeApiVersion <version>", \
-        "changeName":"changeName <name>", \
-        "updateClients": "updateClients <# clients>", \
+    commands = {"changeName":"changeName <name>", \
+        "updateClient": "updateClient <# clients>", \
         "addWorker": "addWorker <name> <image> <commands...>", \
         "getName": "getName (this prints the name of the current project)", \
         "getWorkers": "getWorkers (this lists out all the containers)", \
         "deleteWorker": "deleteContainer <container index from getContainers>", \
         "writeToFile": "writeToFile <filename>",\
-        "getApiVersion": "getApiVersion",\
-        "getSelector": "getSelector",\
-        "updateSelector": "updateSelector <selector name>",\
         "getClients": "getClients (returns the number of clients)",\
         "runFile": "runFile <path to yaml config file>",\
         "checkStatus": "Get status of the workers",\
         "setPort": "setPort <port for API to run on>",\
         "openProxy": "openProxy (opens a api proxy on port \
                     specified using setPort)",\
+        "checkStatus": "checkStatus (lists down all pods and worker",\
         "exit": "exit (exits the program)"\
         }
     
@@ -77,24 +73,8 @@ def printSyntax(command):
         print("Command {} not a valid option".format(command))
             
 def help(arg):
-    commands = {"changeApiVersion":changeApiVersion, \
-            "changeName":changeName, \
-            "updateClient":updateReplicas, \
-            "addWorker":addContainer, \
-            "updateSelector": updateSelector,\
-            "getName":getName, \
-            "getWorkers": getContainers, \
-            "deleteWorker": deleteContainer, \
-            "writeToFile": writeToFile, \
-            "getApiVersion": getApiVersion, \
-            "getSelector": getSelector, \
-            "getClients": getReplicas, \
-            "checkStatus": checkStatus,\
-            "setPort": setPort,\
-            "openProxy": openProxy,\
-            "runFile": runFile}
-        
-
+    
+    global commands
     
     if (arg is False):
         print("List of Commands")
