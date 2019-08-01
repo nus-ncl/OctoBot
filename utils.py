@@ -232,3 +232,43 @@ def deletePod(podName):
             print("Successfully deleted pod".format(podName))
     except Exception as e:
         raise e
+
+def getLogs(params):
+    
+    pod = params[0]
+    
+    try:
+        container = params[1]
+    except Exception as e:
+        container = False
+    
+    url = "http://localhost:{}/".format(K8S_PORT) + \
+            "api/v1/namespaces/default/pods/" + \
+            "{}/log".format(pod)
+    
+    if (container):
+        param = {'container': container}
+    else:
+        param = None
+    
+    try:
+        if (param):
+            resp = requests.get(url, params = param)
+        else:
+            resp = requests.get(url)
+    except Exception as e:
+        raise(e)
+    
+    if (resp.status_code == 204):
+        return "No logs for pod: {}, container :{}".\
+                            format(pod, container[0])
+    
+    elif (resp.status_code != 200):
+        raise Exception("Error code {} when querying api\n"\
+                            .format(resp.status_code) +\
+                            "Error message: {}"\
+                            .format(resp.json()['message']))
+        
+    return resp.text
+    
+    
