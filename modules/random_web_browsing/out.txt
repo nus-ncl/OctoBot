@@ -1,0 +1,53 @@
+['https://ncl.sg/public_teams', 'https://ncl.sg/tutorials.html', 'https://ncl.sg/tutorials/createaccount', 'https://ncl.sg/data/public/6', 'https://ncl.sg/research', 'https://ncl.sg/data/public/1', 'https://ncl.sg/plan.html', 'https://ncl.sg/testbedNodesStatus', 'https://ncl.sg/data/public/5', 'https://ncl.sg/overview', 'https://ncl.sg/about#Students', 'https://ncl.sg/terms_and_conditions', 'https://ncl.sg/about#asoprof', 'https://ncl.sg/contactus', 'https://ncl.sg/about', 'https://ncl.sg/about#Co-Inv', 'https://ncl.sg/login', 'https://ncl.sg/about#Research', 'https://ncl.sg/plan', 'https://ncl.sg#services', 'https://ncl.sg/updates', 'https://ncl.sg/password_reset_email', 'https://ncl.sg/tutorials/createcustom', 'https://ncl.sg/testbedInformation', 'https://ncl.sg/data/public', 'https://ncl.sg/tutorials/manageresource', 'https://ncl.sg/resources', 'https://ncl.sg/tutorials/testbedinfo', 'https://ncl.sg/tutorials/createexperiment', 'https://ncl.sg/tutorials/applyteam', 'https://ncl.sg/pricing', 'https://ncl.sg/tutorials/jointeam', 'https://ncl.sg/event', 'https://ncl.sg#home-slider', 'https://ncl.sg/tutorials/usenode', 'https://ncl.sg/tutorials', 'https://ncl.sg/data/public/10', 'https://ncl.sg/calendar', 'https://ncl.sg/', 'https://ncl.sg', 'https://ncl.sg/signup2']
+Currrently at https://ncl.sg/public_teams
+Time left = 99.57912874221802
+Currrently at https://ncl.sg/data/public/6
+Time left = 95.50769281387329
+Currrently at https://ncl.sg/data/public/1
+Time left = 90.4456193447113
+Currrently at https://ncl.sg/data/public/1
+Time left = 87.36334013938904
+Currrently at https://ncl.sg/pricing
+Time left = 82.29046416282654
+Currrently at https://ncl.sg/tutorials/createcustom
+Time left = 78.216073513031
+Currrently at https://ncl.sg/public_teams
+Time left = 74.80062890052795
+Currrently at https://ncl.sg/tutorials/createexperiment
+Time left = 69.72297024726868
+Currrently at https://ncl.sg/terms_and_conditions
+Time left = 66.64547038078308
+Currrently at https://ncl.sg/event
+Time left = 61.5627179145813
+Currrently at https://ncl.sg/testbedNodesStatus
+Time left = 58.36903262138367
+Currrently at https://ncl.sg/testbedNodesStatus
+Time left = 53.18489146232605
+Currrently at https://ncl.sg/updates
+Time left = 49.1128203868866
+Currrently at https://ncl.sg/data/public/6
+Time left = 46.02742838859558
+Currrently at https://ncl.sg/data/public
+Time left = 41.92922568321228
+Currrently at https://ncl.sg/tutorials
+Time left = 38.85417199134827
+Currrently at https://ncl.sg/signup2
+Time left = 33.77610206604004
+Currrently at https://ncl.sg/about#Students
+Time left = 28.703983545303345
+Currrently at https://ncl.sg/calendar
+Time left = 25.62553834915161
+Currrently at https://ncl.sg/about
+Time left = 22.54694962501526
+Currrently at https://ncl.sg/about
+Time left = 19.46522617340088
+Currrently at https://ncl.sg/data/public
+Time left = 15.367640495300293
+Currrently at https://ncl.sg/data/public/10
+Time left = 12.298344135284424
+Currrently at https://ncl.sg/data/public
+Time left = 9.197900533676147
+Currrently at https://ncl.sg/tutorials
+Time left = 6.126304626464844
+Currrently at https://ncl.sg/tutorials/jointeam
+Time left = 2.0503621101379395

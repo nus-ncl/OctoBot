@@ -6,9 +6,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = \
         "Arguments for program")
     
-    parser = argparse.ArgumentParser(prog=sys.argv[0], usage='%(prog)s \
-        [-h] [-t T] [-d D] [-i I] [-s S] [--debug DEBUG] u c \n \
-        Example: %(prog)s https://google.com 1 -t 10 -d 3 -i 1 -s 0 --debug 0')
 
     parser.add_argument('u', type=str, \
                     help='Target Website URL')
