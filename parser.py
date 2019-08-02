@@ -16,7 +16,7 @@ commands = {"changeName": changeName,
             "openProxy": openProxy,
             "runFile": runFile,
             "checkStatus": checkStatus,
-            "deletePod": deletePod,
+            "deleteClient": deletePod,
             "getLogs": getLogs,
             "getLogsByCommand": getLogsByCommand,
             "exit": sys.exit
@@ -70,9 +70,9 @@ def printSyntax(command):
                 "setPort": "setPort <port for API to run on>",
                 "openProxy": "openProxy",
                 "checkStatus": "checkStatus",
-                "deletePod": "deletePod <pod name from checkStatus",
+                "deleteClient": "deletePod <pod name from checkStatus>",
                 "getLogs": "getLogs <pod name> <worker name>",
-                "getLogsByCommand": "getLogsByCommand <pod name> <command>",
+                "getLogsByCommand": "getLogsByCommand <client name> <command>",
                 "exit": "exit (exits the program)"
                 }
 
