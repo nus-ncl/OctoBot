@@ -18,6 +18,7 @@ commands = {"changeName": changeName,
             "checkStatus": checkStatus,
             "deletePod": deletePod,
             "getLogs": getLogs,
+            "getLogsByCommand": getLogsByCommand,
             "exit": sys.exit
             }
 
@@ -71,6 +72,7 @@ def printSyntax(command):
                 "checkStatus": "checkStatus",
                 "deletePod": "deletePod <pod name from checkStatus",
                 "getLogs": "getLogs <pod name> <worker name>",
+                "getLogsByCommand": "getLogsByCommand <pod name> <command>"
                 "exit": "exit (exits the program)"
                 }
 

@@ -233,6 +233,57 @@ def deletePod(podName):
     except Exception as e:
         raise e
 
+def getWorkerNameByCommand(pod, command):
+
+    url = "http://localhost:{}/".format(K8S_PORT) + \
+        "api/v1/namespaces/default/pods"
+
+    resp = requests.get(url)
+    if resp.status_code != 200:
+        # This means something went wrong.
+        raise Exception("Error with code " +
+                        str(resp.status_code))
+
+    else:
+        print("Success with status code 200, \
+                parsing response...")
+
+        dct = resp.json()
+        
+        foundPod = False
+        
+        for pods in dct['items']:
+        
+            name = pods["metadata"]["name"]
+            if (name == pod):
+                foundPod = pods
+                break
+        
+        if (foundPod):
+            workers = foundPod["spec"]["containers"]
+            
+            myCommand = command
+            for w in workers:
+                
+                workerCommand = w['command']
+                if (workerCommand == myCommand):
+                    return w
+            
+            raise Exception("Command not found in pod")
+            
+        else:
+            raise Exception("Pod not found")
+
+def getLogsByCommand(param): 
+    
+    pod = param[0]
+    command = param[1:]
+    
+    worker = getWorkerNameByCommand(pod, command)
+    workerName = worker["name"]
+    
+    return getLogs([pod, workerName])
+                                                                                                                                                                                                              
 def getLogs(params):
     
     pod = params[0]
