@@ -72,7 +72,7 @@ def printSyntax(command):
                 "checkStatus": "checkStatus",
                 "deletePod": "deletePod <pod name from checkStatus",
                 "getLogs": "getLogs <pod name> <worker name>",
-                "getLogsByCommand": "getLogsByCommand <pod name> <command>"
+                "getLogsByCommand": "getLogsByCommand <pod name> <command>",
                 "exit": "exit (exits the program)"
                 }
 
