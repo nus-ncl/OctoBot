@@ -184,7 +184,7 @@ def parseStatusJson(dct):
         for w in workers:
             print("Worker Name:{}".format(w["name"]))
             print("Worker Image:{}".format(w["image"]))
-            print("Worker command:{}\n".format(w["command"]))
+            print("Worker Job:{}\n".format(w["command"]))
 
         print("==================")
 
