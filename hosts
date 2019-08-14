@@ -1,0 +1,13 @@
+# Host file
+
+# Format #
+# [group_of_hosts]
+# ip_host/hostname
+# or
+# ip_host/hostname ansible_connection=local/ssh ansible_user=USER
+
+## see more information here: https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html
+
+[localhost]
+127.0.0.1 	   ansible_connection=local ansible_user=ncl
+
