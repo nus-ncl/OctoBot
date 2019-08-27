@@ -4,3 +4,4 @@
 
 # Build cache
 *.pyc
+__pycache__
