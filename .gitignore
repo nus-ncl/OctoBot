@@ -1,1 +1,7 @@
+# Project file
+.idea/
+*.iml
+
+# Build cache
+*.pyc
 __pycache__/

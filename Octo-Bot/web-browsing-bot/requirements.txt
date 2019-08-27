@@ -1,0 +1,4 @@
+scrapy
+twisted
+tldextract
+numpy
