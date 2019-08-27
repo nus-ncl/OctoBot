@@ -31,7 +31,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     if (args.c == 1):
-        from util.random_web_browsing_crawl_first import *
+        from .util.random_web_browsing_crawl_first import *
         crawlThenBrowse(url = args.u, \
                 timeAllowed = args.t, \
                 maxDepth = args.d, \
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         
                 
     elif (args.c == 0):
-        from util.random_web_browsing_no_crawl import *
+        from .util.random_web_browsing_no_crawl import *
         randomBrowsing(url = args.u, \
                 timeAllowed = args.t, \
                 maxDepth = args.d, \

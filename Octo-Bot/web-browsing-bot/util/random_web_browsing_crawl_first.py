@@ -6,7 +6,7 @@ MAX_DEPTH = 10 #hardcoded for now, change later
 MIN_SLEEP_TIME = 3
 MAX_SLEEP_TIME = 5
 
-from util.scrapper import *
+from .scrapper import *
 import random
 #import config
 import time
