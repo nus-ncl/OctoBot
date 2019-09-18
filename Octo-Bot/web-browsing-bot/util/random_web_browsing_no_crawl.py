@@ -7,11 +7,9 @@ MAX_DEPTH = 10 #hardcoded for now, change later
 SLEEP_MEAN = 10
 SLEEP_SD = 3
 
-from .scrapper import *
+from util.scrapper import *
 import random
 import time
-import sys
-import os
 
 def randomBrowsing(url = "https://ncl.sg", timeAllowed = 1000, \
                 maxDepth = MAX_DEPTH, debug = False, sleep = True, \

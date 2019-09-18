@@ -6,12 +6,9 @@ MAX_DEPTH = 10 #hardcoded for now, change later
 MIN_SLEEP_TIME = 3
 MAX_SLEEP_TIME = 5
 
-from .scrapper import *
+from util.scrapper import *
 import random
-#import config
 import time
-import sys
-import os
 import requests
 
 def crawlThenBrowse(url = "https://ncl.sg", timeAllowed = 1000, \

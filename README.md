@@ -10,8 +10,8 @@ CLI (command-line interface) or API (application programming interface).
 
 ## Table of Content
 
-1. [Architecture Design](https://github.com/ariscahyadi/OctoBot)
-2. [Provisioning Guide for System Administrator](https://github.com/ariscahyadi/OctoBot)
+1. [Architecture Design](https://github.com/ariscahyadi/OctoBot/Docs/README.md)
+2. [Provisioning Guide for System Administrator](https://github.com/ariscahyadi/OctoBot/Octo-Pro/README.md)
 3. [Orchestration Guide for Users](https://github.com/ariscahyadi/OctoBot)
 4. [Development Guide for Developer/Researcher](https://github.com/ariscahyadi/OctoBot)
 5. [Operation or Integration Guide for Operator and Third-party application](https://github.com/ariscahyadi/OctoBot)
