@@ -46,11 +46,11 @@
         group: docker
 
     - name: Remove swapfile from /etc/fstab
-        mount:
-          name: "{{ item }}"
-          fstype: swap
-          state: absent
-        with_items:
+      mount:
+        name: "{{ item }}"
+        fstype: swap
+        state: absent
+      with_items:
           - swap
           - none
 
@@ -59,61 +59,61 @@
       when: ansible_swaptotal_mb > 0
 
     - name: Add an apt signing key for Kubernetes
-    apt_key:
-      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-      state: present
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
 
-  - name: Adding apt repository for Kubernetes
-    apt_repository:
-      repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
-      state: present
-      filename: kubernetes.list
+    - name: Adding apt repository for Kubernetes
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: kubernetes.list
 
-  - name: Install Kubernetes binaries
-    apt:
-      name: "{{ packages }}"
-      state: present
-      update_cache: yes
-    vars:
-      packages:
-        - kubelet
-        - kubeadm
-        - kubectl
+    - name: Install Kubernetes binaries
+      apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+          - kubelet
+          - kubeadm
+          - kubectl
 
-  - name: Configure node ip
-    lineinfile:
-      path: /etc/default/kubelet
-      line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+    - name: Configure node ip
+      lineinfile:
+        path: /etc/default/kubelet
+        line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
 
-  - name: Restart kubelet
-    service:
-      name: kubelet
-      daemon_reload: yes
-      state: restarted
+    - name: Restart kubelet
+      service:
+        name: kubelet
+        daemon_reload: yes
+        state: restarted
 
-  - name: Initialize the Kubernetes cluster using kubeadm
-    command: kubeadm init --node-name k8s-master --pod-network-cidr=10.244.0.0/16
+    - name: Initialize the Kubernetes cluster using kubeadm
+      command: kubeadm init --node-name k8s-master --pod-network-cidr=10.244.0.0/16
 
-  - name: Setup kubeconfig for running user
-    shell: "whoami"
-    register: current_user
-    command: "{{ item }}"
-      with_items:
-        - mkdir -p /home/{{ current_user }}/.kube
-        - cp -i /etc/kubernetes/admin.conf /home/{{ current_user }}/.kube/config
-        - chown {{ current_user }}:{{ current_user }} /home{{ current_user }}/.kube/config
-        -
-  - name: Install calico pod network
-    become: false
-    command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+    - name: Setup kubeconfig for running user
+      shell: "whoami"
+      register: current_user
+      command: "{{ item }}"
+        with_items:
+          - mkdir -p /home/{{ current_user }}/.kube
+          - cp -i /etc/kubernetes/admin.conf /home/{{ current_user }}/.kube/config
+          - chown {{ current_user }}:{{ current_user }} /home{{ current_user }}/.kube/config
+          -
+    - name: Install calico pod network
+      become: false
+      command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
-  - name: Generate join command
-    command: kubeadm token create --print-join-command
-    register: join_command
+    - name: Generate join command
+      command: kubeadm token create --print-join-command
+      register: join_command
 
-  - name: Copy join command to local file
-    local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
+    - name: Copy join command to local file
+      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"
 
   handlers:
-  - name: docker status
-    service: name=docker state=started
+    - name: docker status
+      service: name=docker state=started
