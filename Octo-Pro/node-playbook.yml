@@ -29,11 +29,12 @@
       apt:
         name: "{{ packages }}"
         state: present
+        force: True
         update_cache: yes
       vars:
         packages:
-          - docker-ce
-          - docker-ce-cli
+          - docker-ce=5:18.09.0~3-0~ubuntu-xenial
+          - docker-ce-cli=5:18.09.0~3-0~ubuntu-xenial
           - containerd.io
       notify:
         - docker status

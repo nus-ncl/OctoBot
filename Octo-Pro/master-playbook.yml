@@ -32,17 +32,15 @@
         update_cache: yes
       vars:
         packages:
-          - docker-ce
-          - docker-ce-cli
+          - docker-ce=5:18.09.0~3-0~ubuntu-xenial
+          - docker-ce-cli=5:18.09.0~3-0~ubuntu-xenial
           - containerd.io
       notify:
         - docker status
 
-    - name: Add current user to docker group
-      shell: "whoami"
-      register: current_user
+    - name: Add "{{ ansible_user }}" current user to docker group
       user:
-        name: {{ current_user}}
+        name: "{{ ansible_user}}"
         group: docker
 
     - name: Remove swapfile from /etc/fstab
@@ -79,11 +77,15 @@
           - kubelet
           - kubeadm
           - kubectl
+    
+    - name: Get the host part of the IP 
+      shell: host {{ ansible_fqdn }} | awk '{print $4}' 
+      register: node_ip
 
     - name: Configure node ip
       lineinfile:
         path: /etc/default/kubelet
-        line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+        line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip.stdout.split('.')[3] }}
 
     - name: Restart kubelet
       service:
@@ -92,17 +94,15 @@
         state: restarted
 
     - name: Initialize the Kubernetes cluster using kubeadm
-      command: kubeadm init --node-name k8s-master --pod-network-cidr=10.244.0.0/16
+      command: kubeadm init --node-name k8s-master --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=All
 
     - name: Setup kubeconfig for running user
-      shell: "whoami"
-      register: current_user
       command: "{{ item }}"
-        with_items:
-          - mkdir -p /home/{{ current_user }}/.kube
-          - cp -i /etc/kubernetes/admin.conf /home/{{ current_user }}/.kube/config
-          - chown {{ current_user }}:{{ current_user }} /home{{ current_user }}/.kube/config
-          -
+      with_items:
+        - mkdir -p /home/{{ ansible_user }}/.kube
+        - cp -i /etc/kubernetes/admin.conf /home/{{ ansible_user }}/.kube/config
+        - chown {{ ansible_user }}:{{ ansible_user }} /home/{{ ansible_user }}/.kube/config
+        
     - name: Install calico pod network
       become: false
       command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml

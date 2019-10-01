@@ -5,7 +5,7 @@ while true; do
     case $cwae in
         [Cc]* ) echo "Installing Controller Node"; ansible-playbook -i hosts master-playbook.yml; exit;;
         [Ww]* ) echo "Installing Worker Nodes"; ansible-playbook -i hosts node-playbook.yml; exit;;
-	    [Aa]* ) echo "Installing Controller and Worker Nodes";exit;;
+	    [Aa]* ) echo "Installing Controller and Worker Nodes"; ansible-playbook -i hosts master-playbook.yml; ansible-playbook -i hosts node-playbook.yml; exit;;
 	    [Ee]* ) exit;;
 	    * ) echo "Please select (c), (w) or (a)";;
     esac
