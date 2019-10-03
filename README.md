@@ -10,14 +10,26 @@ CLI (command-line interface) or API (application programming interface).
 
 ## Table of Content
 
-1. [Architecture Design](https://github.com/ariscahyadi/OctoBot/Docs/README.md)
-2. [Provisioning Guide for System Administrator](https://github.com/ariscahyadi/OctoBot/Octo-Pro/README.md)
-3. [Orchestration Guide for Users](https://github.com/ariscahyadi/OctoBot)
-4. [Development Guide for Developer/Researcher](https://github.com/ariscahyadi/OctoBot)
+1. [Architecture Design](Docs/README.md)
+2. [Provisioning Guide for System Administrator](Octo-Pro/README.md)
+3. [Orchestration Guide for Users](Octo-Pro/README.md)
+4. [Development Guide for Developer/Researcher](Octo-Bot/README.md)
 5. [Operation or Integration Guide for Operator and Third-party application](https://github.com/ariscahyadi/OctoBot)
 6. [Demo and Use Cases](https://github.com/ariscahyadi/OctoBot)
 
 
 ## Credits
+
+National Cybersecurity R&D Laboratory (NCL)\
+National University of Singapore (NUS)\
+Singapore
+
+Maintainer : Aris Cahyadi Risdianto
+ 
+Supervisor : Prof. Ee-chien Chang
+ 
+Contributors:
+- Aris Cahyadi Risdianto (NCL/NUS)
+- DeZhang Lee (NUS)
 
 ## License
