@@ -12,7 +12,7 @@ CLI (command-line interface) or API (application programming interface).
 
 1. [Architecture Design](Docs/README.md)
 2. [Provisioning Guide for System Administrator](Octo-Pro/README.md)
-3. [Orchestration Guide for Users](Octo-Pro/README.md)
+3. [Orchestration Guide for Users](Octo-Play/README.md)
 4. [Development Guide for Developer/Researcher](Octo-Bot/README.md)
 5. [Operation or Integration Guide for Operator and Third-party application](https://github.com/ariscahyadi/OctoBot)
 6. [Demo and Use Cases](https://github.com/ariscahyadi/OctoBot)
@@ -24,9 +24,9 @@ National Cybersecurity R&D Laboratory (NCL)\
 National University of Singapore (NUS)\
 Singapore
 
-Maintainer : Aris Cahyadi Risdianto
+Maintainer : Aris Cahyadi Risdianto - ariscr@ncl.sg
  
-Supervisor : Prof. Ee-chien Chang
+Supervisor : Prof. Ee-chien Chang - changec@comp.nus.edu
  
 Contributors:
 - Aris Cahyadi Risdianto (NCL/NUS)

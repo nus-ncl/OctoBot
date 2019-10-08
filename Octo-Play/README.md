@@ -43,7 +43,7 @@ Type help <commandName> for help on syntax
 Example - help changeName
 main.py:~$ changeName test5
 main.py:~$ updateClient 2
-main.py:~$ addWorker worker-1 ariscahyadi/web-browsing-bot:latest python -u /main.py https://ncl.sg 0
+main.py:~$ addWorker worker-1 busybox ping 8.8.8.8
 main.py:~$ writeToFile test5.yaml
 main.py:~$ setPort 8001
 main.py:~$ runFile test5.yaml
@@ -62,18 +62,18 @@ Success with status code 200,                     parsing response...
 
 Pod name: test5-59b784b5d5-5tfwl
 Worker Name:worker-1
-Worker Image:ariscahyadi/web-browsing-bot:latest
-Worker Job:['python', '-u', './main.py', 'https://ncl.sg', '0']
+Worker Image:busybox
+Worker Job:['ping', '8.8.8.8']
 ==================
 Pod name: test5-59b784b5d5-r68nm
 Worker Name:worker-1
-Worker Image:ariscahyadi/web-browsing-bot:latest
-Worker Job:['python', '-u', './main.py', 'https://ncl.sg', '0']
+Worker Image:busybox
+Worker Job:['ping', '8.8.8.8']
 ==================
 
 main.py:~$ getClients
 2
 
 main.py:~$ getWorkers
-[{'name': 'worker-1', 'image': 'ariscahyadi/web-browsing-bot:latest', 'command': ['python', '-u', './main.py', 'https://ncl.sg', '0'], 'imagePullPolicy': 'IfNotPresent'}]
+[{'name': 'worker-1', 'image': 'busybox', 'command': ['ping', '8.8.8.8'], 'imagePullPolicy': 'IfNotPresent'}]
 ```
