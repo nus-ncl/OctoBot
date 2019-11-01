@@ -2,7 +2,7 @@
 
 ### Octo-Pro (Nodes Provisioning)
 
-[Octo-Pro-Node-Provisioning](https://drive.google.com/file/d/1ZsKpuCayEQs0ghVIlTp9hFCilj_T2dpB/view?usp=sharing)
+[Octo-Pro-Node-Provisioning](https://drive.google.com/file/d/1tCzYNbOprx10aYgxuORW-V2P3qg7m1e-/view?usp=sharing)
 
 ### Octo-Play (Orchestration)
 
