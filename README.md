@@ -14,8 +14,8 @@ CLI (command-line interface) or API (application programming interface).
 2. [Provisioning Guide for System Administrator](Octo-Pro/README.md)
 3. [Orchestration Guide for Users](Octo-Play/README.md)
 4. [Development Guide for Developer/Researcher](Octo-Bot/README.md)
-5. [Operation or Integration Guide for Operator and Third-party application](https://github.com/ariscahyadi/Octo-App/README.md)
-6. [Demo and Use Cases](https://github.com/Docs/Examples.md)
+5. [Operation or Integration Guide for Operator and Third-party application](Octo-App/README.md)
+6. [Demo and Use Cases](Docs/Examples.md)
 
 
 ## Credits
@@ -26,7 +26,7 @@ Singapore
 
 Maintainer : Aris Cahyadi Risdianto - ariscr@ncl.sg
  
-Supervisor : Prof. Ee-chien Chang - changec@comp.nus.edu
+Supervisor : Prof. Ee-chien Chang - changec@comp.nus.edu.sg
  
 Contributors:
 - Aris Cahyadi Risdianto (NCL/NUS)
