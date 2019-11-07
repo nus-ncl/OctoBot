@@ -138,3 +138,12 @@ def runJob(params):
         os.system(Command)
     except Exception as e:
         raise e
+
+def getShell(param):
+    Pod = param
+    Command = "/snap/bin/microk8s.kubectl exec -it " + Pod + " -- /bin/bash"
+
+    try:
+        os.system(Command)
+    except Exception as e:
+        raise e

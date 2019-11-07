@@ -8,6 +8,7 @@ commands = {"setPort": setPort,
             "openProxy": openProxy,
             "checkStatus": checkStatus,
             "runJob": runJob,
+            "getShell": getShell,
             "getLogs": getLogs,
             "exit": sys.exit
             }
@@ -51,8 +52,9 @@ def printSyntax(command):
     commands = {"setPort": "setPort <port for API to run on>",
                 "openProxy": "openProxy",
                 "checkStatus": "checkStatus",
-                "runJob" : "runJob <client_name> <worker> <job>",
-                "getLogs": "getLogs <pod name> <worker name>",
+                "runJob" : "runJob <client name> <worker name> <job name>",
+                "getShell" : "getShell <client_name>",
+                "getLogs": "getLogs <client name> <worker name>",
                 "exit": "exit (exits the program)"
                 }
 
