@@ -122,8 +122,12 @@ public class Crawler{
             //Try to access the pages and try to input.
             for(InputInfo i: inputValues){
                 String url = i.getUrl();
-                this.driver.get(i.getUrl());
 
+                try{
+                    this.driver.get(i.getUrl());
+                }catch(Exception e){
+                    continue;
+                }
                 //If constantly getting redirected away then dont bother
                 if(!this.driver.getCurrentUrl().equals(url)){
                     continue;
@@ -233,7 +237,6 @@ public class Crawler{
             }
 
             //Obtain the value string
-            System.out.println("Randint: " + randint%value.size());
             String finalValue = value.get(randint%value.size());
             
             //Obtain the input element
@@ -244,15 +247,22 @@ public class Crawler{
             }
             
             for(WebElement e: we){
-                js.executeScript("arguments[0].setAttribute('value', arguments[1])", e, finalValue);
+                js.executeScript("arguments[0].value = arguments[1]", e, finalValue);
             }
         }
 
+        //Submit the damn thing
         String submit = inputinfo.getSubmit();
         if(submit != null){
-            this.driver.findElement(By.cssSelector(submit)).click();
+            List<WebElement> submitBtns = this.driver.findElements(By.cssSelector(submit));
+            for(WebElement submitBtn: submitBtns)
+                js.executeScript("arguments[0].click()", submitBtn);
         }
         inputValues.remove(inputinfo);
+
+        if(inputValues.size() == 0){
+            System.exit(0);
+        }
     }
 }
 
