@@ -37,13 +37,9 @@ public class Crawler{
         this.inputValues = inputValues;
     }
 
-    public void setLoginInformation(HashMap<String, String> credentials){
-        if(credentials == null){
-            return;
-        }
-        this.loginUrl = credentials.get("url");
-        credentials.remove("url");
-        this.loginCredentials = credentials;
+    public void setLoginInformation(LoginInformation loginInfo){
+        this.loginUrl = loginInfo.getLoginUrl();
+        this.loginCredentials = loginInfo.getCredentials();
     }
 
     public void setBaseUrl(String baseUrl){
@@ -59,8 +55,8 @@ public class Crawler{
         Collections.sort(visitedUrlsWithoutDuplicates);
 
         //Actual stuff
-        System.out.println("Max depth: " + this.maxDepth);
-        System.out.println("\033[36m## Visited Links ##\033[0m");
+        System.out.println("\n\033[1;36m## Visited Links ##\033[0m");
+        System.out.println("Max depth: " + ((this.maxDepth < 0)?"null":this.maxDepth));
         for(int i = 0; i < visitedUrlsWithoutDuplicates.size(); i++){
             System.out.println(i+1 + ") " + visitedUrlsWithoutDuplicates.get(i));
         }
@@ -75,7 +71,7 @@ public class Crawler{
         //Gets into the login page
         driver.get(login_url);
         //Print some message
-        System.out.println("\033[92mPerforming login... \033[0m"+ login_url);
+        System.out.println("\n\033[1;92mPerforming login... \033[0m"+ login_url);
 
         /* Do the actual login */
         //Obtain inputs from the webpage
@@ -115,36 +111,17 @@ public class Crawler{
         startCrawl(-1);
     }
     
-    public void startCrawl(int maxDepth){
+    public ArrayList<String> startCrawl(int maxDepth){
         this.maxDepth = maxDepth;
 
         //Actual crawling function
         this.visit(this.baseUrl, 0, true);
 
-        //Do final cleanup
-        if(this.inputValues != null && this.inputValues.size() != 0){
-            //Try to access the pages and try to input.
-            for(InputInfo i: inputValues){
-                String url = i.getUrl();
-
-                try{
-                    this.driver.get(i.getUrl());
-                }catch(Exception e){
-                    continue;
-                }
-                //If constantly getting redirected away then dont bother
-                if(!this.driver.getCurrentUrl().equals(url)){
-                    continue;
-                }
-
-                fillInputs(url);
-            }
-        }
-
         /* End of crawl stuff */
         //Save the visited URLs
-        allVisitedUrls.addAll(visitedUrls);
+        ArrayList<String> arr = new ArrayList<String>(visitedUrls);
         visitedUrls.clear();        
+        return arr;
     }
 
     public void visit(String url, int curDepth, boolean toLoadUrl){
@@ -168,12 +145,8 @@ public class Crawler{
             }catch(Exception e){
                 System.out.println(e);
             }
-        
-            //url = driver.getCurrentUrl();
         }
-        if(!url.equalsIgnoreCase(baseUrl)){ //Adds to array list
-            this.visitedUrls.add(url); //Saves the URL into the arraylist
-        }
+        this.visitedUrls.add(url); //Saves the URL into the arraylist
 
         //Obtains all links in the current link
         ArrayList<String> webLinks = null;
@@ -182,21 +155,17 @@ public class Crawler{
             webLinks = CrawlerUtils.getLinks(this.driver, this.baseUrl);
         }
 
+        //Debug information
+        System.out.println("\n\033[1;94m## Current URL ##\033[0m");
+        System.out.println("URL\t\t:\t"+ url);
+        System.out.println("Current Depth\t:\t"+ curDepth);
         if(webLinks == null || webLinks.size() <= 0){
             return;
         }
-
-        //Debug information
-        System.out.println("\033[1;33m## New URL ##\033[0m");
-        System.out.println("URL\t\t:\t"+ url);
-        System.out.println("Current Depth\t:\t"+ curDepth);
         System.out.println("Links\t\t: ");
         for(int i = 0; i < webLinks.size(); i++){
             System.out.println( i+1 + ") " + webLinks.get(i));
         }
-
-        //Fill in the inputs
-        this.fillInputs(url);
 
         //Click all the buttons
         // List<WebElement> buttons = CrawlerUtils.getAllButtons(this.driver);
@@ -212,74 +181,13 @@ public class Crawler{
             this.visit(link, curDepth+1, true);
         }
     }
-
-    /* This method will check whether it is a url with inputs, then fill in the input and click the submit action if there is one */
-    public void fillInputs(String url){
-        //Check whether the URL has any inputs to fill
-        InputInfo inputinfo = InputInfo.getInputInfo(url, this.inputValues);
-        if(inputinfo == null){
-            return;
-        }
-
-        //Fill in the inputs
-        int randint = (int)(Math.random()*100);
-        for(HashMap<String, Object> d: inputinfo.getData()){
-            //Obtain the selector from the hashmap
-            boolean usingName = d.get("name") != null;
-            String selector = ((usingName) ? String.format("[name='%s']", (String)d.get("name")) : String.format("#%s", (String)d.get("id")));
-            if(selector == null){
-                continue;
-            }
-
-            // Check whether the value is of type String or ArrayList
-            ArrayList<String> value = null;
-            if(d.get("value").getClass() == String.class){
-                value = new ArrayList<String>();
-                value.add((String)d.get("value"));
-            }else{
-                value = (ArrayList<String>) d.get("value");
-            }
-
-            //Obtain the value string
-            String finalValue = value.get(randint%value.size());
-            
-            //Obtain the input element
-            ArrayList<WebElement> we = (ArrayList<WebElement>)this.driver.findElements(By.cssSelector(selector));
-            
-            if(we.size() == 0){
-                continue;
-            }
-            
-            for(WebElement e: we){
-                js.executeScript("arguments[0].value = arguments[1]", e, finalValue);
-            }
-        }
-
-        //Submit the damn thing
-        String submit = inputinfo.getSubmit();
-        if(submit != null){
-            List<WebElement> submitBtns = this.driver.findElements(By.cssSelector(submit));
-            for(WebElement submitBtn: submitBtns)
-                js.executeScript("arguments[0].click()", submitBtn);
-        }
-        inputValues.remove(inputinfo);
-    }
 }
 
 class CrawlerUtils{
     static String[] blacklist_url = {"http://192.168.40.173:8000/static/trainee/ovpn/linuxclient.ovpn", "http://192.168.40.173:8000/static/trainee/ovpn/winclient.ovpn"};
 
-    public static boolean isLoginUrl(String url){
-        url = url.toLowerCase();
-        if(url.matches(".*login.*")){
-            return true;
-        }
-        return false;
-    }
-
     // Obtains all web links and stores them onto an arraylist
     public static ArrayList<String> getLinks(WebDriver driver, String baseUrl){
-        System.out.println("\033[94mFilling in form fields...\033[0m");
         //This portion finds easy links (means anchor tag with href)
         List<WebElement> elements = driver.findElements(By.cssSelector("a[href]"));
         

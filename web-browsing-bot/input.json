@@ -1,6 +1,6 @@
 [
     {
-        "url": "http://localhost:8000/register",
+        "url": "http://192.168.40.129:8000/register",
         "data": [
             {"name": "name", "value": "whyare"},
             {"name": "email", "value": "whyare@email.com"},
@@ -9,7 +9,7 @@
         "submit": "[type='submit']"
     },
     {
-        "url": "http://localhost:8000/admin/challenges/new",
+        "url": "http://192.168.40.129:8000/admin/challenges/new",
         "data": [
             {"name": "name", "value": ["Challenge #1", "Challenge #2"]},
             {"name": "category", "value": ["Category #1", "Category #2"]},

@@ -1,9 +1,9 @@
 #Set permissions
-chmod a+x *.sh
+chmod a+x *.sh &&
 
 #Compile java program
-cd web-browsing-bot
-mvn clean install
+cd web-browsing-bot &&
+mvn clean install &&
 
-cd ..
+cd .. &&
 docker build . -t testing

@@ -21,6 +21,9 @@ public class Main {
     public static ArgumentParser createArgumentParser(){
         ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                                 .description("Bot that browses the web");
+        parser.addArgument("-d", "--depth")
+              .metavar("depth")
+              .help("Max depth to crawl");
         parser.addArgument("-i", "--input-file")
               .metavar("input_file")
               .help("File that contains values to form input fields");
@@ -47,8 +50,9 @@ public class Main {
         Namespace res = null;
         try {
             res = parser.parseArgs(args);
-            System.out.println("## Arguments ##");
+            System.out.println("\033[1;93m## Arguments ##\033[0m");
             System.out.printf("URL\t\t:\t%s\n", res.get("url"));
+            System.out.printf("Max depth\t:\t%s\n", res.get("depth"));
             System.out.printf("Login file\t:\t%s\n", res.get("login_file"));
             System.out.printf("Input file\t:\t%s\n", res.get("input_file"));
         } catch (ArgumentParserException e) {
@@ -57,23 +61,33 @@ public class Main {
         }
 
         //Parse the arguments
+        int depth = -1;
+        if(res.get("depth") != null){
+            try{
+                depth = Integer.parseInt((String)res.get("depth"));
+            }catch(NumberFormatException e){
+                System.err.printf("Invalid value for depth: %s\n", e);
+                System.exit(0);
+            }
+        }
+        
         String file_name = res.get("input_file");
         ArrayList<InputInfo> inputInfo = null;
         try{
             if(file_name != null)
                 inputInfo = InputInfo.parse(new FileReader(file_name));
         }catch(java.io.FileNotFoundException e){
-            System.out.printf("Cannot open file reader: %s\n", e);
+            System.err.printf("Cannot open file reader: %s\n", e);
             System.exit(1);
         }
 
         String loginfile_name = res.get("login_file");
-        HashMap<String, String> loginCredential = null;
+        LoginInformation loginInfo = null;
         try{
             if(loginfile_name!=null)
-                loginCredential = parseLoginCredentials(new FileReader(loginfile_name));   
+                loginInfo = LoginInformation.parse(new FileReader(loginfile_name));   
         }catch(java.io.FileNotFoundException e){
-            System.out.printf("Cannot open file reader: %s\n", e);
+            System.err.printf("Cannot open file reader: %s\n", e);
             System.exit(1);
         }
         //Parameters
@@ -82,8 +96,8 @@ public class Main {
         //BrowserSelection (We stick with firefox for now)          
         WebDriver driver = BrowserSelector.getFirefoxDriver();
         
-        //driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-        
+        driver.get("http://192.168.40.129:8000/login");
+
         //Initialize crawler
         Crawler crawler = new Crawler(driver);
 
@@ -94,19 +108,20 @@ public class Main {
         crawler.setInputInformation(inputInfo);
 
         //Set login credentials
-        crawler.setLoginInformation(loginCredential);
+        crawler.setLoginInformation(loginInfo);
         
         //Start initial crawl
-        crawler.startCrawl();
+        ArrayList<String> urls = crawler.startCrawl(depth);
 
         //Perform login & crawl the website again
+        ArrayList<String> urlsRequireLogin = null;
         if(crawler.performLogin()){
-            crawler.startCrawl();
+            urlsRequireLogin = crawler.startCrawl(depth);
         }
-        
-        //Output stuff
-        crawler.printAllVisitedLinks();
-        
+
+        //Start the actual browsing
+        BrowserBot browser = new BrowserBot(driver, urls, urlsRequireLogin, inputInfo);
+        browser.browse();
         driver.quit();
     }
 }
