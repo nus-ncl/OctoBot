@@ -1,6 +1,7 @@
 package com.webbrowsingbot.app;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -53,6 +54,9 @@ public class Crawler{
         //Remove duplicates
         LinkedHashSet<String> hashSet = new LinkedHashSet<String>(this.allVisitedUrls);
         ArrayList<String> visitedUrlsWithoutDuplicates = new ArrayList<String>(hashSet);
+
+        //Sort
+        Collections.sort(visitedUrlsWithoutDuplicates);
 
         //Actual stuff
         System.out.println("Max depth: " + this.maxDepth);
@@ -259,10 +263,6 @@ public class Crawler{
                 js.executeScript("arguments[0].click()", submitBtn);
         }
         inputValues.remove(inputinfo);
-
-        if(inputValues.size() == 0){
-            System.exit(0);
-        }
     }
 }
 
