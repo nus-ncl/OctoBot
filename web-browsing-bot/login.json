@@ -1,5 +1,14 @@
 {
-    "loginUrl": "http://192.168.40.129:8000/login",
-    "credentials": {"name": "admin", "password": "admin"},
-    "logoutUrl": "http://192.168.40.129:8000/logout"
+    "loginAction": 
+    {
+        "url": "http://192.168.40.129:8000/login",
+        "actions": [
+            {"name": "name", "value": "admin"},
+            {"name": "password", "value": "admin"},
+            {"css": "button[type='submit'", "action": "click"}
+        ]
+    },
+    "logoutAction":{
+        "url": "http://192.168.40.129:8000/logout"
+    }
 }

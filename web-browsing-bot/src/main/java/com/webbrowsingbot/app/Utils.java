@@ -10,88 +10,103 @@ import org.openqa.selenium.WebElement;
 
 public class Utils{
     /* This method will check whether it is a url with inputs, then fill in the input and click the submit action if there is one */
-    public static void fillInputs(WebDriver driver, String url, ArrayList<InputInfo> inputValues){
-        //Check whether the URL has any inputs to fill
-        InputInfo inputinfo = InputInfo.getInputInfo(url, inputValues);
-        if(inputinfo == null){
-            return;
-        }
-
-        //Some variable declration here
-        JavascriptExecutor js = (JavascriptExecutor)driver;
-
+    public static void doActions(WebDriver driver, PageAction pageAction){
         //DEBUG 
-        System.out.printf("\n\033[1;92mFilling in inputs...\033[0m %s\n", inputinfo.getUrl());
+        System.out.printf("\n\033[1;92mFilling in inputs...\033[0m %s\n", pageAction.getUrl());
 
         //Fill in the inputs
         int randint = (int)(Math.random()*100);
-        for(HashMap<String, Object> d: inputinfo.getData()){
+        for(HashMap<String, Object> d: pageAction.getActions()){
             //Obtain the selector from the hashmap
-            boolean usingName = d.get("name") != null;
-            String selector = ((usingName) ? String.format("[name='%s']", (String)d.get("name")) : String.format("#%s", (String)d.get("id")));
+            String selector = null;
+            if(d.get("id") != null){
+                selector = String.format("#%s", d.get("id"));
+            }else if(d.get("css") != null){
+                selector = (String)d.get("css");
+            }else if(d.get("name") != null){
+                selector = String.format("[name='%s']", d.get("name"));
+            }
+
             if(selector == null){
                 continue;
             }
 
-            // Check whether the value is of type String or ArrayList
-            ArrayList<String> value = null;
-            if(d.get("value").getClass() == String.class){
-                value = new ArrayList<String>();
-                value.add((String)d.get("value"));
-            }else{
-                value = (ArrayList<String>) d.get("value");
-            }
-
-            //Obtain the value string
-            String finalValue = value.get(randint%value.size());
-            
-            //Obtain the input element
+            //Obtain the elements
             ArrayList<WebElement> we = (ArrayList<WebElement>)driver.findElements(By.cssSelector(selector));
-            
             if(we.size() == 0){
                 continue;
             }
-            
-            for(WebElement e: we){
-                js.executeScript("arguments[0].value = arguments[1]", e, finalValue);
+
+            //Decide what to do with the element
+            if(d.get("action") != null){
+                String action = ((String)d.get("action"));
+
+                if(action.equalsIgnoreCase("click")){
+                    for(WebElement e: we){
+                        e.click();
+                    }
+                }
+            }
+            else if(d.get("value") != null){
+                ArrayList<String> value = null;
+                // Check whether the value is of type String or ArrayList
+                if(d.get("value").getClass() == String.class){
+                    value = new ArrayList<String>();
+                    value.add((String)d.get("value"));
+                }else{
+                    value = (ArrayList<String>) d.get("value");
+                }
+
+                //Obtain the value string
+                String finalValue = value.get(randint%value.size());
+                
+                for(WebElement e: we){
+                    e.sendKeys(finalValue);
+                }
             }
         }
-
-        //Submit the damn thing
-        String submit = inputinfo.getSubmit();
-        if(submit != null){
-            List<WebElement> submitBtns = driver.findElements(By.cssSelector(submit));
-            for(WebElement submitBtn: submitBtns)
-                js.executeScript("arguments[0].click()", submitBtn);
-        }
-        inputValues.remove(inputinfo);
     }
 
-    public static void performLogin(WebDriver driver, HashMap<String, String> loginCredentials){
+    public static void performLogin(WebDriver driver, String loginUrl, PageAction loginAction){
         //Print some message
-        System.out.println("\n\033[1;92mPerforming login... \033[0m");
+        System.out.println("\033[1;92mPerforming login... \033[0m");
 
-        //Fill in credentials
-        int temporarycountvariable = 0;
-        WebElement form = null;
-        JavascriptExecutor js = (JavascriptExecutor)driver;
-        for(String key: loginCredentials.keySet()){
-            List<WebElement> webElements = driver.findElements(By.cssSelector(String.format("[name='%s']", key)));
-            for(WebElement we: webElements){
-                js.executeScript("arguments[0].value = arguments[1]", we, loginCredentials.get(key));
-            }
-            if(temporarycountvariable <= 0){
-                form = (WebElement)js.executeScript("return arguments[0].closest('form');", webElements.get(0));
-                temporarycountvariable++;
-            }
+        if(loginUrl != null){
+            driver.get(loginUrl);
         }
 
-        //Find the login button somehow
-        WebElement submitBtn = driver.findElement(By.cssSelector("[type='submit']")); //Please change this
-        submitBtn.click();
+        Utils.doActions(driver, loginAction);
     }
 
     public static void performLogout(){
         
+    }
+
+    // Obtains all web links and stores them onto an arraylist
+    public static ArrayList<String> getLinks(WebDriver driver, String baseUrl, ArrayList<String> blacklistUrl){
+        //This portion finds easy links (means anchor tag with href)
+        List<WebElement> linkElements = driver.findElements(By.cssSelector("a[href]"));
+        
+        //Final output variable
+        ArrayList<String> linksInPage = new ArrayList<String>();
+
+        for(WebElement we: linkElements){
+            String url = we.getAttribute("href");
+
+            //Perform URL sanitisation
+            url = url.trim();
+            url = url.split("#")[0];
+            
+            //Check to make sure string is not empty or # before adding to the arraylist
+            boolean isEmpty = url.trim().equals("");
+            boolean isRepeated = linksInPage.contains(url);
+            boolean sameHostname = url.contains(baseUrl);
+            boolean inBlacklist = blacklistUrl.contains(url);
+            boolean toAddToArrayList = !isEmpty && !isRepeated && sameHostname && !inBlacklist;
+            if(toAddToArrayList){
+                linksInPage.add(url);
+            }
+        }
+        return linksInPage;
     }
 }

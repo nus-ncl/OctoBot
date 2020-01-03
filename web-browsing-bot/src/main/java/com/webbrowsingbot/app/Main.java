@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 //Argparse4j imports
 import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
@@ -21,6 +22,9 @@ public class Main {
     public static ArgumentParser createArgumentParser(){
         ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                                 .description("Bot that browses the web");
+        parser.addArgument("-c", "--crawl")
+              .action(Arguments.storeTrue())
+              .help("File that contains values to form input fields");
         parser.addArgument("-d", "--depth")
               .metavar("depth")
               .help("Max depth to crawl");
@@ -35,15 +39,6 @@ public class Main {
         return parser;
     }
 
-    public static HashMap<String, String> parseLoginCredentials(FileReader login_file){
-        //Declare gson object
-        Gson gson = new Gson();
-
-        //Set the type and get the information out of the json file
-        Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-        return gson.fromJson(login_file, type);
-    }
-
     public static void main(String[] args)throws Exception {
         //Parse arguments using argparse4j
         ArgumentParser parser = createArgumentParser();
@@ -52,6 +47,7 @@ public class Main {
             res = parser.parseArgs(args);
             System.out.println("\033[1;93m## Arguments ##\033[0m");
             System.out.printf("URL\t\t:\t%s\n", res.get("url"));
+            System.out.printf("Crawl\t\t:\t%s\n", res.get("crawl"));
             System.out.printf("Max depth\t:\t%s\n", res.get("depth"));
             System.out.printf("Login file\t:\t%s\n", res.get("login_file"));
             System.out.printf("Input file\t:\t%s\n", res.get("input_file"));
@@ -61,6 +57,11 @@ public class Main {
         }
 
         //Parse the arguments
+        boolean toCrawl = false;
+        if(res.get("crawl") != null){
+            toCrawl = res.get("crawl");
+        }
+
         int depth = -1;
         if(res.get("depth") != null){
             try{
@@ -72,10 +73,10 @@ public class Main {
         }
         
         String file_name = res.get("input_file");
-        ArrayList<InputInfo> inputInfo = null;
+        ArrayList<PageAction> inputInfo = null;
         try{
             if(file_name != null)
-                inputInfo = InputInfo.parse(new FileReader(file_name));
+                inputInfo = PageAction.parse(new FileReader(file_name));
         }catch(java.io.FileNotFoundException e){
             System.err.printf("Cannot open file reader: %s\n", e);
             System.exit(1);
@@ -95,33 +96,45 @@ public class Main {
 
         //BrowserSelection (We stick with firefox for now)          
         WebDriver driver = BrowserSelector.getFirefoxDriver();
-        
-        driver.get("http://192.168.40.129:8000/login");
 
-        //Initialize crawler
-        Crawler crawler = new Crawler(driver);
+        //Crawler section
+        ArrayList<String> urls = null, urlsRequireLogin = null;
+        if(toCrawl){
+            //Initialize crawler
+            Crawler crawler = new Crawler(driver);
+            //Set URL to crawl
+            crawler.setBaseUrl(url);
+            //Set login credentials
+            crawler.setLoginInformation(loginInfo);
+            
+            //Start initial crawl
+            urls = crawler.startCrawl(depth);
 
-        //Set URL to crawl
-        crawler.setBaseUrl(url);
+            //Perform login & crawl the website again
+            urlsRequireLogin = null;
+            if(crawler.performLogin()){
+                urlsRequireLogin = crawler.startCrawl(depth);
+            }
 
-        //Set input information
-        crawler.setInputInformation(inputInfo);
+            if(urls != null){
+                for(int i = 0; i < urls.size(); i++){
+                    System.out.printf("%d) %s\n", i+1, urls.get(i));
+                }
+            }
+            if(urlsRequireLogin != null){
+                for(int i = 0; i < urlsRequireLogin.size(); i++){
+                    System.out.printf("%d) %s\n", i+1, urlsRequireLogin.get(i));
+                }
+            }
+            driver.quit();
 
-        //Set login credentials
-        crawler.setLoginInformation(loginInfo);
-        
-        //Start initial crawl
-        ArrayList<String> urls = crawler.startCrawl(depth);
-
-        //Perform login & crawl the website again
-        ArrayList<String> urlsRequireLogin = null;
-        if(crawler.performLogin()){
-            urlsRequireLogin = crawler.startCrawl(depth);
+            driver = BrowserSelector.getFirefoxDriver();
         }
 
+        
+
         //Start the actual browsing
-        BrowserBot browser = new BrowserBot(driver, urls, urlsRequireLogin, inputInfo);
+        BrowserBot browser = new BrowserBot(driver, urls, urlsRequireLogin, loginInfo, inputInfo);
         browser.browse();
-        driver.quit();
     }
 }

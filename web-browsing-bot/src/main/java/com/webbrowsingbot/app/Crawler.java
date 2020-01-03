@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.lang.Math;
-import java.util.concurrent.TimeUnit;
 //Selenium imports
 import org.openqa.selenium.By;
 //import org.openqa.selenium.Keys;
@@ -21,10 +19,8 @@ public class Crawler{
     private WebDriver driver;
     private JavascriptExecutor js;
     private String baseUrl;
-    private String loginUrl;
     private int maxDepth;
-    private ArrayList<InputInfo> inputValues = null;
-    private HashMap<String, String> loginCredentials;
+    private LoginInformation loginInfo;
 
     public Crawler(WebDriver driver){
         this.driver = driver;
@@ -33,77 +29,19 @@ public class Crawler{
         this.js = (JavascriptExecutor)this.driver;
     }
 
-    public void setInputInformation(ArrayList<InputInfo> inputValues){
-        this.inputValues = inputValues;
-    }
-
     public void setLoginInformation(LoginInformation loginInfo){
-        this.loginUrl = loginInfo.getLoginUrl();
-        this.loginCredentials = loginInfo.getCredentials();
+        this.loginInfo = loginInfo;
     }
 
     public void setBaseUrl(String baseUrl){
         this.baseUrl = baseUrl;
     }
 
-    public void printAllVisitedLinks(){
-        //Remove duplicates
-        LinkedHashSet<String> hashSet = new LinkedHashSet<String>(this.allVisitedUrls);
-        ArrayList<String> visitedUrlsWithoutDuplicates = new ArrayList<String>(hashSet);
-
-        //Sort
-        Collections.sort(visitedUrlsWithoutDuplicates);
-
-        //Actual stuff
-        System.out.println("\n\033[1;36m## Visited Links ##\033[0m");
-        System.out.println("Max depth: " + ((this.maxDepth < 0)?"null":this.maxDepth));
-        for(int i = 0; i < visitedUrlsWithoutDuplicates.size(); i++){
-            System.out.println(i+1 + ") " + visitedUrlsWithoutDuplicates.get(i));
-        }
-    }
-
     public boolean performLogin(){
-        String login_url = this.loginUrl;
-        if(login_url == null || login_url.equals("")){
+        if(loginInfo == null){
             return false;
         }
-
-        //Gets into the login page
-        driver.get(login_url);
-        //Print some message
-        System.out.println("\n\033[1;92mPerforming login... \033[0m"+ login_url);
-
-        /* Do the actual login */
-        //Obtain inputs from the webpage
-        List<WebElement> elements = CrawlerUtils.findAllInputs(this.driver);
-                
-        //Loops through the elements and check for username / password
-        WebElement formElement = null;
-        for(WebElement e: elements){
-            try{
-                String attrName = e.getAttribute("name").toLowerCase();
-
-                if(loginCredentials.containsKey(attrName)){
-                    e.sendKeys(loginCredentials.get(attrName));
-
-                    formElement = (WebElement)js.executeScript("return arguments[0].closest('form');", e);
-                }
-            }catch(org.openqa.selenium.ElementNotInteractableException exception){
-                System.out.println("ElementNotInteractive: " + exception);
-            }
-        }
-
-        //Submit the form
-        formElement.submit();
-
-        //Sleep for a while 
-        try{
-            TimeUnit.MILLISECONDS.sleep(750);
-        }catch(Exception e){
-            System.out.println("Something wrong with sleep (somehow): " + e);
-        }
-
-        //Test for successful login (To be done)
+        Utils.performLogin(driver, loginInfo.getLoginAction().getUrl(), loginInfo.getLoginAction());
         return true;
     }
 
@@ -131,17 +69,10 @@ public class Crawler{
         }
 
         //Load the URL
-        //Sleep for a while 
-        try{
-            TimeUnit.MILLISECONDS.sleep(750);
-        }catch(Exception e){
-            System.out.println("Something wrong with sleep (somehow): " + e);
-        }
-
-        //Load the URL
         if(toLoadUrl){
             try{
-                this.driver.get(url);
+                if(loginInfo == null || !url.contains(loginInfo.getLogoutAction().getUrl()))
+                    this.driver.get(url);
             }catch(Exception e){
                 System.out.println(e);
             }
@@ -152,7 +83,7 @@ public class Crawler{
         ArrayList<String> webLinks = null;
         //If next depth is not going to be get accessed, then dont bother getting links for the current URL
         if(curDepth+1 <= this.maxDepth || this.maxDepth == -1){
-            webLinks = CrawlerUtils.getLinks(this.driver, this.baseUrl);
+            webLinks = Utils.getLinks(this.driver, this.baseUrl, new ArrayList<String>());
         }
 
         //Debug information
@@ -184,32 +115,6 @@ public class Crawler{
 }
 
 class CrawlerUtils{
-    static String[] blacklist_url = {"http://192.168.40.173:8000/static/trainee/ovpn/linuxclient.ovpn", "http://192.168.40.173:8000/static/trainee/ovpn/winclient.ovpn"};
-
-    // Obtains all web links and stores them onto an arraylist
-    public static ArrayList<String> getLinks(WebDriver driver, String baseUrl){
-        //This portion finds easy links (means anchor tag with href)
-        List<WebElement> elements = driver.findElements(By.cssSelector("a[href]"));
-        
-        //Final output variable
-        ArrayList<String> webLinks = new ArrayList<String>();
-
-        for(WebElement we: elements){
-            String url = we.getAttribute("href");
-
-            //Perform URL sanitisation
-            url = url.trim();
-            url = url.split("#")[0];
-
-            //Check to make sure string is not empty or # before adding to the arraylist
-            boolean toAddToArrayList = !url.trim().equals("") && !webLinks.contains(url) && url.contains(baseUrl) && !url.contains("logout") && !url.matches(".*(.ovpn|export).*");
-            if(toAddToArrayList){
-                webLinks.add(url);
-            }
-        }
-        return webLinks;
-    }
-
     public static List<WebElement> getAllButtons(WebDriver driver){
         return driver.findElements(By.cssSelector("button"));
     }
