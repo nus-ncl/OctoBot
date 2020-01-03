@@ -1,13 +1,9 @@
 package com.webbrowsingbot.app;
 
 //Gson
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 //Java imports
 import java.io.FileReader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 //Argparse4j imports
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;

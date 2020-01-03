@@ -1,23 +1,16 @@
 package com.webbrowsingbot.app;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 //Selenium imports
 import org.openqa.selenium.By;
 //import org.openqa.selenium.Keys;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-
 public class Crawler{
-    private ArrayList<String> allVisitedUrls;
     private ArrayList<String> visitedUrls;
     private WebDriver driver;
-    private JavascriptExecutor js;
     private String baseUrl;
     private int maxDepth;
     private LoginInformation loginInfo;
@@ -25,8 +18,6 @@ public class Crawler{
     public Crawler(WebDriver driver){
         this.driver = driver;
         this.visitedUrls = new ArrayList<String>();
-        this.allVisitedUrls = new ArrayList<String>();
-        this.js = (JavascriptExecutor)this.driver;
     }
 
     public void setLoginInformation(LoginInformation loginInfo){
