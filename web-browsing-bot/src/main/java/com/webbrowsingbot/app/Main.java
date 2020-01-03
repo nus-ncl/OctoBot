@@ -42,11 +42,11 @@ public class Main {
         try {
             res = parser.parseArgs(args);
             System.out.println("\033[1;93m## Arguments ##\033[0m");
-            System.out.printf("URL\t\t:\t%s\n", res.get("url"));
-            System.out.printf("Crawl\t\t:\t%s\n", res.get("crawl"));
-            System.out.printf("Max depth\t:\t%s\n", res.get("depth"));
-            System.out.printf("Login file\t:\t%s\n", res.get("login_file"));
-            System.out.printf("Input file\t:\t%s\n", res.get("input_file"));
+            System.out.printf("URL\t\t:\t%s\n", (String)res.get("url"));
+            System.out.printf("Crawl\t\t:\t%s\n", Boolean.toString(res.get("crawl")));
+            System.out.printf("Max depth\t:\t%s\n", (String)res.get("depth"));
+            System.out.printf("Login file\t:\t%s\n", (String)res.get("login_file"));
+            System.out.printf("Input file\t:\t%s\n", (String)res.get("input_file"));
         } catch (ArgumentParserException e) {
             parser.handleError(e);
             System.exit(1);

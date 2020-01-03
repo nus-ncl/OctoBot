@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 
 public class Utils{
     /* This method will check whether it is a url with inputs, then fill in the input and click the submit action if there is one */
+    @SuppressWarnings("unchecked")
     public static void doActions(WebDriver driver, PageAction pageAction){
         //DEBUG 
         System.out.printf("\n\033[1;92mFilling in inputs...\033[0m %s\n", pageAction.getUrl());
