@@ -22,9 +22,9 @@ public class BrowserSelector{
         System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
 
         WebDriver driver = new FirefoxDriver();
-        driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(3, TimeUnit.SECONDS);
         
-        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS); //https://www.machmetrics.com/speed-blog/average-page-load-times-websites-2018/
+        //driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS); //https://www.machmetrics.com/speed-blog/average-page-load-times-websites-2018/
 	
         return driver;
     }

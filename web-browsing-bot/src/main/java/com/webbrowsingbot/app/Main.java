@@ -53,11 +53,13 @@ public class Main {
         }
 
         //Parse the arguments
+        //To crawl parameter
         boolean toCrawl = false;
         if(res.get("crawl") != null){
             toCrawl = res.get("crawl");
         }
 
+        //Depth
         int depth = -1;
         if(res.get("depth") != null){
             try{
@@ -67,28 +69,32 @@ public class Main {
                 System.exit(0);
             }
         }
-        
+
+        //Actions
         String file_name = res.get("input_file");
-        ArrayList<PageAction> inputInfo = null;
+        ArrayList<PageAction> pageActions = null;
         try{
             if(file_name != null)
-                inputInfo = PageAction.parse(new FileReader(file_name));
+                pageActions = PageAction.parse(new FileReader(file_name));
         }catch(java.io.FileNotFoundException e){
             System.err.printf("Cannot open file reader: %s\n", e);
             System.exit(1);
         }
 
+        //Login
         String loginfile_name = res.get("login_file");
-        LoginInformation loginInfo = null;
+        LoginLogoutAction loginLogoutAction = null;
         try{
             if(loginfile_name!=null)
-                loginInfo = LoginInformation.parse(new FileReader(loginfile_name));   
+                loginLogoutAction = LoginLogoutAction.parse(new FileReader(loginfile_name));   
         }catch(java.io.FileNotFoundException e){
             System.err.printf("Cannot open file reader: %s\n", e);
             System.exit(1);
         }
-        //Parameters
+
+        //URL
         String url = res.get("url");
+
 
         //BrowserSelection (We stick with firefox for now)          
         WebDriver driver = BrowserSelector.getFirefoxDriver();
@@ -101,7 +107,7 @@ public class Main {
             //Set URL to crawl
             crawler.setBaseUrl(url);
             //Set login credentials
-            crawler.setLoginInformation(loginInfo);
+            crawler.setLoginLogoutAction(loginLogoutAction);
             
             //Start initial crawl
             urls = crawler.startCrawl(depth);
@@ -112,25 +118,15 @@ public class Main {
                 urlsRequireLogin = crawler.startCrawl(depth);
             }
 
-            if(urls != null){
-                for(int i = 0; i < urls.size(); i++){
-                    System.out.printf("%d) %s\n", i+1, urls.get(i));
-                }
-            }
-            if(urlsRequireLogin != null){
-                for(int i = 0; i < urlsRequireLogin.size(); i++){
-                    System.out.printf("%d) %s\n", i+1, urlsRequireLogin.get(i));
-                }
-            }
+            Utils.printVisitedLinks(urls.toArray(new String[urls.size()]), urlsRequireLogin.toArray(new String[urlsRequireLogin.size()]));
+
             driver.quit();
 
             driver = BrowserSelector.getFirefoxDriver();
         }
 
-        
-
         //Start the actual browsing
-        BrowserBot browser = new BrowserBot(driver, urls, urlsRequireLogin, loginInfo, inputInfo);
-        browser.browse();
+        BrowserBot browser = new BrowserBot(driver, urls, urlsRequireLogin, loginLogoutAction, pageActions);
+        browser.browse(url);
     }
 }

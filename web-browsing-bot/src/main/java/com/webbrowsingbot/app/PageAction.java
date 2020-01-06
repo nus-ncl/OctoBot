@@ -1,11 +1,19 @@
 package com.webbrowsingbot.app;
 
-import java.io.FileReader;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.FileReader;
+import java.lang.reflect.Type;
+import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
 
 public class PageAction{
     private String url;
@@ -47,5 +55,72 @@ public class PageAction{
             }
         }
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void doActions(WebDriver driver){
+        //DEBUG 
+        System.out.printf("\033[1;92mFilling in inputs...\033[0m %s\n", this.getUrl());
+
+        //Fill in the inputs
+        int randint = (int)(Math.random()*100);
+        if(this.getActions() == null){
+            return;
+        }
+
+        for(HashMap<String, Object> d: this.getActions()){
+            //Obtain the selector from the hashmap
+            String selector = null;
+            if(d.get("id") != null){
+                selector = String.format("#%s", d.get("id"));
+            }else if(d.get("css") != null){
+                selector = (String)d.get("css");
+            }else if(d.get("name") != null){
+                selector = String.format("[name='%s']", d.get("name"));
+            }
+
+            if(selector == null){
+                continue;
+            }
+
+            //Obtain the elements
+            try{
+                new WebDriverWait(driver, 3).ignoring(StaleElementReferenceException.class).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
+            }catch(Exception e){
+                
+            }
+            ArrayList<WebElement> we = (ArrayList<WebElement>)driver.findElements(By.cssSelector(selector));
+            if(we.size() == 0){
+                continue;
+            }
+
+            //Decide what to do with the element
+            if(d.get("action") != null){
+                String action = ((String)d.get("action"));
+
+                if(action.equalsIgnoreCase("click")){
+                    for(WebElement e: we){
+                        e.click();
+                    }
+                }
+            }
+            else if(d.get("value") != null){
+                ArrayList<String> value = null;
+                // Check whether the value is of type String or ArrayList
+                if(d.get("value").getClass() == String.class){
+                    value = new ArrayList<String>();
+                    value.add((String)d.get("value"));
+                }else{
+                    value = (ArrayList<String>) d.get("value");
+                }
+
+                //Obtain the value string
+                String finalValue = value.get(randint%value.size());
+                
+                for(WebElement e: we){
+                    e.sendKeys(finalValue);
+                }
+            }
+        }
     }
 }

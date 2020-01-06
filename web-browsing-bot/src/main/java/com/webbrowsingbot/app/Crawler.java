@@ -13,15 +13,15 @@ public class Crawler{
     private WebDriver driver;
     private String baseUrl;
     private int maxDepth;
-    private LoginInformation loginInfo;
+    private LoginLogoutAction loginLogoutAction;
 
     public Crawler(WebDriver driver){
         this.driver = driver;
         this.visitedUrls = new ArrayList<String>();
     }
 
-    public void setLoginInformation(LoginInformation loginInfo){
-        this.loginInfo = loginInfo;
+    public void setLoginLogoutAction(LoginLogoutAction loginLogoutAction){
+        this.loginLogoutAction = loginLogoutAction;
     }
 
     public void setBaseUrl(String baseUrl){
@@ -29,10 +29,10 @@ public class Crawler{
     }
 
     public boolean performLogin(){
-        if(loginInfo == null){
+        if(loginLogoutAction == null){
             return false;
         }
-        Utils.performLogin(driver, loginInfo.getLoginAction().getUrl(), loginInfo.getLoginAction());
+        loginLogoutAction.performLogin(driver, true);
         return true;
     }
 
@@ -62,10 +62,12 @@ public class Crawler{
         //Load the URL
         if(toLoadUrl){
             try{
-                if(loginInfo == null || !url.contains(loginInfo.getLogoutAction().getUrl()))
+                if(loginLogoutAction == null || !url.contains(loginLogoutAction.getLogoutAction().getUrl()))
                     this.driver.get(url);
-            }catch(Exception e){
-                System.out.println(e);
+            }catch(org.openqa.selenium.TimeoutException e){
+                System.err.printf("Webpage timeout %s: %s\n", url, e);
+                //this.visitedUrls.add(url); //Saves the URL into the arraylist
+                return;
             }
         }
         this.visitedUrls.add(url); //Saves the URL into the arraylist
@@ -88,15 +90,6 @@ public class Crawler{
         for(int i = 0; i < webLinks.size(); i++){
             System.out.println( i+1 + ") " + webLinks.get(i));
         }
-
-        //Click all the buttons
-        // List<WebElement> buttons = CrawlerUtils.getAllButtons(this.driver);
-        // System.out.println("Buttons");
-        // for(WebElement b: buttons){
-        //     if(!b.getText().equals("")){
-        //         System.out.println(b.getText());
-        //     }
-        // }
 
         //Access all the links
         for(String link: webLinks){

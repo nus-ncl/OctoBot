@@ -3,8 +3,8 @@
     {
         "url": "http://192.168.40.129:8000/login",
         "actions": [
-            {"name": "name", "value": "admin"},
-            {"name": "password", "value": "admin"},
+            {"name": "name", "value": ["admin"]},
+            {"name": "password", "value": ["admin"]},
             {"css": "button[type='submit'", "action": "click"}
         ]
     },
