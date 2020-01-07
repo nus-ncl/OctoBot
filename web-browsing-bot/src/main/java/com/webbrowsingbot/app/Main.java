@@ -106,13 +106,13 @@ public class Main {
         //Sanitize URL
         url = Utils.cleanseUrl(url);
         
-        loginLogoutAction.performLogin(driver, true);
-        for(PageAction p: pageActions){
-            driver.get(p.getUrl());
-            p.doActions(driver);
-        }
-        driver.quit();
-        System.exit(0);
+        // loginLogoutAction.performLogin(driver, true);
+        // for(PageAction p: pageActions){
+        //     driver.get(p.getUrl());
+        //     p.doActions(driver);
+        // }
+        // driver.quit();
+        // System.exit(0);
         
         //Crawler section
         ArrayList<String> urls = null, urlsRequireLogin = null;

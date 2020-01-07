@@ -1,0 +1,14 @@
+{
+    "loginAction": 
+    {
+        "url": "http://localhost:8000/login",
+        "actions": [
+            {"name": "name", "value": "admin"},
+            {"name": "password", "value": "admin"},
+            {"css": "button[type='submit']", "action": "click"}
+        ]
+    },
+    "logoutAction":{
+        "url": "http://localhost:8000/logout"
+    }
+}

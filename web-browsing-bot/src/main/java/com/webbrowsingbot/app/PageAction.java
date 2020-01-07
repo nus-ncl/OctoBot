@@ -58,10 +58,9 @@ public class PageAction{
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     public void doActions(WebDriver driver){
         //DEBUG 
-        System.out.printf("\033[1;92mFilling in inputs...\033[0m %s\n", this.getUrl());
+        System.out.printf("\033[1;92mDoing actions...\033[0m %s\n", driver.getCurrentUrl());
 
         //Fill in the inputs
         if(this.actions == null){
@@ -86,14 +85,15 @@ public class PageAction{
 
             //Obtain the elements
             try{
-                new WebDriverWait(driver, 3).ignoring(StaleElementReferenceException.class).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(selector)));
+                new WebDriverWait(driver, 3).ignoring(StaleElementReferenceException.class).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
             }catch(Exception e){
-                System.err.println(e);
+                //Dont show the error
             }
             //Obtain the elements
             ArrayList<WebElement> we = (ArrayList<WebElement>)driver.findElements(By.cssSelector(selector));
             if(we.size() == 0){
                 //If the element does not exist, just try another element
+                System.err.printf("Failed to find element: %s\n", selector);
                 continue;
             }
 

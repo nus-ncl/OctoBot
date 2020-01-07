@@ -41,9 +41,6 @@ public class LoginLogoutAction {
             }
         }
 
-        //Print some message
-        System.out.println("\033[1;92mPerforming login... \033[0m");
-
         //Do the login steps
         loginAction.doActions(driver);
     }
@@ -54,9 +51,6 @@ public class LoginLogoutAction {
         if(loadUrl){
             driver.get(logoutUrl);
         }
-
-        //Print some message
-        System.out.printf("\033[1;92mPerforming logout...\033[0m %s\n", logoutUrl);
 
         //Do the logout steps
         logoutAction.doActions(driver);
