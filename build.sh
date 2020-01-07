@@ -6,4 +6,4 @@ cd web-browsing-bot &&
 mvn clean install &&
 
 cd .. &&
-docker build . -t testing
+docker build . -t browsing-bot
