@@ -43,28 +43,28 @@ Below is a sample of an action file
     }
 ]
 ```
-#### Selectors
+Every action has two components: a selector and an action
+```json
+{"selector": "value", "action": "value"}
+```
+#### Selector
 There are 3 types of selectors in this file: id, name and css
-##### id
-This will select the element based on the id attribute.
 
-##### name
-The element will be selected based on the name attribute
+**id** - Select element based on the id attribute
 
-##### css
-The element will be selected based on the css selector provided
+**name** - Select element based on the name attribute
 
-#### Actions
+**css** - Select element based on [css selector]("https://www.w3schools.com/cssref/css_selectors.asp" "CSS Selector Reference")
+
+
+#### Action
 There are 3 types of actions: value, action, key
-##### Value
-The element selected will be filled with the provided value using [sendKeys()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...- "sendKeys() documentation") method provided by selenium. The value of this attribute can be a string or an array of strings.
 
-##### Action
-The provided action will be done on the selected element.
-Note: Currently only "click" is supported. The element will be clicked using the [click()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#click-- "click() documentation" ) method provided by selenium
+**value** - The provided value will fill the selected element using the [sendKeys()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...- "sendKeys() documentation") method. The value of this attribute can be a string or an array of strings.
 
-##### Key
-Space-separated keys that will be passed into [valueOf()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/Keys.html#valueOf-java.lang.String-) method.
+**action** - The provided action will be done on the selected element. Currently only "[click](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#click-- "click() documentation")" is supported. 
+
+**key** - Space-separated name of the enum constant that will be passed into [valueOf()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/Keys.html#valueOf-java.lang.String-) method to be executed on the selected element.
 
 ### Login file
 Below is an example of the login file
@@ -76,7 +76,7 @@ Below is an example of the login file
         "actions": [
             {"name": "name", "value": ["admin"]},
             {"name": "password", "value": ["admin"]},
-            {"css": "button[type='submit'", "action": "click"}
+            {"css": "button[type='submit']", "action": "click"}
         ]
     },
     "logoutAction":{
@@ -84,4 +84,4 @@ Below is an example of the login file
     }
 }
 ```
-The actions property is exactly the same as the one in the action file. 
+The actions property is exactly the same as the one described in the action file. 
