@@ -37,7 +37,7 @@ Below is a sample of an action file
         "url": "http://localhost:8000/admin/challenges/new",
         "actions": [
             {"id": "ctf_name", "action": "click"},
-            {"name": "ctf_description", "value": ["Setting up CTF automatically", "Text #2]},
+            {"name": "ctf_description", "value": ["Setting up CTF automatically", "Text #2"]},
             {"css": "body > #id", "key": "ENTER BACK_SPACE"}
         ]
     }
