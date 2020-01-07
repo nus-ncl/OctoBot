@@ -43,27 +43,27 @@ Below is a sample of an action file
     }
 ]
 ```
+#### Selectors
 There are 3 types of selectors in this file: id, name and css
-#### id
+##### id
 This will select the element based on the id attribute.
 
-#### name
+##### name
 The element will be selected based on the name attribute
 
-#### css
+##### css
 The element will be selected based on the css selector provided
 
+#### Actions
 There are 3 types of actions: value, action, key
-#### Value
-The element selected will be filled with the provided value using [sendKeys()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...- "sendKeys() documentation") method provided by selenium
+##### Value
+The element selected will be filled with the provided value using [sendKeys()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...- "sendKeys() documentation") method provided by selenium. The value of this attribute can be a string or an array of strings.
 
-The value of this attribute can be a string or an array of strings.
-
-#### Action
+##### Action
 The provided action will be done on the selected element.
 Note: Currently only "click" is supported. The element will be clicked using the [click()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#click-- "click() documentation" ) method provided by selenium
 
-#### Key
+##### Key
 Space-separated keys that will be passed into [valueOf()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/Keys.html#valueOf-java.lang.String-) method.
 
 ### Login file
