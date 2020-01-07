@@ -13,8 +13,21 @@ Build the docker image
 ## Usage
 Run the docker image
 ```console
-sudo docker run -it web-browsing-bot <url>
+sudo docker run -it browsing-bot <url>
 ```
+
+## Sample
+Enter the sample folder and run docker-compose to run the CTFd
+```console
+cd sample/CTFd
+docker-compose up
+```
+
+Run the web-browsing-bot. (Please enter the json files and change "localhost" to the relevant IP address
+```console
+sudo docker run -it -v $(pwd):/utils browsing-bot --login /utils/ctfd_login.json --action /utils/ctfd_action.json <ip_address>:8000
+```
+
 
 ## Configuration
 There are 2 files that the program can accept, namely the login file and action file.
