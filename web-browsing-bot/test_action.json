@@ -25,10 +25,10 @@
     {
         "url": "http://192.168.40.129:8000/admin/pages/new",
         "actions": [
-            {"id": "route", "value": ["title1", "title2"]},
-            {"id": "route", "value": ["route1", "route2"]},
-            {"name": "#admin-pages-editor", "value": ["content #1", "content #2"]},
-            {"name": "#save-page", "action": "click"}
+            {"name": "title", "value": ["title1", "title2"]},
+            {"name": "route", "value": ["route1", "route2"]},
+            {"css": "#content-write > div.form-group > div > div:nth-child(1) > textarea", "value": ["content #1", "content #2"]},
+            {"id": "save-page", "action": "click"}
         ]
     }
 ]

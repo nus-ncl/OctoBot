@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 //This bot will randomly browse webpages
 public class BrowserBot{
     private WebDriver driver;
+    private String domain;
     private boolean isLoggedIn;
     private LoginLogoutAction loginLogoutAction;
     private ArrayList<PageAction> pageActions;
@@ -22,12 +23,13 @@ public class BrowserBot{
 
     //Constructor #1
     public BrowserBot(WebDriver driver){
-        this(driver, null, null, null, null);
+        this(driver, null, null, null, null, null);
     }
 
     //Constructor #2
-    public BrowserBot(WebDriver driver, ArrayList<String> urls, ArrayList<String> urlsRequireLogin, LoginLogoutAction loginLogoutAction, ArrayList<PageAction> pageActions){
+    public BrowserBot(WebDriver driver, String domain, ArrayList<String> urls, ArrayList<String> urlsRequireLogin, LoginLogoutAction loginLogoutAction, ArrayList<PageAction> pageActions){
         this.driver = driver;
+        this.domain = domain;
         this.pageActions = pageActions;
         this.loginLogoutAction = loginLogoutAction;
         this.minTime = 2000;
@@ -70,9 +72,9 @@ public class BrowserBot{
         }
 
         if(driver.getCurrentUrl().equals(url)){
-            //System.out.printf("GET: %s\n", url);
+            System.out.printf("GET: %s\n", url);
         }else{
-            //System.out.printf("GET: %s -> %s\n", url, driver.getCurrentUrl());
+            System.out.printf("GET: %s -> %s\n", url, driver.getCurrentUrl());
             url = driver.getCurrentUrl();
         }
 
@@ -120,7 +122,6 @@ public class BrowserBot{
     }
 
     public void browseNoCrawl(String url){
-        String baseUrl = url;
         String prevPage = url;
         for(;;){
             //Validate the URL first
@@ -141,7 +142,7 @@ public class BrowserBot{
             }
 
             //Find links in page
-            ArrayList<String> linksInPage = Utils.getLinks(driver, baseUrl, this.blacklistUrls);
+            ArrayList<String> linksInPage = Utils.getLinks(this.driver, this.domain, this.blacklistUrls);
 
             // If there are no links on that page.
             if(linksInPage == null || linksInPage.size() <= 0){

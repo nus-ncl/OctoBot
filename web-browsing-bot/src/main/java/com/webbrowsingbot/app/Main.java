@@ -1,6 +1,6 @@
 package com.webbrowsingbot.app;
 
-//Gson
+//Idk do I need to im
 //Java imports
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -11,6 +11,7 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 //Selenium imports
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 
 
@@ -36,6 +37,7 @@ public class Main {
     }
 
     public static void main(String[] args)throws Exception {
+        /* Start of argparse */
         //Parse arguments using argparse4j
         ArgumentParser parser = createArgumentParser();
         Namespace res = null;
@@ -94,31 +96,45 @@ public class Main {
 
         //URL
         String url = res.get("url");
-
+        /* End of argparse */
 
         //BrowserSelection (We stick with firefox for now)          
         WebDriver driver = BrowserSelector.getFirefoxDriver();
-
+        
+        //Get domain
+        String domain = Utils.getDomain(url);
+        System.out.println(Keys.ENTER);
+        
+        //Sanitize URL
+        url = Utils.cleanseUrl(url);
+        
+        // loginLogoutAction.performLogin(driver, true);
+        // for(PageAction p: pageActions){
+        //     driver.get(p.getUrl());
+        //     p.doActions(driver);
+        // }
+        // driver.quit();
+        // System.exit(0);
         //Crawler section
         ArrayList<String> urls = null, urlsRequireLogin = null;
         if(toCrawl){
             //Initialize crawler
             Crawler crawler = new Crawler(driver);
             //Set URL to crawl
-            crawler.setBaseUrl(url);
+            crawler.setDomain(domain);
             //Set login credentials
             crawler.setLoginLogoutAction(loginLogoutAction);
             
             //Start initial crawl
-            urls = crawler.startCrawl(depth);
+            urls = crawler.startCrawl(url, depth);
 
             //Perform login & crawl the website again
             urlsRequireLogin = null;
             if(crawler.performLogin()){
-                urlsRequireLogin = crawler.startCrawl(depth);
+                urlsRequireLogin = crawler.startCrawl(url, depth);
             }
 
-            Utils.printVisitedLinks(urls.toArray(new String[urls.size()]), urlsRequireLogin.toArray(new String[urlsRequireLogin.size()]));
+            //Utils.printVisitedLinks(urls.toArray(new String[urls.size()]), urlsRequireLogin.toArray(new String[urlsRequireLogin.size()]));
 
             driver.quit();
 
@@ -126,7 +142,7 @@ public class Main {
         }
 
         //Start the actual browsing
-        BrowserBot browser = new BrowserBot(driver, urls, urlsRequireLogin, loginLogoutAction, pageActions);
+        BrowserBot browser = new BrowserBot(driver, domain, urls, urlsRequireLogin, loginLogoutAction, pageActions);
         browser.browse(url);
     }
 }

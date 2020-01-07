@@ -11,7 +11,7 @@ import org.openqa.selenium.WebElement;
 public class Crawler{
     private ArrayList<String> visitedUrls;
     private WebDriver driver;
-    private String baseUrl;
+    private String domain;
     private int maxDepth;
     private LoginLogoutAction loginLogoutAction;
 
@@ -24,8 +24,8 @@ public class Crawler{
         this.loginLogoutAction = loginLogoutAction;
     }
 
-    public void setBaseUrl(String baseUrl){
-        this.baseUrl = baseUrl;
+    public void setDomain(String domain){
+        this.domain = domain;
     }
 
     public boolean performLogin(){
@@ -36,15 +36,15 @@ public class Crawler{
         return true;
     }
 
-    public void startCrawl(){
-        startCrawl(-1);
+    public void startCrawl(String url){
+        startCrawl(url, -1);
     }
     
-    public ArrayList<String> startCrawl(int maxDepth){
+    public ArrayList<String> startCrawl(String url, int maxDepth){
         this.maxDepth = maxDepth;
 
         //Actual crawling function
-        this.visit(this.baseUrl, 0, true);
+        this.visit(url, 0, true);
 
         /* End of crawl stuff */
         //Save the visited URLs
@@ -76,7 +76,7 @@ public class Crawler{
         ArrayList<String> webLinks = null;
         //If next depth is not going to be get accessed, then dont bother getting links for the current URL
         if(curDepth+1 <= this.maxDepth || this.maxDepth == -1){
-            webLinks = Utils.getLinks(this.driver, this.baseUrl, new ArrayList<String>());
+            webLinks = Utils.getLinks(this.driver, this.domain, new ArrayList<String>());
         }
 
         //Debug information
