@@ -23,6 +23,28 @@ public class Utils{
         return url;
     }
     
+    public static ArrayList<String> convertToStringArrayList(String input){
+        ArrayList<String> output = new ArrayList<String>();
+        output.add(input);
+        return output;
+    }
+    public static ArrayList<String> convertToStringArrayList(ArrayList<String> input){
+        return input;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static String chooseItem(Object obj, int randint){
+        ArrayList<String> output = null;
+        if(obj.getClass() == String.class){
+            output = new ArrayList<String>();
+            output.add((String)obj);
+        }else{
+            output = (ArrayList<String>)obj;
+        }
+        
+        return output.get(randint%output.size());
+    }
+
     public static void printVisitedLinks(String[] ... allUrls){
         for(String[] urls: allUrls){
             if(urls != null){

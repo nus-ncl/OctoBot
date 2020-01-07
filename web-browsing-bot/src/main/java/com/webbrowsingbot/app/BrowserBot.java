@@ -57,6 +57,9 @@ public class BrowserBot{
         try{
             this.driver.get(url);
         }catch(org.openqa.selenium.TimeoutException e){
+            System.err.printf("Timeout loading %s: %s\n", url, e);
+            return false;
+        }catch(org.openqa.selenium.WebDriverException e){
             System.err.printf("Error getting webpage %s: %s\n", url, e);
             return false;
         }

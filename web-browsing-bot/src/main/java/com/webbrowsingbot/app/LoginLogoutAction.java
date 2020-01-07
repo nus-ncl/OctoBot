@@ -34,7 +34,11 @@ public class LoginLogoutAction {
         // Figure out whether to load the webpage
         String loginUrl = this.loginAction.getUrl();
         if(loadUrl){
-            driver.get(loginUrl);
+            try{
+                driver.get(loginUrl);
+            }catch(Exception e){
+                return;
+            }
         }
 
         //Print some message

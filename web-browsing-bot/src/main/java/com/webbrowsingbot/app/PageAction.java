@@ -4,10 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.FileReader;
 import java.lang.reflect.Type;
-import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -63,11 +64,11 @@ public class PageAction{
         System.out.printf("\033[1;92mFilling in inputs...\033[0m %s\n", this.getUrl());
 
         //Fill in the inputs
-        int randint = (int)(Math.random()*100);
-        if(this.getActions() == null){
+        if(this.actions == null){
             return;
         }
 
+        int randint = (int)(Math.random()*100);
         for(HashMap<String, Object> d: this.getActions()){
             //Obtain the selector from the hashmap
             String selector = null;
@@ -85,41 +86,47 @@ public class PageAction{
 
             //Obtain the elements
             try{
-                new WebDriverWait(driver, 3).ignoring(StaleElementReferenceException.class).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
+                new WebDriverWait(driver, 3).ignoring(StaleElementReferenceException.class).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(selector)));
             }catch(Exception e){
-                
+                System.err.println(e);
             }
+            //Obtain the elements
             ArrayList<WebElement> we = (ArrayList<WebElement>)driver.findElements(By.cssSelector(selector));
             if(we.size() == 0){
+                //If the element does not exist, just try another element
                 continue;
             }
 
             //Decide what to do with the element
-            if(d.get("action") != null){
-                String action = ((String)d.get("action"));
+            try{
+                if(d.get("action") != null){
+                    String action = Utils.chooseItem(d.get("action"), randint);
 
-                if(action.equalsIgnoreCase("click")){
+                    if(action.equalsIgnoreCase("click")){
+                        for(WebElement e: we){
+                            e.click();
+                        }
+                    }
+                }else if(d.get("key") != null){
+                    String key = Utils.chooseItem(d.get("key"), randint);
+                    String[] keyArr = key.split(" ");
+
                     for(WebElement e: we){
-                        e.click();
+                        for(String k: keyArr){
+                            e.sendKeys(Keys.valueOf(k));
+                        }
                     }
                 }
-            }
-            else if(d.get("value") != null){
-                ArrayList<String> value = null;
-                // Check whether the value is of type String or ArrayList
-                if(d.get("value").getClass() == String.class){
-                    value = new ArrayList<String>();
-                    value.add((String)d.get("value"));
-                }else{
-                    value = (ArrayList<String>) d.get("value");
+                else if(d.get("value") != null){
+                    //Obtain the value string
+                    String finalValue = Utils.chooseItem(d.get("value"), randint);
+                    
+                    for(WebElement e: we){
+                        e.sendKeys(finalValue);
+                    }
                 }
-
-                //Obtain the value string
-                String finalValue = value.get(randint%value.size());
-                
-                for(WebElement e: we){
-                    e.sendKeys(finalValue);
-                }
+            }catch(Exception e){
+                System.err.printf("Error doing action: %s\n", e);
             }
         }
     }

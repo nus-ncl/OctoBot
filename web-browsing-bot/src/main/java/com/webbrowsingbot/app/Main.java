@@ -11,7 +11,6 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 //Selenium imports
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 
 
@@ -25,8 +24,8 @@ public class Main {
         parser.addArgument("-d", "--depth")
               .metavar("depth")
               .help("Max depth to crawl");
-        parser.addArgument("-i", "--input-file")
-              .metavar("input_file")
+        parser.addArgument("-a", "--action-file")
+              .metavar("action_file")
               .help("File that contains values to form input fields");
         parser.addArgument("-l", "--login-file")
               .metavar("login_file")
@@ -48,7 +47,7 @@ public class Main {
             System.out.printf("Crawl\t\t:\t%s\n", Boolean.toString(res.get("crawl")));
             System.out.printf("Max depth\t:\t%s\n", (String)res.get("depth"));
             System.out.printf("Login file\t:\t%s\n", (String)res.get("login_file"));
-            System.out.printf("Input file\t:\t%s\n", (String)res.get("input_file"));
+            System.out.printf("Action file\t:\t%s\n", (String)res.get("action_file"));
         } catch (ArgumentParserException e) {
             parser.handleError(e);
             System.exit(1);
@@ -73,7 +72,7 @@ public class Main {
         }
 
         //Actions
-        String file_name = res.get("input_file");
+        String file_name = res.get("action_file");
         ArrayList<PageAction> pageActions = null;
         try{
             if(file_name != null)
@@ -103,18 +102,18 @@ public class Main {
         
         //Get domain
         String domain = Utils.getDomain(url);
-        System.out.println(Keys.ENTER);
         
         //Sanitize URL
         url = Utils.cleanseUrl(url);
         
-        // loginLogoutAction.performLogin(driver, true);
-        // for(PageAction p: pageActions){
-        //     driver.get(p.getUrl());
-        //     p.doActions(driver);
-        // }
-        // driver.quit();
-        // System.exit(0);
+        loginLogoutAction.performLogin(driver, true);
+        for(PageAction p: pageActions){
+            driver.get(p.getUrl());
+            p.doActions(driver);
+        }
+        driver.quit();
+        System.exit(0);
+        
         //Crawler section
         ArrayList<String> urls = null, urlsRequireLogin = null;
         if(toCrawl){

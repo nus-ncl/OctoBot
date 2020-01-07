@@ -68,6 +68,10 @@ public class Crawler{
                 System.err.printf("Webpage timeout %s: %s\n", url, e);
                 //this.visitedUrls.add(url); //Saves the URL into the arraylist
                 return;
+            }catch(org.openqa.selenium.WebDriverException e){
+                System.err.printf("Error getting page %s: %s\n", url, e);
+                //this.visitedUrls.add(url); //Saves the URL into the arraylist
+                return;
             }
         }
         this.visitedUrls.add(url); //Saves the URL into the arraylist

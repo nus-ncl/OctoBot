@@ -1,9 +1,0 @@
-[
-    {
-        "url": "http://192.168.40.129:8000/admin/challenges/.*",
-        "actions": [
-            {"css": "[data-original-title='Delete Challenge']", "action": "click"},
-            {"css": "body > main > div.modal.fade.show > div > div > div.modal-footer > button.btn.btn-primary", "action": "click"}
-        ]
-    }
-]
