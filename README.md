@@ -56,6 +56,7 @@ The element will be selected based on the css selector provided
 There are 3 types of actions: value, action, key
 #### Value
 The element selected will be filled with the provided value using [sendKeys()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...- "sendKeys() documentation") method provided by selenium
+The value of this attribute can be a string or an array of strings.
 
 #### Action
 The provided action will be done on the selected element.
