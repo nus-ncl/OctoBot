@@ -79,6 +79,7 @@ There are 3 types of actions: value, action, key
 
 **key** - Space-separated name of the enum constant that will be passed into [valueOf()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/Keys.html#valueOf-java.lang.String-) method to be executed on the selected element.
 
+---
 ### Login file
 Below is an example of the login file
 ```json
@@ -98,3 +99,14 @@ Below is an example of the login file
 }
 ```
 The actions property is exactly the same as the one described in the action file. 
+
+## Frequently Asked Questions (FAQ)
+Question: How do I determine the CSS selector of elements
+
+Answer: Most modern browsers support this feature. Open "inspect element" and hover over the intended element, right click and there should be a option to copy the css selector. Below shows some examples on some browsers.
+
+**Firefox**
+![Copying css selector in firefox](resources/gif/CSS_Selector_Firefox.gif)
+
+**Chrome**
+![Copying css selector in chrome](resources/gif/CSS_Selector_Chrome.gif)
