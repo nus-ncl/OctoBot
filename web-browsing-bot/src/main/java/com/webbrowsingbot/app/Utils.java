@@ -1,8 +1,6 @@
 package com.webbrowsingbot.app;
 
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
