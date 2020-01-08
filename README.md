@@ -60,26 +60,21 @@ Every action has two components: a selector and an action
 ```json
 {"selector": "value", "action": "value"}
 ```
+##
 #### Selector
 There are 3 types of selectors in this file: id, name and css
+* **id** - Select element based on the id attribute
+* **name** - Select element based on the name attribute
+* **css** - Select element based on [css selector]("https://www.w3schools.com/cssref/css_selectors.asp" "CSS Selector Reference")
 
-**id** - Select element based on the id attribute
-
-**name** - Select element based on the name attribute
-
-**css** - Select element based on [css selector]("https://www.w3schools.com/cssref/css_selectors.asp" "CSS Selector Reference")
-
-
+##
 #### Action
 There are 3 types of actions: value, action, key
 
-**value** - The provided value will fill the selected element using the [sendKeys()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...- "sendKeys() documentation") method. The value of this attribute can be a string or an array of strings.
-
-**action** - The provided action will be done on the selected element. Currently only "[click](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#click-- "click() documentation")" is supported. 
-
-**key** - Space-separated name of the enum constant that will be passed into [valueOf()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/Keys.html#valueOf-java.lang.String-) method to be executed on the selected element.
-
----
+* **value** - The provided value will fill the selected element using the [sendKeys()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...- "sendKeys() documentation") method. The value of this attribute can be a string or an array of strings.
+* **action** - The provided action will be done on the selected element. Currently only "[click](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#click-- "click() documentation")" is supported. 
+* **key** - Space-separated name of the enum constant that will be passed into [valueOf()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/Keys.html#valueOf-java.lang.String-) method to be executed on the selected element.
+##
 ### Login file
 Below is an example of the login file
 ```json
