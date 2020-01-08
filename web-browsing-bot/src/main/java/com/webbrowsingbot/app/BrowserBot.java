@@ -80,6 +80,7 @@ public class BrowserBot{
         }else{
             System.out.printf("GET: %s -> %s\n", url, driver.getCurrentUrl());
             url = driver.getCurrentUrl();
+            path = Utils.getPath(url);
         }
 
         //Try this logic to do login first

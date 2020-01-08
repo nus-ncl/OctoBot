@@ -107,7 +107,7 @@ public class Crawler{
         System.out.println("\033[1;94m## Current URL ##\033[0m");
         System.out.println("URL\t\t:\t"+ url);
         System.out.println("Current Depth\t:\t"+ curDepth);
-        System.out.println("Links\t\t:\t" + webLinks.size());
+        System.out.println("Links\t\t:\t" + ((webLinks == null) ? "null" : webLinks.size()));
 
         if(webLinks == null || webLinks.size() <= 0){
             return;

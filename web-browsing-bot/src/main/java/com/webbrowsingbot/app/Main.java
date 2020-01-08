@@ -13,20 +13,23 @@ import net.sourceforge.argparse4j.inf.Namespace;
 //Selenium imports
 import org.openqa.selenium.WebDriver;
 
-
 public class Main {
     public static ArgumentParser createArgumentParser(){
         ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                                 .description("Bot that browses the web");
+        parser.addArgument("-a", "--action-file")
+              .metavar("action_file")
+              .help("File that contains values to form input fields");
+        parser.addArgument("-b", "--browser")
+              .metavar("browser_name")
+              .setDefault("firefox")
+              .help("Browser to utilise");
         parser.addArgument("-c", "--crawl")
               .action(Arguments.storeTrue())
               .help("File that contains values to form input fields");
         parser.addArgument("-d", "--depth")
               .metavar("depth")
               .help("Max depth to crawl");
-        parser.addArgument("-a", "--action-file")
-              .metavar("action_file")
-              .help("File that contains values to form input fields");
         parser.addArgument("-l", "--login-file")
               .metavar("login_file")
               .help("File that contains login credentials");
@@ -44,6 +47,7 @@ public class Main {
             res = parser.parseArgs(args);
             System.out.println("\033[1;93m## Arguments ##\033[0m");
             System.out.printf("URL\t\t:\t%s\n", (String)res.get("url"));
+            System.out.printf("Browser\t\t:\t%s\n", (String)res.get("browser"));
             System.out.printf("Crawl\t\t:\t%s\n", Boolean.toString(res.get("crawl")));
             System.out.printf("Max depth\t:\t%s\n", (String)res.get("depth"));
             System.out.printf("Login file\t:\t%s\n", (String)res.get("login_file"));
@@ -97,15 +101,19 @@ public class Main {
         String url = res.get("url");
         /* End of argparse */
 
-        //BrowserSelection (We stick with firefox for now)          
-        WebDriver driver = BrowserSelector.getFirefoxDriver();
+        //BrowserSelection (We stick with firefox for now)
+        String browser = (String)res.get("browser");          
+        WebDriver driver = WebBrowserHandler.getDriver(browser);
+        if(driver == null){
+            System.err.printf("Browser '%s' cannot be found\n", browser);
+            System.exit(1);
+        }
         
         //Parse into URI
         URI uri = Utils.parseURLtoURI(url);
         if(uri == null){
             System.exit(1);
         }
-        String domain = Utils.getDomain(uri);
         url = uri.toString();
         
         // loginLogoutAction.performLogin(driver, true);
@@ -122,7 +130,7 @@ public class Main {
             //Initialize crawler
             Crawler crawler = new Crawler(driver);
             //Set URL to crawl
-            crawler.setDomain(domain);
+            crawler.setDomain(uri.getHost());
             //Set login credentials
             crawler.setLoginLogoutAction(loginLogoutAction);
             
@@ -139,11 +147,11 @@ public class Main {
 
             driver.quit();
 
-            driver = BrowserSelector.getFirefoxDriver();
+            driver = WebBrowserHandler.getDriver(browser);
         }
 
         //Start the actual browsing
-        BrowserBot browser = new BrowserBot(driver, domain, urls, urlsRequireLogin, loginLogoutAction, pageActions);
-        browser.browse(url);
+        BrowserBot browserBot = new BrowserBot(driver, uri.getHost(), urls, urlsRequireLogin, loginLogoutAction, pageActions);
+        browserBot.browse(url);
     }
 }

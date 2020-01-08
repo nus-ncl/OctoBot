@@ -22,21 +22,12 @@ public class Utils{
     }
     
     //Appends protocol if does not have http
-    public static String cleanseUrl(String url){
+    private static String cleanseUrl(String url){
         //Check whether URL starts with http
         if(!url.startsWith("http")){
             url = String.format("%s://%s", "http", url);
         }
         return url;
-    }
-    
-    public static String getDomain(URI uri){
-        //Check whether the uri has a port
-        if(uri.getPort() < 0){
-            return uri.getHost();
-        }else{
-            return String.format("%s:%d", uri.getHost(), uri.getPort());
-        }
     }
 
     public static String getPath(String url){
