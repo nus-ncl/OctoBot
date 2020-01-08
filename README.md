@@ -2,30 +2,33 @@
 
 ## Prerequisites
 Ensure that the following is installed
-* Docker ([How to install](https://docs.docker.com/install/ "https://docs.docker.com/install/"))
+1. Docker ([How to install](https://docs.docker.com/install/ "https://docs.docker.com/install/"))
+2. Git
 
 ## Installing
 Build the docker image
 ```console
-./build.sh
+whyare@BrowsingBot:~$ git clone https://github.com/WhyAre/webbrowsingbot.git
+whyare@BrowsingBot:~$ cd webbrowsingbot/
+whyare@BrowsingBot:~/webbrowsingbot$ ./build.sh
 ```
 
 ## Usage
 Run the docker image
 ```console
-sudo docker run -it browsing-bot <url>
+whyare@BrowsingBot:~$ sudo docker run -it browsing-bot <url>
 ```
 
 ## Sample
 Enter the sample folder and run docker-compose to run the CTFd
 ```console
-cd sample/CTFd
-docker-compose up
+whyare@BrowsingBot:~/webbrowsingbot$ cd sample/CTFd
+whyare@BrowsingBot:~/webbrowsingbot/sample/CTFd$ docker-compose up
 ```
 
-Run the web-browsing-bot. (Please enter the json files and change "localhost" to the relevant IP address
+Run the web-browsing-bot
 ```console
-sudo docker run -it -v $(pwd):/utils browsing-bot --login /utils/ctfd_login.json --action /utils/ctfd_action.json <ip_address>:8000
+whyare@BrowsingBot:~/webbrowsingbot/sample$ sudo docker run -it -v $(pwd):/utils browsing-bot --login /utils/ctfd_login.json --action /utils/ctfd_action.json <ip_address>:8000
 ```
 
 
@@ -39,7 +42,7 @@ Below is a sample of an action file
 ```json
 [
     {
-        "url": "http://localhost:8000/setup",
+        "path": "/setup",
         "actions" : [
             {"id": "ctf_name", "action": "click"},
             {"name": "ctf_description", "value": "Setting up CTF automatically"},
@@ -47,7 +50,7 @@ Below is a sample of an action file
         ]
     },
     {
-        "url": "http://localhost:8000/admin/challenges/new",
+        "path": "/admin/challenges/new",
         "actions": [
             {"id": "ctf_name", "action": "click"},
             {"name": "ctf_description", "value": ["Setting up CTF automatically", "Text #2"]},
@@ -81,7 +84,7 @@ Below is an example of the login file
 {
     "loginAction": 
     {
-        "url": "http://localhost:8000/login",
+        "path": "/login",
         "actions": [
             {"name": "name", "value": ["admin"]},
             {"name": "password", "value": ["admin"]},
@@ -89,7 +92,7 @@ Below is an example of the login file
         ]
     },
     "logoutAction":{
-        "url": "http://localhost:8000/logout"
+        "path": "/logout"
     }
 }
 ```
