@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.FileReader;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.openqa.selenium.By;
@@ -17,6 +19,16 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class PageAction{
     private String url;
+    private String path;
+
+    public String getPath() {
+        return this.path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     private ArrayList<HashMap<String, Object>> actions;
 
     public String getUrl() {
@@ -49,8 +61,11 @@ public class PageAction{
         if(pageActions == null){
             return null;
         }
+
+        //Extract path from URL
         for(PageAction p: pageActions){
-            if(url.matches(p.url)){
+            String path = Utils.getPath(url);
+            if(path.matches(p.path)){
                 return p;
             }
         }

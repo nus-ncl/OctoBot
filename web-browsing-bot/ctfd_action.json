@@ -1,7 +1,7 @@
 [
     {
         "comments": "Initial setup of CTF",
-        "url": "http://localhost:8000/setup",
+        "path": "/setup",
         "actions" : [
             {"id": "ctf_name", "value": "MyCTF"},
             {"id": "ctf_description", "value": "Setting up CTF automatically"},
@@ -17,7 +17,7 @@
         ]
     },
     {
-        "url": "http://localhost:8000/admin/challenges/new",
+        "path": "/admin/challenges/new",
         "actions": [
             {"id": "create-chals-select", "value": "dynamic"},
             {"name": "name", "value": ["Challenge #1", "Challenge #2"]},
@@ -33,7 +33,7 @@
         ]
     },
     {
-        "url": "http://localhost:8000/admin/pages/new",
+        "path": "/admin/pages/new",
         "actions": [
             {"name": "title", "value": ["title1", "title2"]},
             {"name": "route", "value": ["route1", "route2"]},

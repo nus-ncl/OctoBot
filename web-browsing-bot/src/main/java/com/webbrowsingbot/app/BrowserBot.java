@@ -65,10 +65,11 @@ public class BrowserBot{
         }
 
         //Logout things.
-        if(loginLogoutAction != null){
-            if(url.contains(loginLogoutAction.getLogoutAction().getUrl())){
+        String path = Utils.getPath(url);
+        if(this.loginLogoutAction != null){
+            if(path.contains(this.loginLogoutAction.getLogoutAction().getPath())){
                 if(isLoggedIn){
-                    loginLogoutAction.performLogout(driver, false);
+                    loginLogoutAction.performLogout(driver, url);
                 }
                 isLoggedIn = false;
             }
@@ -82,10 +83,10 @@ public class BrowserBot{
         }
 
         //Try this logic to do login first
-        if(loginLogoutAction != null){
-            if(url.contains(loginLogoutAction.getLoginAction().getUrl())){
+        if(this.loginLogoutAction != null){
+            if(path.contains(this.loginLogoutAction.getLoginAction().getPath())){
                 if(!isLoggedIn){
-                    loginLogoutAction.performLogin(driver, false);
+                    this.loginLogoutAction.performLogin(driver, url);
                 }
                 isLoggedIn = true;
             }

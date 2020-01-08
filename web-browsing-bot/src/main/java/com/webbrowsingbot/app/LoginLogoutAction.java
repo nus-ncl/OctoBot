@@ -2,6 +2,7 @@ package com.webbrowsingbot.app;
 
 import com.google.gson.Gson;
 import java.io.FileReader;
+
 import org.openqa.selenium.WebDriver;
 
 public class LoginLogoutAction {
@@ -30,13 +31,13 @@ public class LoginLogoutAction {
         return gson.fromJson(f, LoginLogoutAction.class);
     }
 
-    public void performLogin(WebDriver driver, boolean loadUrl){
+    public void performLogin(WebDriver driver, String loginUrl){
         // Figure out whether to load the webpage
-        String loginUrl = this.loginAction.getUrl();
-        if(loadUrl){
+        if(loginUrl != null){
             try{
                 driver.get(loginUrl);
             }catch(Exception e){
+                System.err.printf("Error getting %s: %s\n", loginUrl, e);
                 return;
             }
         }
@@ -45,11 +46,15 @@ public class LoginLogoutAction {
         loginAction.doActions(driver);
     }
 
-    public void performLogout(WebDriver driver, boolean loadUrl){
+    public void performLogout(WebDriver driver, String logoutUrl){
         // Figure out whether to load the webpage
-        String logoutUrl = this.logoutAction.getUrl();
-        if(loadUrl){
-            driver.get(logoutUrl);
+        if(logoutUrl != null){
+            try{
+                driver.get(logoutUrl);
+            }catch(Exception e){
+                System.err.printf("Error getting %s: %s\n", logoutUrl, e);
+                return;
+            }
         }
 
         //Do the logout steps

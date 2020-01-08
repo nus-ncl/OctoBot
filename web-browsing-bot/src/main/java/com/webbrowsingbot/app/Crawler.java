@@ -1,5 +1,6 @@
 package com.webbrowsingbot.app;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 //Selenium imports
@@ -28,11 +29,29 @@ public class Crawler{
         this.domain = domain;
     }
 
-    public boolean performLogin(){
+    private static String craftLoginLogoutUrl(URI uri, String loginLogoutPath){
+        String path = uri.getPath();
+        String fullUrl = uri.toString();
+        return fullUrl.substring(0, fullUrl.length() - path.length()) + loginLogoutPath;
+    }
+
+    public boolean performLogin(URI uri){
         if(loginLogoutAction == null){
             return false;
         }
-        loginLogoutAction.performLogin(driver, true);
+
+        String loginUrl = craftLoginLogoutUrl(uri, loginLogoutAction.getLoginAction().getPath());
+        loginLogoutAction.performLogin(driver, loginUrl);
+        return true;
+    }
+
+    public boolean performLogout(URI uri){
+        if(loginLogoutAction == null){
+            return false;
+        }
+
+        String logoutUrl = craftLoginLogoutUrl(uri, loginLogoutAction.getLogoutAction().getPath());
+        loginLogoutAction.performLogout(driver, logoutUrl);
         return true;
     }
 
@@ -62,7 +81,8 @@ public class Crawler{
         //Load the URL
         if(toLoadUrl){
             try{
-                if(loginLogoutAction == null || !url.contains(loginLogoutAction.getLogoutAction().getUrl()))
+                String path = Utils.getPath(url);
+                if(loginLogoutAction == null || !path.contains(loginLogoutAction.getLogoutAction().getPath()))
                     this.driver.get(url);
             }catch(org.openqa.selenium.TimeoutException e){
                 System.err.printf("Webpage timeout %s: %s\n", url, e);

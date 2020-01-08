@@ -1,8 +1,8 @@
 package com.webbrowsingbot.app;
 
-//Idk do I need to im
 //Java imports
 import java.io.FileReader;
+import java.net.URI;
 import java.util.ArrayList;
 //Argparse4j imports
 import net.sourceforge.argparse4j.ArgumentParsers;
@@ -67,7 +67,7 @@ public class Main {
                 depth = Integer.parseInt((String)res.get("depth"));
             }catch(NumberFormatException e){
                 System.err.printf("Invalid value for depth: %s\n", e);
-                System.exit(0);
+                System.exit(1);
             }
         }
 
@@ -100,11 +100,13 @@ public class Main {
         //BrowserSelection (We stick with firefox for now)          
         WebDriver driver = BrowserSelector.getFirefoxDriver();
         
-        //Get domain
-        String domain = Utils.getDomain(url);
-        
-        //Sanitize URL
-        url = Utils.cleanseUrl(url);
+        //Parse into URI
+        URI uri = Utils.parseURLtoURI(url);
+        if(uri == null){
+            System.exit(1);
+        }
+        String domain = Utils.getDomain(uri);
+        url = uri.toString();
         
         // loginLogoutAction.performLogin(driver, true);
         // for(PageAction p: pageActions){
@@ -129,7 +131,7 @@ public class Main {
 
             //Perform login & crawl the website again
             urlsRequireLogin = null;
-            if(crawler.performLogin()){
+            if(crawler.performLogin(uri)){
                 urlsRequireLogin = crawler.startCrawl(url, depth);
             }
 

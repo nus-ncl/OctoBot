@@ -1,5 +1,9 @@
 package com.webbrowsingbot.app;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.By;
@@ -7,22 +11,46 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class Utils{
-    public static String getDomain(String url){
-        String[] urlArr = url.split("://");
-        if(urlArr[0].contains("http")){
-            return urlArr[1];
-        }else{
-            return urlArr[0];
+    public static URI parseURLtoURI(String url){
+        //Adds http if needed
+        url = cleanseUrl(url);
+
+        try{
+            return new URI(url);
+        }catch(URISyntaxException e){
+            System.err.println(e);
+            return null;
         }
     }
+    
+    //Appends protocol if does not have http
     public static String cleanseUrl(String url){
-        String[] urlArr = url.split(":");
-        if(!urlArr[0].contains("http")){
-            url = String.format("%s:%s", "http", url);
+        //Check whether URL starts with http
+        if(!url.startsWith("http")){
+            url = String.format("%s://%s", "http", url);
         }
         return url;
     }
     
+    public static String getDomain(URI uri){
+        //Check whether the uri has a port
+        if(uri.getPort() < 0){
+            return uri.getHost();
+        }else{
+            return String.format("%s:%d", uri.getHost(), uri.getPort());
+        }
+    }
+
+    public static String getPath(String url){
+        try{
+            URI uri = new URI(url);
+            return uri.getPath();
+        }catch(URISyntaxException e){
+            System.err.printf("Failed to get URI object: %s\n", e);
+            return null;
+        }
+    }
+
     public static ArrayList<String> convertToStringArrayList(String input){
         ArrayList<String> output = new ArrayList<String>();
         output.add(input);
