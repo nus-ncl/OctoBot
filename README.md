@@ -6,6 +6,11 @@ Ensure that the following is installed
 2. Git
 
 ## Installing
+Installing git
+```console
+whyare@BrowsingBot:~$ sudo apt update && sudo apt install git
+```
+
 Build the docker image
 ```console
 whyare@BrowsingBot:~$ git clone https://github.com/WhyAre/webbrowsingbot.git
