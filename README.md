@@ -28,7 +28,12 @@ whyare@BrowsingBot:~/webbrowsingbot/sample/CTFd$ docker-compose up
 
 Run the web-browsing-bot
 ```console
-whyare@BrowsingBot:~/webbrowsingbot/sample$ sudo docker run -it -v $(pwd):/utils browsing-bot --login /utils/ctfd_login.json --action /utils/ctfd_action.json <ip_address>:8000
+whyare@BrowsingBot:~/webbrowsingbot/sample$ sudo docker run -it \
+-v $(pwd):/utils \
+browsing-bot \
+--login /utils/ctfd_login.json \
+--action /utils/ctfd_action.json \
+<ip_address>:8000
 ```
 
 
