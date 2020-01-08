@@ -7,7 +7,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -83,7 +82,7 @@ public class PageAction{
                 continue;
             }
 
-            //Obtain the elements
+            //Wait for 3 seconds or until the element is clickable
             try{
                 new WebDriverWait(driver, 3).ignoring(StaleElementReferenceException.class).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
             }catch(Exception e){
@@ -127,6 +126,7 @@ public class PageAction{
                 }
             }catch(Exception e){
                 System.err.printf("Error doing action: %s\n", e);
+                continue;
             }
         }
     }

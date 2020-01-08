@@ -84,15 +84,13 @@ public class Crawler{
         }
 
         //Debug information
-        System.out.println("\n\033[1;94m## Current URL ##\033[0m");
+        System.out.println("\033[1;94m## Current URL ##\033[0m");
         System.out.println("URL\t\t:\t"+ url);
         System.out.println("Current Depth\t:\t"+ curDepth);
+        System.out.println("Links\t\t:\t" + webLinks.size());
+
         if(webLinks == null || webLinks.size() <= 0){
             return;
-        }
-        System.out.println("Links\t\t: ");
-        for(int i = 0; i < webLinks.size(); i++){
-            System.out.println( i+1 + ") " + webLinks.get(i));
         }
 
         //Access all the links
