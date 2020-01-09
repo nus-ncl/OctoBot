@@ -19,7 +19,30 @@ whyare@BrowsingBot:~/webbrowsingbot$ ./build.sh
 ```
 
 ## Usage
-Run the docker image
+View all the options
+```console
+whyare@BrowsingBot:~$ sudo docker run -it browsing-bot -h
+usage: prog [-h] [-b browser_name] [-c] [-d depth] [-l login_file] [-a action_file] url
+
+Bot that browses the web
+
+positional arguments:
+  url                    URL to crawl and do actions
+
+named arguments:
+  -h, --help             show this help message and exit
+  -b browser_name, --browser browser_name
+                         Browser to utilise
+  -c, --crawl            Boolean on whether to crawl first or not
+  -d depth, --depth depth
+                         Max depth to crawl
+  -l login_file, --login-file login_file
+                         File that contains login credentials
+  -a action_file, --action-file action_file
+                         File that contains actions to do on selected page(s)
+```
+
+Run the docker image without options
 ```console
 whyare@BrowsingBot:~$ sudo docker run -it browsing-bot <url>
 ```
