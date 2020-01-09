@@ -2,7 +2,6 @@ package com.webbrowsingbot.app;
 
 import com.webbrowsingbot.app.PageAction;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.io.FileReader;
 import java.lang.reflect.Type;
@@ -74,22 +73,29 @@ public class LoginLogoutAction {
         return output;
     }
 
-    public static ArrayList<LoginLogoutAction> getAllPossibleLogoutActions(String url, ArrayList<LoginLogoutAction> loginLogoutActions){
-        ArrayList<LoginLogoutAction> output = new ArrayList<LoginLogoutAction>();
+    public static LoginLogoutAction getUserLogoutAction(String url, String username, ArrayList<LoginLogoutAction> loginLogoutActions){
+        LoginLogoutAction loginLogoutAction = null;
         for(LoginLogoutAction l: loginLogoutActions){
-            String path = Utils.getPath(url);
-            
-            String logoutUrl = l.getLogoutAction().getUrl();
-            String logoutPath = l.getLogoutAction().getPath();
-            
-            boolean urlMatch = (logoutUrl == null) ? false : url.matches(logoutUrl);
-            boolean pathMatch = (logoutPath == null) ? false : path.matches(logoutPath);
-            if(urlMatch || pathMatch){
-                output.add(l);
+            if(l.getUsername().equals(username)){
+                loginLogoutAction = l;
             }
         }
 
-        return output;
+        if(loginLogoutAction == null){
+            return null;
+        }
+
+        String logoutPath = loginLogoutAction.getLogoutAction().getPath();
+        String logoutUrl = loginLogoutAction.getLogoutAction().getUrl();
+        String path = Utils.getPath(url);
+        boolean pathMatch = (logoutPath == null) ? true : path.matches(logoutPath);
+        boolean urlMatch = (logoutUrl == null) ? true : url.matches(logoutUrl);
+
+        if(pathMatch && urlMatch){
+            return loginLogoutAction;
+        }else{
+            return null;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -184,6 +190,7 @@ public class LoginLogoutAction {
         }
 
         //Do the login steps
+        System.out.println("Performing login");
         loginAction.doActions(driver);
 
         return this.username;
@@ -201,6 +208,7 @@ public class LoginLogoutAction {
         }
 
         //Do the logout steps
+        System.out.println("Performing logout");
         logoutAction.doActions(driver);
 
         return;

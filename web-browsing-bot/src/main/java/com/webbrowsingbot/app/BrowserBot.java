@@ -65,10 +65,8 @@ public class BrowserBot{
 
         //Logout things.
         if(loggedInUser != null){
-            ArrayList<LoginLogoutAction> allLogoutActionss = LoginLogoutAction.getAllPossibleLogoutActions(url, loginLogoutActions);
-            if(allLogoutActionss.size() > 0){
-                int randint = (int)(Math.random()*allLogoutActionss.size());
-                LoginLogoutAction logoutAction = allLogoutActionss.get(randint);
+            LoginLogoutAction logoutAction = LoginLogoutAction.getUserLogoutAction(url, loggedInUser, loginLogoutActions);
+            if(logoutAction != null){
                 logoutAction.performLogout(driver, null);
                 loggedInUser = null;
             }
