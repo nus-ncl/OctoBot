@@ -2,6 +2,7 @@ package com.webbrowsingbot.app;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.By;
@@ -107,5 +108,9 @@ public class Utils{
             }
         }
         return linksInPage;
+    }
+
+    public static boolean haveTime(){
+        return true;
     }
 }

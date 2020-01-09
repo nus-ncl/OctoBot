@@ -99,7 +99,7 @@ public class BrowserBot{
     }
 
     public void browseWithCrawl(){
-        for(;;){
+        while(Utils.haveTime()){
             //Choose a random page to visit
             ArrayList<String> arrOfUrls = urls.get(loggedInUser);
             int randint = (int)(Math.random()*arrOfUrls.size());
@@ -120,7 +120,7 @@ public class BrowserBot{
 
     public void browseNoCrawl(String url){
         String prevPage = url;
-        for(;;){
+        while(Utils.haveTime()){
             //Validate the URL first
             boolean inBlacklist = blacklistUrls.contains(url);
             if(inBlacklist){
