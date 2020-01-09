@@ -3,6 +3,7 @@ package com.webbrowsingbot.app;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
 //Selenium imports
 import org.openqa.selenium.By;
 //import org.openqa.selenium.Keys;
@@ -14,15 +15,19 @@ public class Crawler{
     private WebDriver driver;
     private String domain;
     private int maxDepth;
+    private boolean sameDomain;
     private LoginLogoutAction loginLogoutAction;
+    private ArrayList<LoginLogoutAction> loginLogoutActions;
 
-    public Crawler(WebDriver driver){
+    public Crawler(WebDriver driver, boolean sameDomain){
         this.driver = driver;
+        this.sameDomain = sameDomain;
         this.visitedUrls = new ArrayList<String>();
     }
 
-    public void setLoginLogoutAction(LoginLogoutAction loginLogoutAction){
-        this.loginLogoutAction = loginLogoutAction;
+    public void setLoginLogoutActions(ArrayList<LoginLogoutAction> loginLogoutActions){
+        //Makes a new instance because this object will modify the variable by removing items
+        this.loginLogoutActions = new ArrayList<LoginLogoutAction>(loginLogoutActions);
     }
 
     public void setDomain(String domain){
@@ -36,22 +41,38 @@ public class Crawler{
         return fullUrl.substring(0, fullUrl.length() - path.length()) + loginLogoutPath;
     }
 
-    public boolean performLogin(URI uri){
-        if(loginLogoutAction == null){
-            return false;
+    public String performLogin(URI uri){
+        if(loginLogoutActions == null || loginLogoutActions.size() <= 0){
+            return null;
         }
 
-        String loginUrl = craftLoginLogoutUrl(uri, loginLogoutAction.getLoginAction().getPath());
+        if(this.loginLogoutAction != null){
+            performLogout(uri);
+        }
+
+        //Gets the next loginLogoutAction
+        this.loginLogoutAction = this.loginLogoutActions.get(this.loginLogoutActions.size()-1);
+        this.loginLogoutActions.remove(this.loginLogoutActions.size()-1);
+
+        String loginUrl = loginLogoutAction.getLoginAction().getUrl();
+        if(loginUrl == null){
+            loginUrl = craftLoginLogoutUrl(uri, loginLogoutAction.getLoginAction().getPath());
+        }
+
         loginLogoutAction.performLogin(driver, loginUrl);
-        return true;
+        return loginLogoutAction.getUsername();
     }
 
     public boolean performLogout(URI uri){
-        if(loginLogoutAction == null){
+        if(this.loginLogoutAction == null){
             return false;
         }
 
-        String logoutUrl = craftLoginLogoutUrl(uri, loginLogoutAction.getLogoutAction().getPath());
+        String logoutUrl = loginLogoutAction.getLogoutAction().getUrl();
+        if(logoutUrl == null){
+            logoutUrl = craftLoginLogoutUrl(uri, loginLogoutAction.getLogoutAction().getPath());
+        }
+
         loginLogoutAction.performLogout(driver, logoutUrl);
         return true;
     }
@@ -101,7 +122,7 @@ public class Crawler{
         ArrayList<String> webLinks = null;
         //If next depth is not going to be get accessed, then dont bother getting links for the current URL
         if(curDepth+1 <= this.maxDepth || this.maxDepth == -1){
-            webLinks = Utils.getLinks(this.driver, this.domain, new ArrayList<String>());
+            webLinks = Utils.getLinks(this.driver, this.domain, new ArrayList<String>(), sameDomain);
         }
 
         //Debug information

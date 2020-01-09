@@ -74,6 +74,10 @@ public class Utils{
     }
     // Obtains all web links and stores them onto an arraylist
     public static ArrayList<String> getLinks(WebDriver driver, String domain, ArrayList<String> blacklistUrl){
+        return getLinks(driver, domain, blacklistUrl, true);
+    }
+
+    public static ArrayList<String> getLinks(WebDriver driver, String domain, ArrayList<String> blacklistUrl, boolean sameDomain){
         //This portion finds easy links (means anchor tag with href)
         List<WebElement> linkElements = driver.findElements(By.cssSelector("a[href]"));
         
@@ -95,7 +99,7 @@ public class Utils{
             //Check to make sure string is not empty or # before adding to the arraylist
             boolean isEmpty = url.trim().equals("");
             boolean isRepeated = linksInPage.contains(url);
-            boolean sameHostname = url.contains(domain);
+            boolean sameHostname = (sameDomain) ? url.contains(domain) : true;
             boolean inBlacklist = blacklistUrl.contains(url);
             boolean toAddToArrayList = !isEmpty && !isRepeated && sameHostname && !inBlacklist;
             if(toAddToArrayList){

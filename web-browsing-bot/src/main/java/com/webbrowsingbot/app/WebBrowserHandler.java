@@ -1,5 +1,6 @@
 package com.webbrowsingbot.app;
 
+//Java imports
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
@@ -54,8 +55,8 @@ public class WebBrowserHandler{
         }
 
         if(driver != null){
-            driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
-            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS); //https://www.machmetrics.com/speed-blog/average-page-load-times-websites-2018/	
+            driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); //https://www.machmetrics.com/speed-blog/average-page-load-times-websites-2018/	
             
             return driver;
         }

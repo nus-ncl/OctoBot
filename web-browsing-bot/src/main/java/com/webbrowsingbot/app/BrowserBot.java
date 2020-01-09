@@ -2,6 +2,7 @@ package com.webbrowsingbot.app;
 
 import java.lang.Math;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.WebDriver;
 
@@ -9,35 +10,33 @@ import org.openqa.selenium.WebDriver;
 public class BrowserBot{
     private WebDriver driver;
     private String domain;
-    private boolean isLoggedIn;
-    private LoginLogoutAction loginLogoutAction;
+    private String loggedInUser;
+    private ArrayList<LoginLogoutAction> loginLogoutActions;
     private ArrayList<PageAction> pageActions;
     private int minTime, maxTime;
 
     //For browse no crawl
-    private ArrayList<String> urls;
-    private ArrayList<String> urlsRequireLogin;
+    HashMap<String, ArrayList<String>> urls;
 
     //For browse with crawl
     private ArrayList<String> blacklistUrls;
 
     //Constructor #1
     public BrowserBot(WebDriver driver){
-        this(driver, null, null, null, null, null);
+        this(driver, null, null, null, null);
     }
 
     //Constructor #2
-    public BrowserBot(WebDriver driver, String domain, ArrayList<String> urls, ArrayList<String> urlsRequireLogin, LoginLogoutAction loginLogoutAction, ArrayList<PageAction> pageActions){
+    public BrowserBot(WebDriver driver, String domain, HashMap<String, ArrayList<String>> urls, ArrayList<LoginLogoutAction> loginLogoutActions, ArrayList<PageAction> pageActions){
         this.driver = driver;
         this.domain = domain;
         this.pageActions = pageActions;
-        this.loginLogoutAction = loginLogoutAction;
+        this.loginLogoutActions = loginLogoutActions;
         this.minTime = 2000;
         this.maxTime = 5000;
 
         //For browse with crawl
         this.urls = urls;
-        this.urlsRequireLogin = urlsRequireLogin;
     
         //For browse no crawl
         this.blacklistUrls = new ArrayList<String>();
@@ -65,13 +64,13 @@ public class BrowserBot{
         }
 
         //Logout things.
-        String path = Utils.getPath(url);
-        if(this.loginLogoutAction != null){
-            if(path.contains(this.loginLogoutAction.getLogoutAction().getPath())){
-                if(isLoggedIn){
-                    loginLogoutAction.performLogout(driver, url);
-                }
-                isLoggedIn = false;
+        if(loggedInUser != null){
+            ArrayList<LoginLogoutAction> allLogoutActionss = LoginLogoutAction.getAllPossibleLogoutActions(url, loginLogoutActions);
+            if(allLogoutActionss.size() > 0){
+                int randint = (int)(Math.random()*allLogoutActionss.size());
+                LoginLogoutAction logoutAction = allLogoutActionss.get(randint);
+                logoutAction.performLogout(driver, null);
+                loggedInUser = null;
             }
         }
 
@@ -80,16 +79,15 @@ public class BrowserBot{
         }else{
             System.out.printf("GET: %s -> %s\n", url, driver.getCurrentUrl());
             url = driver.getCurrentUrl();
-            path = Utils.getPath(url);
         }
 
         //Try this logic to do login first
-        if(this.loginLogoutAction != null){
-            if(path.contains(this.loginLogoutAction.getLoginAction().getPath())){
-                if(!isLoggedIn){
-                    this.loginLogoutAction.performLogin(driver, url);
-                }
-                isLoggedIn = true;
+        if(loggedInUser == null){
+            ArrayList<LoginLogoutAction> allLoginActions = LoginLogoutAction.getAllPossibleLoginActions(url, loginLogoutActions);
+            if(allLoginActions.size() > 0){
+                int randint = (int)(Math.random()*allLoginActions.size());
+                LoginLogoutAction loginAction = allLoginActions.get(randint);
+                loggedInUser = loginAction.performLogin(driver, null);
             }
         }
         
@@ -105,15 +103,11 @@ public class BrowserBot{
     public void browseWithCrawl(){
         for(;;){
             //Choose a random page to visit
-            String url;
-            if(isLoggedIn){
-                int randint = (int)(Math.random()*urlsRequireLogin.size());
-                url = urlsRequireLogin.get(randint);
-            }else{
-                int randint = (int)(Math.random()*urls.size());
-                url = urls.get(randint);
-            }
-
+            ArrayList<String> arrOfUrls = urls.get(loggedInUser);
+            int randint = (int)(Math.random()*arrOfUrls.size());
+            String url = arrOfUrls.get(randint);
+            
+            //Process the page
             this.processPage(url);
             
             //Sleep a bit

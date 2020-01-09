@@ -1,6 +1,8 @@
 package com.webbrowsingbot.app;
 
+import com.webbrowsingbot.app.PageAction;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.io.FileReader;
 import java.lang.reflect.Type;
@@ -24,10 +26,19 @@ public class LoginLogoutAction {
     public String toString(){
         String s = "{";
         s += String.format("username: %s, ", this.username);
+        s += String.format("loginAction: %s, ", this.loginAction.getActions().get(0).get("value"));
+        s += String.format("loginAction: %s, ", this.loginAction.getActions().get(1).get("value"));
         s += "}";
         return s;
     }
 
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
     public PageAction getLoginAction() {
         return this.loginAction;
     }
@@ -44,65 +55,138 @@ public class LoginLogoutAction {
         this.logoutAction = logoutAction;
     }
     
+
+    public static ArrayList<LoginLogoutAction> getAllPossibleLoginActions(String url, ArrayList<LoginLogoutAction> loginLogoutActions){
+        ArrayList<LoginLogoutAction> output = new ArrayList<LoginLogoutAction>();
+        for(LoginLogoutAction l: loginLogoutActions){
+            String path = Utils.getPath(url);
+            
+            String loginUrl = l.getLoginAction().getUrl();
+            String loginPath = l.getLoginAction().getPath();
+            
+            boolean urlMatch = (loginUrl == null) ? false : url.matches(loginUrl);
+            boolean pathMatch = (loginPath == null) ? false : path.matches(loginPath);
+            if(urlMatch || pathMatch){
+                output.add(l);
+            }
+        }
+
+        return output;
+    }
+
+    public static ArrayList<LoginLogoutAction> getAllPossibleLogoutActions(String url, ArrayList<LoginLogoutAction> loginLogoutActions){
+        ArrayList<LoginLogoutAction> output = new ArrayList<LoginLogoutAction>();
+        for(LoginLogoutAction l: loginLogoutActions){
+            String path = Utils.getPath(url);
+            
+            String logoutUrl = l.getLogoutAction().getUrl();
+            String logoutPath = l.getLogoutAction().getPath();
+            
+            boolean urlMatch = (logoutUrl == null) ? false : url.matches(logoutUrl);
+            boolean pathMatch = (logoutPath == null) ? false : path.matches(logoutPath);
+            if(urlMatch || pathMatch){
+                output.add(l);
+            }
+        }
+
+        return output;
+    }
+
     @SuppressWarnings("unchecked")
     //Find the usernames, username is defined as the first action with a value attribute
-    private static ArrayList<String> getUsernames(ArrayList<HashMap<String, Object>> loginActions){
+    private static ArrayList<LoginLogoutAction> reformat(LoginLogoutAction loginLogoutActions){
+        //Get the login actions
+        ArrayList<HashMap<String, Object>> loginActions = loginLogoutActions.getLoginAction().getActions();
+        
+        //Obtain all the usernames in an arraylist
+        ArrayList<String> usernameArrayList = null;
         for(HashMap<String, Object> action: loginActions){
             if(action.get("value") != null){
                 Object objVal = action.get("value");
-                ArrayList<String> output = null;
                 if(objVal.getClass() == String.class){
-                    output = new ArrayList<String>();
-                    output.add((String)objVal);
+                    usernameArrayList = new ArrayList<String>();
+                    usernameArrayList.add((String)objVal);
                 }else{
-                    output = (ArrayList<String>)objVal;
+                    usernameArrayList = (ArrayList<String>)objVal;
                 }
-                return output;
+                break;
             }
         }
-        return null;
+        
+        // Do some preliminary checks
+        if(usernameArrayList == null){
+            return null;
+        }
+
+        //Loops every username to create a unique loginlogoutaction for all user
+        ArrayList<LoginLogoutAction> output = new ArrayList<LoginLogoutAction>();
+        for(int i = 0; i < usernameArrayList.size(); i++){
+            //Reformat login_action
+            String path = loginLogoutActions.getLoginAction().getPath();
+            String url = loginLogoutActions.getLoginAction().getUrl();
+            ArrayList<HashMap<String, Object>> actions = new ArrayList<HashMap<String, Object>>();
+            PageAction newLoginActions = new PageAction(url, path, actions);
+
+            for(HashMap<String, Object> action: loginActions){
+                //Ensure that the instances are different instances
+                action = new HashMap<String, Object>(action);
+
+                if(action.get("value") != null){
+                    Object objVal = action.get("value");
+                    if(objVal.getClass() == String.class){
+                        newLoginActions.getActions().add(action);
+                    }else{
+                        //Obtain the i'th index from the list
+                        ArrayList<String> values = (ArrayList<String>)objVal;
+                        action.replace("value", values.get(i%values.size()));
+                        newLoginActions.getActions().add(action);
+                    }
+                }else{
+                    newLoginActions.getActions().add(action);
+                }
+            }
+            output.add(new LoginLogoutAction(usernameArrayList.get(i), newLoginActions, loginLogoutActions.getLogoutAction()));
+        }
+        return output;
     }
 
     //Converts json file into java objects
-    public static LoginLogoutAction parse(FileReader f){
+    public static ArrayList<LoginLogoutAction> parse(FileReader f){
         Gson gson = new Gson();
 
         Type type = new TypeToken<ArrayList<LoginLogoutAction>>(){}.getType();
         //Obtains information from json
-        ArrayList<LoginLogoutAction> loginLogoutActionsArrayList = gson.fromJson(f, type);
-        
+        ArrayList<LoginLogoutAction> loginLogoutActionsArrayList = null;
+        loginLogoutActionsArrayList = gson.fromJson(f, type);
+
         //Creates new new arraylist to store new information after rearranging data from json
         ArrayList<LoginLogoutAction> reformattedLoginLogoutActionsArrayList = new ArrayList<LoginLogoutAction>();
         
         //Does the reformating here
-        for(LoginLogoutAction loginLogoutAction: loginLogoutActionsArrayList){
-            //Get the login actions from the json file
-            ArrayList<HashMap<String, Object>> loginActions = loginLogoutAction.loginAction.getActions();
-            
+        for(LoginLogoutAction loginLogoutAction: loginLogoutActionsArrayList){  
             //Find the usernames, username is defined as the first action with a value attribute
-            ArrayList<String> usernames = getUsernames(loginActions);
-            for(String username: usernames){
-                LoginLogoutAction lla = new LoginLogoutAction(username, loginLogoutAction.loginAction, loginLogoutAction.logoutAction);
-                reformattedLoginLogoutActionsArrayList.add(lla);
-            }
+            ArrayList<LoginLogoutAction> l = reformat(loginLogoutAction);
+            reformattedLoginLogoutActionsArrayList.addAll(l);
         }
-        
-        return loginLogoutActionsArrayList.get(0);
+
+        return reformattedLoginLogoutActionsArrayList;
     }
 
-    public void performLogin(WebDriver driver, String loginUrl){
+    public String performLogin(WebDriver driver, String loginUrl){
         // Figure out whether to load the webpage
         if(loginUrl != null){
             try{
                 driver.get(loginUrl);
             }catch(Exception e){
                 System.err.printf("Error getting %s: %s\n", loginUrl, e);
-                return;
+                return null;
             }
         }
 
         //Do the login steps
         loginAction.doActions(driver);
+
+        return this.username;
     }
 
     public void performLogout(WebDriver driver, String logoutUrl){
@@ -118,6 +202,8 @@ public class LoginLogoutAction {
 
         //Do the logout steps
         logoutAction.doActions(driver);
+
+        return;
     }
 
 }

@@ -20,6 +20,16 @@ public class PageAction{
     private String path; // Path means anything behind the domain
     private ArrayList<HashMap<String, Object>> actions;
 
+    public PageAction(){
+
+    }
+
+    public PageAction(String url, String path, ArrayList<HashMap<String, Object>> actions){
+        this.url = url;
+        this.path = path;
+        this.actions = actions;
+    }
+
     public String getPath() {
         return this.path;
     }
@@ -62,7 +72,9 @@ public class PageAction{
         //Extract path from URL
         for(PageAction p: pageActions){
             String path = Utils.getPath(url);
-            if(path.matches(p.path)){
+            boolean urlMatch = (p.url == null) ? true : url.matches(p.url);
+            boolean pathMatch = (p.path == null) ? true : path.matches(p.path);
+            if(urlMatch && pathMatch){
                 return p;
             }
         }
