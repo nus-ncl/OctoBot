@@ -1,4 +1,4 @@
-{
+[{
     "loginAction": 
     {
         "path": "/login",
@@ -11,4 +11,4 @@
     "logoutAction":{
         "path": "/logout"
     }
-}
+}]
