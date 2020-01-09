@@ -29,6 +29,7 @@ public class Crawler{
         this.domain = domain;
     }
 
+    //Takes the protocol, host, and port and add together with the respective path
     private static String craftLoginLogoutUrl(URI uri, String loginLogoutPath){
         String path = uri.getPath();
         String fullUrl = uri.toString();

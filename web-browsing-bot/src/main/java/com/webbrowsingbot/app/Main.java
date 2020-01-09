@@ -17,22 +17,22 @@ public class Main {
     public static ArgumentParser createArgumentParser(){
         ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                                 .description("Bot that browses the web");
-        parser.addArgument("-a", "--action-file")
-              .metavar("action_file")
-              .help("File that contains values to form input fields");
         parser.addArgument("-b", "--browser")
               .metavar("browser_name")
               .setDefault("firefox")
               .help("Browser to utilise");
         parser.addArgument("-c", "--crawl")
               .action(Arguments.storeTrue())
-              .help("File that contains values to form input fields");
+              .help("Boolean on whether to crawl first or not");
         parser.addArgument("-d", "--depth")
               .metavar("depth")
               .help("Max depth to crawl");
         parser.addArgument("-l", "--login-file")
               .metavar("login_file")
               .help("File that contains login credentials");
+        parser.addArgument("-a", "--action-file")
+              .metavar("action_file")
+              .help("File that contains actions to do on selected page(s)");
         parser.addArgument("url")
               .help("URL to crawl and do actions");
         return parser;
@@ -84,6 +84,9 @@ public class Main {
         }catch(java.io.FileNotFoundException e){
             System.err.printf("Cannot open file reader: %s\n", e);
             System.exit(1);
+        }catch(Exception e){
+            System.err.printf("Something went wrong parsing page actions: %s\n", e);
+            System.exit(1);
         }
 
         //Login
@@ -94,6 +97,9 @@ public class Main {
                 loginLogoutAction = LoginLogoutAction.parse(new FileReader(loginfile_name));   
         }catch(java.io.FileNotFoundException e){
             System.err.printf("Cannot open file reader: %s\n", e);
+            System.exit(1);
+        }catch(Exception e){
+            System.err.printf("Something went wrong parsing login and logout information: %s\n", e);
             System.exit(1);
         }
 

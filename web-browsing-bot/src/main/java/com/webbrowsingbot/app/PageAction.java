@@ -16,8 +16,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 public class PageAction{
-    private String url;
-    private String path;
+    private String url; // URL means full URL
+    private String path; // Path means anything behind the domain
+    private ArrayList<HashMap<String, Object>> actions;
 
     public String getPath() {
         return this.path;
@@ -26,8 +27,6 @@ public class PageAction{
     public void setPath(String path) {
         this.path = path;
     }
-
-    private ArrayList<HashMap<String, Object>> actions;
 
     public String getUrl() {
         return this.url;
