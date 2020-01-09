@@ -169,6 +169,8 @@ public class Main {
                 urls.put(username, urlsCrawled);
             }
 
+
+            System.out.println("\033[1;36mCrawled links:\033[0m");
             System.out.println(urls);
             //Utils.printVisitedLinks(urls.toArray(new String[urls.size()]), urlsRequireLogin.toArray(new String[urlsRequireLogin.size()]));
 

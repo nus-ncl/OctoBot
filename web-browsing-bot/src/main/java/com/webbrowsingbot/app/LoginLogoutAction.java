@@ -190,7 +190,7 @@ public class LoginLogoutAction {
         }
 
         //Do the login steps
-        System.out.println("Performing login");
+        System.out.println("\033[1;36mPerforming login\033[0m");
         loginAction.doActions(driver);
 
         return this.username;
@@ -208,7 +208,7 @@ public class LoginLogoutAction {
         }
 
         //Do the logout steps
-        System.out.println("Performing logout");
+        System.out.println("\033[1;36mPerforming logout\033[0m");
         logoutAction.doActions(driver);
 
         return;
