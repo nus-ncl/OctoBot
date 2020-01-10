@@ -1,6 +1,7 @@
 package com.webbrowsingbot.app;
 
 import java.lang.Math;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -43,11 +44,11 @@ public class BrowserBot{
     }
 
     /* This function will take in a */
-    public void browse(String url){
+    public void browse(String url, int duration){
         if(this.urls != null){
-            this.browseWithCrawl();
+            this.browseWithCrawl(duration);
         }else{
-            this.browseNoCrawl(url);
+            this.browseNoCrawl(url, duration);
         }
     }
 
@@ -98,8 +99,9 @@ public class BrowserBot{
         return true;
     }
 
-    public void browseWithCrawl(){
-        while(Utils.haveTime()){
+    public void browseWithCrawl(int duration){
+        LocalDateTime endTime = Utils.calculateEndTime(duration);
+        while(Utils.haveTime(endTime)){
             //Choose a random page to visit
             ArrayList<String> arrOfUrls = urls.get(loggedInUser);
             int randint = (int)(Math.random()*arrOfUrls.size());
@@ -118,9 +120,10 @@ public class BrowserBot{
         }
     }
 
-    public void browseNoCrawl(String url){
+    public void browseNoCrawl(String url, int duration){
         String prevPage = url;
-        while(Utils.haveTime()){
+        LocalDateTime endTime = Utils.calculateEndTime(duration);
+        while(Utils.haveTime(endTime)){
             //Validate the URL first
             boolean inBlacklist = blacklistUrls.contains(url);
             if(inBlacklist){

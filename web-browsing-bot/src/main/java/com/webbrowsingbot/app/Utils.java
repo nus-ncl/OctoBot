@@ -110,7 +110,15 @@ public class Utils{
         return linksInPage;
     }
 
-    public static boolean haveTime(){
-        return true;
+    public static LocalDateTime calculateEndTime(int duration){
+        LocalDateTime now = LocalDateTime.now();
+        return (duration > 0) ? now.plusSeconds(duration) : null;
+    }
+
+    public static boolean haveTime(LocalDateTime endTime){
+        LocalDateTime now = LocalDateTime.now();
+        
+        //Still have time
+        return (endTime == null) ? true : now.isBefore(endTime);
     }
 }

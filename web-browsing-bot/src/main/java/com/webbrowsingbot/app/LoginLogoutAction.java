@@ -57,16 +57,19 @@ public class LoginLogoutAction {
 
     public static ArrayList<LoginLogoutAction> getAllPossibleLoginActions(String url, ArrayList<LoginLogoutAction> loginLogoutActions){
         ArrayList<LoginLogoutAction> output = new ArrayList<LoginLogoutAction>();
-        for(LoginLogoutAction l: loginLogoutActions){
-            String path = Utils.getPath(url);
-            
-            String loginUrl = l.getLoginAction().getUrl();
-            String loginPath = l.getLoginAction().getPath();
-            
-            boolean urlMatch = (loginUrl == null) ? false : url.matches(loginUrl);
-            boolean pathMatch = (loginPath == null) ? false : path.matches(loginPath);
-            if(urlMatch || pathMatch){
-                output.add(l);
+
+        if(loginLogoutActions != null){
+            for(LoginLogoutAction l: loginLogoutActions){
+                String path = Utils.getPath(url);
+                
+                String loginUrl = l.getLoginAction().getUrl();
+                String loginPath = l.getLoginAction().getPath();
+                
+                boolean urlMatch = (loginUrl == null) ? false : url.matches(loginUrl);
+                boolean pathMatch = (loginPath == null) ? false : path.matches(loginPath);
+                if(urlMatch || pathMatch){
+                    output.add(l);
+                }
             }
         }
 

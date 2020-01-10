@@ -19,26 +19,36 @@ public class Main {
     public static ArgumentParser createArgumentParser(){
         ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                                 .description("Bot that browses the web");
-        parser.addArgument("-b", "--browser")
+        parser.addArgument("-b", "--browser") //Browser
               .metavar("browser_name")
               .setDefault("firefox")
+              .type(String.class)
               .help("Browser to utilise");
-        parser.addArgument("-c", "--crawl")
+        parser.addArgument("-c", "--crawl") //Crawl first or not
               .action(Arguments.storeTrue())
+              .type(Boolean.class)
               .help("Boolean on whether to crawl first or not");
-        parser.addArgument("-d", "--depth")
+        parser.addArgument("-d", "--depth") //Max depth
               .metavar("depth")
+              .type(Integer.class)
               .help("Depth to crawl website from entrypoint");
-        parser.addArgument("-o", "--other-domain")
+        parser.addArgument("-o", "--other-domain") //Allow other domain
               .action(Arguments.storeTrue())
+              .type(Boolean.class)
               .help("Allow to crawl to different domain");
+        parser.addArgument("-t", "--time") //Time to browse
+              .type(Integer.class)
+              .help("Max time to browse (seconds)");
         parser.addArgument("-l", "--login-file")
+              .type(String.class)
               .metavar("login_file")
               .help("File that contains login credentials");
         parser.addArgument("-a", "--action-file")
               .metavar("action_file")
+              .type(String.class)
               .help("File that contains actions to do on selected page(s)");
         parser.addArgument("url")
+              .type(String.class)
               .help("URL to crawl and do actions");
         return parser;
     }
@@ -50,16 +60,6 @@ public class Main {
         Namespace res = null;
         try {
             res = parser.parseArgs(args);
-
-            //Output things
-            System.out.println("\033[1;93m## Arguments ##\033[0m");
-            System.out.printf("URL\t\t:\t%s\n", (String)res.get("url"));
-            System.out.printf("Browser\t\t:\t%s\n", (String)res.get("browser"));
-            System.out.printf("Crawl\t\t:\t%s\n", Boolean.toString(res.get("crawl")));
-            System.out.printf("Max depth\t:\t%s\n", (String)res.get("depth"));
-            System.out.printf("Other domain\t:\t%s\n", Boolean.toString(res.get("other_domain")));
-            System.out.printf("Login file\t:\t%s\n", (String)res.get("login_file"));
-            System.out.printf("Action file\t:\t%s\n", (String)res.get("action_file"));
         } catch (ArgumentParserException e) {
             parser.handleError(e);
             System.exit(1);
@@ -67,27 +67,16 @@ public class Main {
 
         //Parse the arguments
         //To crawl parameter
-        boolean toCrawl = false;
-        if(res.get("crawl") != null){
-            toCrawl = res.get("crawl");
-        }
+        boolean toCrawl = res.get("crawl");
 
         //Depth
-        int depth = -1;
-        if(res.get("depth") != null){
-            try{
-                depth = Integer.parseInt((String)res.get("depth"));
-            }catch(NumberFormatException e){
-                System.err.printf("Invalid value for depth: %s\n", e);
-                System.exit(1);
-            }
-        }
+        int depth = (res.get("depth") == null) ? 0 : res.get("depth");
+
+        //Time
+        int maxDuration = (res.get("time") == null) ? 0 : res.get("time");
 
         //Same domain
-        boolean sameDomain = false;
-        if(res.get("other_domain") != null){
-            sameDomain = !(boolean)res.get("other_domain");
-        }
+        boolean sameDomain = !(boolean)res.get("other_domain");
 
         //Actions
         String file_name = res.get("action_file");
@@ -120,10 +109,10 @@ public class Main {
 
         //URL
         String url = res.get("url");
+        String browser = (String)res.get("browser");
         /* End of argparse */
 
-        //BrowserSelection (We stick with firefox for now)
-        String browser = (String)res.get("browser");          
+        //BrowserSelection (We stick with firefox for now)     
         WebDriver driver = WebBrowserHandler.getDriver(browser);
         if(driver == null){
             System.err.printf("Browser '%s' cannot be found\n", browser);
@@ -137,6 +126,18 @@ public class Main {
         }
         url = uri.toString();
         
+        /* Start of printing argparse arguments */
+        System.out.println("\033[1;93m## Arguments ##\033[0m");
+        System.out.printf("URL\t\t:\t%s\n", url);
+        System.out.printf("Browser\t\t:\t%s\n", browser);
+        System.out.printf("Crawl\t\t:\t%b\n", toCrawl);
+        System.out.printf("Max depth\t:\t%d\n", depth);
+        System.out.printf("Other domain\t:\t%b\n", sameDomain);
+        System.out.printf("Time\t\t:\t%d\n", maxDuration);
+        System.out.printf("Login file\t:\t%s\n", loginfile_name);
+        System.out.printf("Action file\t:\t%s\n", file_name);
+        /* End of printing argparse arguments */
+
         // loginLogoutAction.performLogin(driver, true);
         // for(PageAction p: pageActions){
         //     driver.get(p.getUrl());
@@ -181,6 +182,8 @@ public class Main {
 
         //Start the actual browsing
         BrowserBot browserBot = new BrowserBot(driver, uri.getHost(), urls, loginLogoutAction, pageActions);
-        browserBot.browse(url);
+        browserBot.browse(url, maxDuration);
+
+        driver.quit();
     }
 }
