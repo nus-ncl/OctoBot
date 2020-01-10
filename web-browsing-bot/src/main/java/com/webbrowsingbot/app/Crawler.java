@@ -2,6 +2,7 @@ package com.webbrowsingbot.app;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 //Selenium imports
@@ -17,7 +18,7 @@ public class Crawler{
     private int maxDepth;
     private boolean sameDomain;
     private LoginLogoutAction loginLogoutAction;
-    private ArrayList<LoginLogoutAction> loginLogoutActions;
+    private HashMap<String, LoginLogoutAction> loginLogoutActions;
 
     public Crawler(WebDriver driver, boolean sameDomain){
         this.driver = driver;
@@ -25,9 +26,12 @@ public class Crawler{
         this.visitedUrls = new ArrayList<String>();
     }
 
-    public void setLoginLogoutActions(ArrayList<LoginLogoutAction> loginLogoutActions){
+    public void setLoginLogoutActions(HashMap<String, LoginLogoutAction> loginLogoutActions){
+        if(loginLogoutActions == null){
+            return;
+        }
         //Makes a new instance because this object will modify the variable by removing items
-        this.loginLogoutActions = new ArrayList<LoginLogoutAction>(loginLogoutActions);
+        this.loginLogoutActions = new HashMap<String, LoginLogoutAction>(loginLogoutActions);
     }
 
     public void setDomain(String domain){
@@ -47,12 +51,13 @@ public class Crawler{
         }
 
         if(this.loginLogoutAction != null){
-            performLogout(uri);
+            this.performLogout(uri);
         }
 
         //Gets the next loginLogoutAction
-        this.loginLogoutAction = this.loginLogoutActions.get(this.loginLogoutActions.size()-1);
-        this.loginLogoutActions.remove(this.loginLogoutActions.size()-1);
+        String username = (String)this.loginLogoutActions.keySet().toArray()[0];
+        this.loginLogoutAction = this.loginLogoutActions.get(username);
+        this.loginLogoutActions.remove(username);
 
         String loginUrl = loginLogoutAction.getLoginAction().getUrl();
         if(loginUrl == null){
@@ -60,7 +65,7 @@ public class Crawler{
         }
 
         loginLogoutAction.performLogin(driver, loginUrl);
-        return loginLogoutAction.getUsername();
+        return username;
     }
 
     public boolean performLogout(URI uri){
