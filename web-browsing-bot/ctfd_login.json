@@ -1,7 +1,7 @@
 [{
     "loginAction": 
     {
-        "url": "http://localhost:8000/login",
+        "path": "/login",
         "actions": [
             {"name": "name", "value": ["admin", "john"]},
             {"name": "password", "value": ["admin", "john"]},

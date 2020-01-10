@@ -12,7 +12,7 @@ public class BrowserBot{
     private WebDriver driver;
     private String domain;
     private String loggedInUser;
-    private ArrayList<LoginLogoutAction> loginLogoutActions;
+    private HashMap<String, LoginLogoutAction> loginLogoutActions;
     private ArrayList<PageAction> pageActions;
     private int minTime, maxTime;
 
@@ -28,7 +28,7 @@ public class BrowserBot{
     }
 
     //Constructor #2
-    public BrowserBot(WebDriver driver, String domain, HashMap<String, ArrayList<String>> urls, ArrayList<LoginLogoutAction> loginLogoutActions, ArrayList<PageAction> pageActions){
+    public BrowserBot(WebDriver driver, String domain, HashMap<String, ArrayList<String>> urls, HashMap<String, LoginLogoutAction> loginLogoutActions, ArrayList<PageAction> pageActions){
         this.driver = driver;
         this.domain = domain;
         this.pageActions = pageActions;
@@ -81,14 +81,14 @@ public class BrowserBot{
         }
 
         //Try this logic to do login first
-        if(loggedInUser == null){
-            ArrayList<LoginLogoutAction> allLoginActions = LoginLogoutAction.getAllPossibleLoginActions(url, loginLogoutActions);
-            if(allLoginActions.size() > 0){
-                int randint = (int)(Math.random()*allLoginActions.size());
-                LoginLogoutAction loginAction = allLoginActions.get(randint);
-                loggedInUser = loginAction.performLogin(driver, null);
+        // if(loggedInUser == null){
+            String username = LoginLogoutAction.getRandomUsername(url, loginLogoutActions);
+             if(username != null){
+                LoginLogoutAction loginAction = loginLogoutActions.get(username);
+                loginAction.performLogin(driver, null);
+                loggedInUser = username;
             }
-        }
+        // }
         
         //Do actions
         PageAction pageAction = PageAction.getPageAction(url, pageActions);

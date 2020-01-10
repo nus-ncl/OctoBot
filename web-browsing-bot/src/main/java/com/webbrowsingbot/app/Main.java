@@ -70,10 +70,10 @@ public class Main {
         boolean toCrawl = res.get("crawl");
 
         //Depth
-        int depth = (res.get("depth") == null) ? 0 : res.get("depth");
+        int depth = (res.get("depth") == null) ? -1 : res.get("depth");
 
         //Time
-        int maxDuration = (res.get("time") == null) ? 0 : res.get("time");
+        int maxDuration = (res.get("time") == null) ? -1: res.get("time");
 
         //Same domain
         boolean sameDomain = !(boolean)res.get("other_domain");
@@ -94,7 +94,7 @@ public class Main {
 
         //Login
         String loginfile_name = res.get("login_file");
-        ArrayList<LoginLogoutAction> loginLogoutAction = null;
+        HashMap<String, LoginLogoutAction> loginLogoutAction = null;
         try{
             if(loginfile_name!=null)
                 loginLogoutAction = LoginLogoutAction.parse(new FileReader(loginfile_name));   
