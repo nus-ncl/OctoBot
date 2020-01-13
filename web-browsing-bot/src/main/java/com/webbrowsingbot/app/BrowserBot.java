@@ -58,10 +58,10 @@ public class BrowserBot{
         try{
             this.driver.get(url);
         }catch(org.openqa.selenium.TimeoutException e){
-            System.err.printf("Timeout loading %s: \033[1;31m%s\033[0m\n", url, e);
+            System.err.printf("\033[91mTimeout loading %s: %s\033[0m\n", url, e);
             return false;
         }catch(org.openqa.selenium.WebDriverException e){
-            System.err.printf("Error getting webpage %s: %s\n", url, e);
+            System.err.printf("\033[91mError getting webpage %s: %s\033[0m\n", url, e);
             return false;
         }
 

@@ -110,11 +110,11 @@ public class Crawler{
                 if(loginLogoutAction == null || !path.contains(loginLogoutAction.getLogoutAction().getPath()))
                     this.driver.get(url);
             }catch(org.openqa.selenium.TimeoutException e){
-                System.err.printf("Webpage timeout %s: %s\n", url, e);
+                System.err.printf("\033[91mWebpage timeout %s: %s\033[0m\n", url, e);
                 //this.visitedUrls.add(url); //Saves the URL into the arraylist
                 return;
             }catch(org.openqa.selenium.WebDriverException e){
-                System.err.printf("Error getting page %s: %s\n", url, e);
+                System.err.printf("\033[91mError getting page %s: %s\033[0m\n", url, e);
                 //this.visitedUrls.add(url); //Saves the URL into the arraylist
                 return;
             }

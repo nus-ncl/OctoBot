@@ -17,7 +17,7 @@ public class Utils{
         try{
             return new URI(url);
         }catch(URISyntaxException e){
-            System.err.println(e);
+            System.err.printf("\033[91mError with getting URI object: %s\033[0m\n", e);
             return null;
         }
     }
@@ -36,7 +36,7 @@ public class Utils{
             URI uri = new URI(url);
             return uri.getPath();
         }catch(URISyntaxException e){
-            System.err.printf("Failed to get URI object: %s\n", e);
+            System.err.printf("\033[91mFailed to get URI object: %s\033[0m\n", e);
             return null;
         }
     }
@@ -92,11 +92,11 @@ public class Utils{
             }catch(org.openqa.selenium.StaleElementReferenceException e){
                 //Probably stale element exception
             }catch(Exception e){
-                System.err.printf("Error obtaining href attribute: %s\n", e);
+                System.err.printf("\033[91mError obtaining href attribute: %s\033[0m\n", e);
             }
 
             if(url == null){
-                System.err.println("URL is null");
+                System.err.println("\033[91mURL is null\033[0m");
                 continue;
             }
             //Perform URL sanitisation

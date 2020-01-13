@@ -91,10 +91,10 @@ public class Main {
             if(file_name != null)
                 pageActions = PageAction.parse(new FileReader(file_name));
         }catch(java.io.FileNotFoundException e){
-            System.err.printf("Cannot open file reader: %s\n", e);
+            System.err.printf("\033[91mCannot open file reader: %s\033[0m\n", e);
             System.exit(1);
         }catch(Exception e){
-            System.err.printf("Something went wrong parsing page actions: %s\n", e);
+            System.err.printf("\033[91mSomething went wrong parsing page actions: %s\033[0m\n", e);
             System.exit(1);
         }
 
@@ -105,11 +105,11 @@ public class Main {
             if(loginfile_name!=null)
                 loginLogoutAction = LoginLogoutAction.parse(new FileReader(loginfile_name));   
         }catch(java.io.FileNotFoundException e){
-            System.err.printf("Cannot open file reader: %s\n", e);
+            System.err.printf("\033[91mCannot open file reader: %s\033[0m\n", e);
             System.exit(1);
         }
         catch(Exception e){
-            System.err.printf("Something went wrong parsing login and logout information: %s\n", e);
+            System.err.printf("\033[91mSomething went wrong parsing login and logout information: %s\033[0m\n", e);
             System.exit(1);
         }
 
@@ -141,7 +141,7 @@ public class Main {
         //BrowserSelection (We stick with firefox for now)     
         WebDriver driver = WebBrowserHandler.getDriver(browser, isHeadless);
         if(driver == null){
-            System.err.printf("Browser '%s' cannot be found\n", browser);
+            System.err.printf("\033[91mBrowser '%s' cannot be found\033[0m\n", browser);
             System.exit(1);
         }
 

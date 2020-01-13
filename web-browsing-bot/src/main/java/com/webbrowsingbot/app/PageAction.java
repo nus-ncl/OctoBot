@@ -116,7 +116,7 @@ public class PageAction{
             ArrayList<WebElement> we = (ArrayList<WebElement>)driver.findElements(By.cssSelector(selector));
             if(we.size() == 0){
                 //If the element does not exist, just try another element
-                System.err.printf("Failed to find element: %s\n", selector);
+                System.err.printf("\033[91mFailed to find element: %s\033[0m\n", selector);
                 continue;
             }
 
@@ -157,7 +157,7 @@ public class PageAction{
                     }
                 }
             }catch(Exception e){
-                System.err.printf("Error doing action: %s=%s\n", selector, sentValue);
+                System.err.printf("\033[91mError doing action: %s=%s\033[0m\n", selector, sentValue);
                 continue;
             }
 

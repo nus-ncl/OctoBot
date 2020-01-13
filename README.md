@@ -202,3 +202,6 @@ Answer: Most modern browsers support this feature. Open "inspect element" and ho
 
 **Chrome**
 ![Copying css selector in chrome](resources/gif/CSS_Selector_Chrome.gif)
+
+## Known issues
+* If firefox keeps crashing in docker, adding `--shm-size 2g` or `-v /dev/shm:/dev/shm` to the `docker run` command will stop it from crashing ([More information here](https://github.com/SeleniumHQ/docker-selenium/pull/485))

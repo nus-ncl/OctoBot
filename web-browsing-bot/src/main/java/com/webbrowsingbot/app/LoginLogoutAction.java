@@ -184,7 +184,7 @@ public class LoginLogoutAction {
             try{
                 driver.get(loginUrl);
             }catch(Exception e){
-                System.err.printf("Error getting %s: %s\n", loginUrl, e);
+                System.err.printf("\033[91mError getting %s: %s\033[0m\n", loginUrl, e);
                 return false;
             }
         }
@@ -201,7 +201,7 @@ public class LoginLogoutAction {
             try{
                 driver.get(logoutUrl);
             }catch(Exception e){
-                System.err.printf("Error getting %s: %s\n", logoutUrl, e);
+                System.err.printf("\033[91mError getting %s: %s\033[0m\n", logoutUrl, e);
                 return;
             }
         }
