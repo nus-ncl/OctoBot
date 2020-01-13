@@ -31,6 +31,10 @@ public class Main {
               .metavar("depth")
               .type(Integer.class)
               .help("Depth to crawl website from entrypoint");
+        parser.addArgument("--headless") //Max depth
+              .action(Arguments.storeTrue())
+              .type(Boolean.class)
+              .help("Boolean to launch browser in headless mode");
         parser.addArgument("-o", "--other-domain") //Allow other domain
               .action(Arguments.storeTrue())
               .type(Boolean.class)
@@ -76,6 +80,9 @@ public class Main {
 
         //Same domain
         boolean sameDomain = !(boolean)res.get("other_domain");
+
+        //Headless
+        boolean isHeadless = (boolean)res.get("headless");
 
         //Actions
         String file_name = res.get("action_file");
@@ -124,6 +131,7 @@ public class Main {
         System.out.printf("Browser\t\t:\t%s\n", browser);
         System.out.printf("Crawl\t\t:\t%b\n", toCrawl);
         System.out.printf("Max depth\t:\t%d\n", depth);
+        System.out.printf("Headless\t:\t%b\n", isHeadless);
         System.out.printf("Other domain\t:\t%b\n", sameDomain);
         System.out.printf("Time\t\t:\t%d\n", maxDuration);
         System.out.printf("Login file\t:\t%s\n", loginfile_name);
@@ -131,7 +139,7 @@ public class Main {
         /* End of printing argparse arguments */
 
         //BrowserSelection (We stick with firefox for now)     
-        WebDriver driver = WebBrowserHandler.getDriver(browser);
+        WebDriver driver = WebBrowserHandler.getDriver(browser, isHeadless);
         if(driver == null){
             System.err.printf("Browser '%s' cannot be found\n", browser);
             System.exit(1);
@@ -167,7 +175,7 @@ public class Main {
 
             driver.quit();
 
-            driver = WebBrowserHandler.getDriver(browser);
+            driver = WebBrowserHandler.getDriver(browser, isHeadless);
         }
 
         // Start the actual browsing

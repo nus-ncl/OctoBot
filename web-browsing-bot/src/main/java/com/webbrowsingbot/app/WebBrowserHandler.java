@@ -19,7 +19,7 @@ public class WebBrowserHandler{
         jarFilePath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
     }
 
-    public static WebDriver getDriver(String browser) throws Exception{
+    public static WebDriver getDriver(String browser, boolean headless) throws Exception{
         if(jarFilePath == null){
             getJarFilePath();
         }
@@ -31,20 +31,30 @@ public class WebBrowserHandler{
         WebDriver driver = null;
         switch(browser){
             case "firefox":
+                //Set property
                 System.setProperty("webdriver.gecko.driver", jarFilePath+"/drivers/geckodriver");
                 System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null"); //Disable output
-                
+
+                //Set options
                 FirefoxOptions options = new FirefoxOptions();
-                options.setHeadless(true);
+                if(headless) {
+                    options.setHeadless(true);
+                }
 
                 driver = new FirefoxDriver(options);
                 break;
             
             case "chrome":
+                //Set property
                 System.setProperty("webdriver.chrome.driver", jarFilePath+"/drivers/chromedriver");
                 System.setProperty("webdriver.chrome.silentOutput", "true");
+
+                //Chrome options
                 ChromeOptions chromeOptions = new ChromeOptions();
-                chromeOptions.setHeadless(true);
+                if(headless){
+                    chromeOptions.setHeadless(true);
+                }
+                // This is for chrome to launch properly
                 chromeOptions.addArguments("--no-sandbox", "--disable-dev-shm-usage");
                 driver = new ChromeDriver(chromeOptions);
                 break;
