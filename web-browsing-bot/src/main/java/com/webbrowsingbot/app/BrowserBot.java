@@ -118,7 +118,8 @@ public class BrowserBot{
     }
 
     public void browseNoCrawl(String url, int duration){
-        String prevPage = url;
+        String prevPage = "";
+        String baseUrl = url;
         LocalDateTime endTime = Utils.calculateEndTime(duration);
         while(Utils.haveTime(endTime)){
             //Validate the URL first
@@ -143,7 +144,14 @@ public class BrowserBot{
 
             // If there are no links on that page.
             if(linksInPage == null || linksInPage.size() <= 0){
-                url = prevPage; // GOes to the previous page
+                //DEBUG
+
+                //Prevents it from infinite looping
+                if(url.equals(prevPage)){
+                    url = baseUrl;
+                }else {
+                    url = prevPage; // Goes to the previous page
+                }
                 continue;
             }
 

@@ -6,11 +6,8 @@ import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -108,19 +105,30 @@ public class PageAction{
 
             //Wait for 3 seconds or until the element is clickable
             try{
-                new WebDriverWait(driver, 3).ignoring(StaleElementReferenceException.class).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
+                new WebDriverWait(driver, 3).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
             }catch(Exception e){
                 //Dont show the error
             }
 
             //Obtain the elements
-            ArrayList<WebElement> we = (ArrayList<WebElement>)driver.findElements(By.cssSelector(selector));
-            if(we.size() == 0){
-                //If the element does not exist, just try another element
-                System.err.printf("\033[91mFailed to find element: %s\033[0m\n", selector);
+            WebElement webElement = null;
+            try {
+                webElement = (WebElement)driver.findElement(By.cssSelector(selector));
+            }catch(NoSuchElementException e){
+                System.err.printf("\033[91mNo such element: %s\033[0m%n", selector);
                 continue;
             }
 
+            if(webElement == null){
+                continue;
+            }
+
+            try {
+                new WebDriverWait(driver, 3)
+                    .until(ExpectedConditions.elementToBeClickable(webElement));
+            }catch(TimeoutException e){
+                //Ignore and don't print error message
+            }
             //Decide what to do with the element
             String sentValue = null; //DEBUG Things
             String finalAction = null;
@@ -131,20 +139,17 @@ public class PageAction{
 
                     if(action.equalsIgnoreCase("click")){
                         sentValue = "click";
-                        for(WebElement e: we){
-                            e.click();
-                        }
+                        webElement.click();
                     }
                 }else if(d.get("key") != null){
                     finalAction = "Key";
                     String key = Utils.chooseItem(d.get("key"), randint);
                     String[] keyArr = key.split(" ");
 
-                    for(WebElement e: we){
-                        sentValue = key;
-                        for(String k: keyArr){
-                            e.sendKeys(Keys.valueOf(k));
-                        }
+                    sentValue = key;
+                    for(String k: keyArr){
+                        webElement.sendKeys(Keys.valueOf(k));
+
                     }
                 }
                 else if(d.get("value") != null){
@@ -153,10 +158,11 @@ public class PageAction{
                     String finalValue = Utils.chooseItem(d.get("value"), randint);
 
                     sentValue = finalValue;
-                    for(WebElement e: we){
-                        e.sendKeys(finalValue);
-                    }
+                    webElement.sendKeys(finalValue);
                 }
+            }catch(org.openqa.selenium.ElementNotVisibleException e){
+                System.err.printf("\033[91mElement not visible: %s\033[0m\n", selector);
+                continue;
             }catch(Exception e){
                 System.err.printf("\033[91mError doing action: %s\033[0m\n", e);
                 continue;
