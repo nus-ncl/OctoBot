@@ -6,7 +6,7 @@ echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee
 
 #Install softwares
 RUN apt-get update 
-RUN apt-get install firefox-esr google-chrome-stable -y # xvfb -y
+RUN apt-get install firefox-esr google-chrome-stable -y
 
 #Copies the actual jar file over
 COPY web-browsing-bot/target/build/*.jar /bot/
