@@ -6,7 +6,7 @@ echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee
 
 #Install softwares
 RUN apt-get update 
-RUN apt-get install firefox-esr google-chrome-stable xvfb -y
+RUN apt-get install firefox-esr google-chrome-stable -y # xvfb -y
 
 #Copies the actual jar file over
 COPY web-browsing-bot/target/build/*.jar /bot/
@@ -14,6 +14,6 @@ COPY web-browsing-bot/target/build/lib/* /bot/lib/
 COPY web-browsing-bot/target/build/drivers/* /bot/drivers/
 
 #Copy entrypoint file
-COPY entrypoint.sh /usr/sbin/
+#COPY entrypoint.sh /usr/sbin/
 
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["java", "-jar", "/bot/WebBrowsingBot.jar"]
