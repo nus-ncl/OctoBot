@@ -112,6 +112,7 @@ public class PageAction{
             }catch(Exception e){
                 //Dont show the error
             }
+
             //Obtain the elements
             ArrayList<WebElement> we = (ArrayList<WebElement>)driver.findElements(By.cssSelector(selector));
             if(we.size() == 0){
@@ -157,7 +158,7 @@ public class PageAction{
                     }
                 }
             }catch(Exception e){
-                System.err.printf("\033[91mError doing action: %s=%s\033[0m\n", selector, sentValue);
+                System.err.printf("\033[91mError doing action: %s\033[0m\n", e);
                 continue;
             }
 
