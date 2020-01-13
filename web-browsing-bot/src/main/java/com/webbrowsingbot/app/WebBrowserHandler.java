@@ -35,13 +35,8 @@ public class WebBrowserHandler{
                 System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null"); //Disable output
                 
                 FirefoxOptions options = new FirefoxOptions();
-                FirefoxProfile profile = new FirefoxProfile();
-                profile.setPreference("browser.download.folderList", 2);
-                profile.setPreference("browser.download.dir", "/home/whyare/Downloads");
-                profile.setPreference("browser.download.manager.showWhenStarting",false);
-                profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip");
-   
-                options.setProfile(profile);
+                options.setHeadless(true);
+
                 driver = new FirefoxDriver(options);
                 break;
             
@@ -49,6 +44,7 @@ public class WebBrowserHandler{
                 System.setProperty("webdriver.chrome.driver", jarFilePath+"/drivers/chromedriver");
                 System.setProperty("webdriver.chrome.silentOutput", "true");
                 ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.setHeadless(true);
                 chromeOptions.addArguments("--no-sandbox", "--disable-dev-shm-usage");
                 driver = new ChromeDriver(chromeOptions);
                 break;
