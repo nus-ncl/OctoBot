@@ -89,10 +89,16 @@ public class Utils{
             String url = "";
             try{
                 url = we.getAttribute("href");
-            }catch(Exception e){
+            }catch(org.openqa.selenium.StaleElementReferenceException e){
                 //Probably stale element exception
+            }catch(Exception e){
+                System.err.printf("Error obtaining href attribute: %s\n", e);
             }
 
+            if(url == null){
+                System.err.println("URL is null");
+                continue;
+            }
             //Perform URL sanitisation
             url = url.trim();
             url = url.split("#")[0];

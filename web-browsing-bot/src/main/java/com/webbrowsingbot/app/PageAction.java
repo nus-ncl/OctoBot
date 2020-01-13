@@ -121,37 +121,48 @@ public class PageAction{
             }
 
             //Decide what to do with the element
+            String sentValue = null; //DEBUG Things
+            String finalAction = null;
             try{
                 if(d.get("action") != null){
+                    finalAction = "Click";
                     String action = Utils.chooseItem(d.get("action"), randint);
 
                     if(action.equalsIgnoreCase("click")){
+                        sentValue = "click";
                         for(WebElement e: we){
                             e.click();
                         }
                     }
                 }else if(d.get("key") != null){
+                    finalAction = "Key";
                     String key = Utils.chooseItem(d.get("key"), randint);
                     String[] keyArr = key.split(" ");
 
                     for(WebElement e: we){
+                        sentValue = key;
                         for(String k: keyArr){
                             e.sendKeys(Keys.valueOf(k));
                         }
                     }
                 }
                 else if(d.get("value") != null){
+                    finalAction = "Fill";
                     //Obtain the value string
                     String finalValue = Utils.chooseItem(d.get("value"), randint);
-                    
+
+                    sentValue = finalValue;
                     for(WebElement e: we){
                         e.sendKeys(finalValue);
                     }
                 }
             }catch(Exception e){
-                System.err.printf("Error doing action: %s\n", e);
+                System.err.printf("Error doing action: %s=%s\n", selector, sentValue);
                 continue;
             }
+
+            //DEBUG Things
+            System.out.printf("%s: %s=%s\n", finalAction, selector, sentValue);
         }
     }
 }

@@ -50,6 +50,7 @@ public class BrowserBot{
         }else{
             this.browseNoCrawl(url, duration);
         }
+        System.out.printf("\033[1;36mTerminating because %d seconds are over %n\033[0m", duration);
     }
 
     public boolean processPage(String url){
@@ -65,12 +66,10 @@ public class BrowserBot{
         }
 
         //Logout things.
-        if(loggedInUser != null){
-            LoginLogoutAction logoutAction = LoginLogoutAction.getUserLogoutAction(url, loggedInUser, loginLogoutActions);
-            if(logoutAction != null){
-                logoutAction.performLogout(driver, null);
-                loggedInUser = null;
-            }
+        LoginLogoutAction logoutAction = LoginLogoutAction.getUserLogoutAction(url, loggedInUser, loginLogoutActions);
+        if(logoutAction != null){
+            logoutAction.performLogout(driver, null);
+            loggedInUser = null;
         }
 
         if(driver.getCurrentUrl().equals(url)){
@@ -81,14 +80,12 @@ public class BrowserBot{
         }
 
         //Try this logic to do login first
-        // if(loggedInUser == null){
-            String username = LoginLogoutAction.getRandomUsername(url, loginLogoutActions);
-             if(username != null){
-                LoginLogoutAction loginAction = loginLogoutActions.get(username);
-                loginAction.performLogin(driver, null);
-                loggedInUser = username;
-            }
-        // }
+        String username = LoginLogoutAction.getRandomUsername(url, loginLogoutActions);
+        if(username != null){
+            LoginLogoutAction loginAction = loginLogoutActions.get(username);
+            loginAction.performLogin(driver, null);
+            loggedInUser = username;
+        }
         
         //Do actions
         PageAction pageAction = PageAction.getPageAction(url, pageActions);

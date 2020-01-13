@@ -1,6 +1,5 @@
 package com.webbrowsingbot.app;
 
-import com.webbrowsingbot.app.PageAction;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.FileReader;
@@ -75,6 +74,10 @@ public class LoginLogoutAction {
     }
 
     public static LoginLogoutAction getUserLogoutAction(String url, String username, HashMap<String, LoginLogoutAction> loginLogoutActions){
+        if(loginLogoutActions == null){
+            return null;
+        }
+        
         LoginLogoutAction loginLogoutAction = loginLogoutActions.get(username);
 
         if(loginLogoutAction == null){

@@ -4,10 +4,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 //Selenium imports
 import org.openqa.selenium.By;
-//import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -46,7 +44,7 @@ public class Crawler{
     }
 
     public String performLogin(URI uri){
-        if(loginLogoutActions == null || loginLogoutActions.size() <= 0){
+        if(this.loginLogoutActions == null || this.loginLogoutActions.size() <= 0){
             return null;
         }
 
@@ -59,17 +57,17 @@ public class Crawler{
         this.loginLogoutAction = this.loginLogoutActions.get(username);
         this.loginLogoutActions.remove(username);
 
-        String loginUrl = loginLogoutAction.getLoginAction().getUrl();
+        String loginUrl = this.loginLogoutAction.getLoginAction().getUrl();
         if(loginUrl == null){
-            loginUrl = craftLoginLogoutUrl(uri, loginLogoutAction.getLoginAction().getPath());
+            loginUrl = craftLoginLogoutUrl(uri, this.loginLogoutAction.getLoginAction().getPath());
         }
 
-        loginLogoutAction.performLogin(driver, loginUrl);
+        this.loginLogoutAction.performLogin(this.driver, loginUrl);
         return username;
     }
 
     public boolean performLogout(URI uri){
-        if(this.loginLogoutAction == null){
+        if(loginLogoutAction == null){
             return false;
         }
 

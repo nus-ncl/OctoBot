@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 //Argparse4j imports
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
@@ -112,20 +111,13 @@ public class Main {
         String browser = (String)res.get("browser");
         /* End of argparse */
 
-        //BrowserSelection (We stick with firefox for now)     
-        WebDriver driver = WebBrowserHandler.getDriver(browser);
-        if(driver == null){
-            System.err.printf("Browser '%s' cannot be found\n", browser);
-            System.exit(1);
-        }
-        
         //Parse into URI
         URI uri = Utils.parseURLtoURI(url);
         if(uri == null){
             System.exit(1);
         }
         url = uri.toString();
-        
+
         /* Start of printing argparse arguments */
         System.out.println("\033[1;93m## Arguments ##\033[0m");
         System.out.printf("URL\t\t:\t%s\n", url);
@@ -138,14 +130,13 @@ public class Main {
         System.out.printf("Action file\t:\t%s\n", file_name);
         /* End of printing argparse arguments */
 
-        // loginLogoutAction.performLogin(driver, true);
-        // for(PageAction p: pageActions){
-        //     driver.get(p.getUrl());
-        //     p.doActions(driver);
-        // }
-        // driver.quit();
-        // System.exit(0);
-        
+        //BrowserSelection (We stick with firefox for now)     
+        WebDriver driver = WebBrowserHandler.getDriver(browser);
+        if(driver == null){
+            System.err.printf("Browser '%s' cannot be found\n", browser);
+            System.exit(1);
+        }
+
         //Crawler section
         HashMap<String, ArrayList<String>> urls = null;
         if(toCrawl){
@@ -173,17 +164,17 @@ public class Main {
 
             System.out.println("\033[1;36mCrawled links:\033[0m");
             System.out.println(urls);
-            //Utils.printVisitedLinks(urls.toArray(new String[urls.size()]), urlsRequireLogin.toArray(new String[urlsRequireLogin.size()]));
 
             driver.quit();
 
             driver = WebBrowserHandler.getDriver(browser);
         }
 
-        //Start the actual browsing
+        // Start the actual browsing
         BrowserBot browserBot = new BrowserBot(driver, uri.getHost(), urls, loginLogoutAction, pageActions);
         browserBot.browse(url, maxDuration);
 
+        // After finish browsing, quit
         driver.quit();
     }
 }

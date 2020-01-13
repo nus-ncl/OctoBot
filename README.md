@@ -21,8 +21,7 @@ whyare@BrowsingBot:~/webbrowsingbot$ ./build.sh
 ## Usage
 View all the options
 ```console
-whyare@BrowsingBot:~$ sudo docker run -it browsing-bot -h
-usage: prog [-h] [-b browser_name] [-c] [-d depth] [-l login_file] [-a action_file] url
+usage: prog [-h] [-b browser_name] [-c] [-d depth] [-o] [-t TIME] [-l login_file] [-a action_file] url
 
 Bot that browses the web
 
@@ -35,7 +34,9 @@ named arguments:
                          Browser to utilise
   -c, --crawl            Boolean on whether to crawl first or not
   -d depth, --depth depth
-                         Max depth to crawl
+                         Depth to crawl website from entrypoint
+  -o, --other-domain     Allow to crawl to different domain
+  -t TIME, --time TIME   Max time to browse (seconds)
   -l login_file, --login-file login_file
                          File that contains login credentials
   -a action_file, --action-file action_file
