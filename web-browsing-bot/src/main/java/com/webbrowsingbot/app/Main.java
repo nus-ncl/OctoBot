@@ -5,14 +5,16 @@ import java.io.FileReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+//Selenium imports
+import org.openqa.selenium.WebDriver;
+
 //Argparse4j imports
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
-//Selenium imports
-import org.openqa.selenium.WebDriver;
 
 public class Main {
     public static ArgumentParser createArgumentParser(){

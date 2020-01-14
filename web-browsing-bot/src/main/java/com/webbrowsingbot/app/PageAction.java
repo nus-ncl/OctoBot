@@ -1,13 +1,19 @@
 package com.webbrowsingbot.app;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.openqa.selenium.*;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -134,16 +140,23 @@ public class PageAction{
             String finalAction = null;
             try{
                 if(d.get("action") != null){
-                    finalAction = "Click";
-                    String action = Utils.chooseItem(d.get("action"), randint);
+                    String action = Utils.chooseItem(d.get("action"), randint).toLowerCase();
+                    String[] actions = action.split(" ");
 
-                    if(action.equalsIgnoreCase("click")){
-                        sentValue = "click";
-                        webElement.click();
+                    finalAction = "Action";
+                    sentValue = action;
+                    for(String a: actions){
+                        if(a.equals("click")){
+                            webElement.click();
+                        }else if(a.equals("clear")){
+                            webElement.clear();
+                        }else if(a.equals("submit")){
+                            webElement.submit();
+                        }
                     }
                 }else if(d.get("key") != null){
                     finalAction = "Key";
-                    String key = Utils.chooseItem(d.get("key"), randint);
+                    String key = Utils.chooseItem(d.get("key"), randint).toUpperCase();
                     String[] keyArr = key.split(" ");
 
                     sentValue = key;

@@ -1,10 +1,10 @@
 package com.webbrowsingbot.app;
 
-import java.lang.Math;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.WebDriver;
 
 //This bot will randomly browse webpages
