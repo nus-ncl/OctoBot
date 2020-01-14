@@ -6,8 +6,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -89,6 +91,10 @@ public class Utils{
             linkElements = driver.findElements(By.cssSelector("a[href]"));
         }catch(TimeoutException e){
             System.err.printf("\033[91mTimeoutException: Cannot find links in %s\033[0m%n", driver.getCurrentUrl());
+        }catch(UnhandledAlertException e){
+            System.err.printf("Unhandled alert exception: Trying to close the alert%n");
+            Alert alert = driver.switchTo().alert();
+            alert.accept();
         }catch(Exception e){
             System.err.printf("\033[91mError getting links: %s\033[0m%n", e);
         }
