@@ -103,7 +103,7 @@ There are 3 types of selectors in this file: id, name and css
 ##### Action
 There are 3 types of actions: value, action, key
 * **value** - The provided value will fill the selected element using the [sendKeys()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#sendKeys-java.lang.CharSequence...- "sendKeys() documentation") method. The value of this attribute can be a **string** or an **array of strings**.
-* **action** - The provided action will be done on the selected element. Currently only "[click](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#click-- "click() documentation")" is supported. 
+* **action** - The provided action will be done on the selected element. The possible values are [click](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#click--), [clear](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#clear--) or [submit](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html#submit--).  
 * **key** - Space-separated name of the enum constant that will be passed into [valueOf()](https://selenium.dev/selenium/docs/api/java/org/openqa/selenium/Keys.html#valueOf-java.lang.String-) method to be executed on the selected element.
 
 All of these are acceptable values for the actions property.

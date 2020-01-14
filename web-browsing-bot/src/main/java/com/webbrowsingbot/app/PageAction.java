@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
@@ -173,12 +175,12 @@ public class PageAction{
                     sentValue = finalValue;
                     webElement.sendKeys(finalValue);
                 }
-            }catch(org.openqa.selenium.ElementNotVisibleException e){
+            }catch(ElementNotVisibleException e){
                 System.err.printf("\033[91mElement not visible: %s\033[0m\n", selector);
-                continue;
+            }catch(InvalidElementStateException e){
+                System.err.printf("\033[91mInvalid element state exception: %s\033[0m\n", selector);
             }catch(Exception e){
                 System.err.printf("\033[91mError doing action: %s\033[0m\n", e);
-                continue;
             }
 
             //DEBUG Things

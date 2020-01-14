@@ -102,6 +102,7 @@ public class Utils{
 
         for(WebElement we: linkElements){
             String url = "";
+
             try{
                 url = we.getAttribute("href");
             }catch(org.openqa.selenium.StaleElementReferenceException e){

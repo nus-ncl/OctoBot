@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 
 //This bot will randomly browse webpages
@@ -45,11 +47,18 @@ public class BrowserBot{
 
     /* This function will take in a */
     public void browse(String url, int duration){
-        if(this.urls != null){
-            this.browseWithCrawl(duration);
-        }else{
-            this.browseNoCrawl(url, duration);
+        try{
+            if(this.urls != null){
+                this.browseWithCrawl(duration);
+            }else{
+                this.browseNoCrawl(url, duration);
+            }
+        }catch(UnhandledAlertException e){
+            System.err.printf("Unhandled alert exception: Trying to close the alert%n");
+            Alert alert = driver.switchTo().alert();
+            alert.accept();
         }
+        
         System.out.printf("\033[1;36mTerminating because %d seconds are over %n\033[0m", duration);
     }
 
@@ -148,6 +157,10 @@ public class BrowserBot{
             // If there are no links on that page.
             if(linksInPage == null || linksInPage.size() <= 0) {
                 goBack = true;
+            }else if(linksInPage.size() == 1){ //If there is only one choice
+                if(url.equals(linksInPage.get(0))){ //If there is only one link, and the one link is the current URL, go back
+                    goBack = true;
+                }
             }
             else {
                 //Choose a link to go into
