@@ -20,9 +20,9 @@ public class Main {
                                 .description("Bot that browses the web");
         parser.addArgument("-b", "--browser") //Browser
               .metavar("browser_name")
-              .setDefault("firefox")
+              .setDefault("chrome")
               .type(String.class)
-              .help("Browser to utilise");
+              .help("Browser to utilise (Default chrome)");
         parser.addArgument("-c", "--crawl") //Crawl first or not
               .action(Arguments.storeTrue())
               .type(Boolean.class)
@@ -31,7 +31,7 @@ public class Main {
               .metavar("depth")
               .type(Integer.class)
               .help("Depth to crawl website from entrypoint");
-        parser.addArgument("--headless") //Max depth
+        parser.addArgument("-H", "--headless") //Max depth
               .action(Arguments.storeTrue())
               .type(Boolean.class)
               .help("Boolean to launch browser in headless mode");
@@ -42,6 +42,9 @@ public class Main {
         parser.addArgument("-t", "--time") //Time to browse
               .type(Integer.class)
               .help("Max time to browse (seconds)");
+        parser.addArgument("-u", "--user-agent") //Time to browse
+              .type(String.class)
+              .help("User agent to use");
         parser.addArgument("-l", "--login-file")
               .type(String.class)
               .metavar("login_file")
@@ -116,6 +119,7 @@ public class Main {
         //URL
         String url = res.get("url");
         String browser = (String)res.get("browser");
+        String userAgent = (String)res.get("user_agent");
         /* End of argparse */
 
         //Parse into URI
@@ -134,12 +138,13 @@ public class Main {
         System.out.printf("Headless\t:\t%b\n", isHeadless);
         System.out.printf("Other domain\t:\t%b\n", sameDomain);
         System.out.printf("Time\t\t:\t%d\n", maxDuration);
+        System.out.printf("User agent\t:\t%s\n", userAgent);
         System.out.printf("Login file\t:\t%s\n", loginfile_name);
         System.out.printf("Action file\t:\t%s\n", file_name);
         /* End of printing argparse arguments */
 
         //BrowserSelection (We stick with firefox for now)     
-        WebDriver driver = WebBrowserHandler.getDriver(browser, isHeadless);
+        WebDriver driver = WebBrowserHandler.getDriver(browser, userAgent, isHeadless);
         if(driver == null){
             System.err.printf("\033[91mBrowser '%s' cannot be found\033[0m\n", browser);
             System.exit(1);
@@ -175,7 +180,7 @@ public class Main {
 
             driver.quit();
 
-            driver = WebBrowserHandler.getDriver(browser, isHeadless);
+            driver = WebBrowserHandler.getDriver(browser, userAgent, isHeadless);
         }
 
         // Start the actual browsing
