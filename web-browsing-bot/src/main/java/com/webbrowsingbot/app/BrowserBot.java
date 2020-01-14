@@ -118,16 +118,20 @@ public class BrowserBot{
     }
 
     public void browseNoCrawl(String url, int duration){
-        String prevPage = "";
-        String baseUrl = url;
+        // Declare variables (All the Urls)
+        String prevUrl = "", nextUrl = "", baseUrl = url;
+
+        // Time things
         LocalDateTime endTime = Utils.calculateEndTime(duration);
         while(Utils.haveTime(endTime)){
+            //Important boolean variable
+            boolean goBack = false;
+
             //Validate the URL first
             boolean inBlacklist = blacklistUrls.contains(url);
             if(inBlacklist){
                 // Go back to previous page
-                url = prevPage;
-                continue;
+                goBack = true;
             }
 
             //Process the page
@@ -135,33 +139,40 @@ public class BrowserBot{
             if(!successful){
                 blacklistUrls.add(url);
                 // Go back to previous page
-                url = prevPage;
-                continue;
+                goBack = true;
             }
 
             //Find links in page
             ArrayList<String> linksInPage = Utils.getLinks(this.driver, this.domain, this.blacklistUrls);
 
             // If there are no links on that page.
-            if(linksInPage == null || linksInPage.size() <= 0){
-                //DEBUG
-
-                //Prevents it from infinite looping
-                if(url.equals(prevPage)){
-                    url = baseUrl;
-                }else {
-                    url = prevPage; // Goes to the previous page
-                }
-                continue;
+            if(linksInPage == null || linksInPage.size() <= 0) {
+                goBack = true;
+            }
+            else {
+                //Choose a link to go into
+                int randint = (int) (linksInPage.size() * Math.random());
+                nextUrl = linksInPage.get(randint);
             }
 
+            //Configure the URL to go back if goBack is true
+            if(goBack) {
+                // Randomness will dictate whether the browser bot will go in a loop. The more times it loops, the higher chance it has to breaking out of the loop.
+                int randint = (int)(Math.random()*2);
+                if(randint <= 0){
+                    nextUrl = prevUrl;
+                }else{
+                    nextUrl = baseUrl;
+                }
+            }
+
+            /* Preps the loop for the next iteration */
             //Save prev page
-            prevPage = url;
+            prevUrl = url;
+            //Loads next page
+            url = nextUrl;
 
-            //Choose a link to go into
-            int randint = (int)(linksInPage.size()*Math.random());
-            url = linksInPage.get(randint);
-
+            //Sleep a while
             int sleepDuration = (int)((maxTime-minTime)*Math.random())+minTime;
             try{
                 TimeUnit.MILLISECONDS.sleep(sleepDuration);
