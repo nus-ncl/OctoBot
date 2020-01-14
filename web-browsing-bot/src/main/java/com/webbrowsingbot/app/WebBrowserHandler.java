@@ -10,7 +10,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.FirefoxProfile;
 
 public class WebBrowserHandler{
     private static String jarFilePath = null;
@@ -19,7 +18,7 @@ public class WebBrowserHandler{
         jarFilePath = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
     }
 
-    public static WebDriver getDriver(String browser, boolean headless) throws Exception{
+    public static WebDriver getDriver(String browser, String userAgent, boolean headless) throws Exception{
         if(jarFilePath == null){
             getJarFilePath();
         }
@@ -36,14 +35,19 @@ public class WebBrowserHandler{
                 System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null"); //Disable output
 
                 //Set options
-                FirefoxOptions options = new FirefoxOptions();
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
                 if(headless) {
-                    options.setHeadless(true);
+                    firefoxOptions.setHeadless(true);
                 }
 
-                driver = new FirefoxDriver(options);
+                //Setting up user agent
+                if(userAgent != null){
+                    firefoxOptions.addPreference("general.useragent.override", userAgent);
+                }
+
+                driver = new FirefoxDriver(firefoxOptions);
                 break;
-            
+
             case "chrome":
                 //Set property
                 System.setProperty("webdriver.chrome.driver", jarFilePath+"/drivers/chromedriver");
@@ -51,9 +55,16 @@ public class WebBrowserHandler{
 
                 //Chrome options
                 ChromeOptions chromeOptions = new ChromeOptions();
+                //If headless
                 if(headless){
                     chromeOptions.setHeadless(true);
                 }
+
+                //If user creates his own userAgent
+                if(userAgent != null){
+                    chromeOptions.addArguments(String.format("user-agent=%s", userAgent));
+                }
+
                 // This is for chrome to launch properly
                 chromeOptions.addArguments("--no-sandbox", "--disable-dev-shm-usage");
                 driver = new ChromeDriver(chromeOptions);

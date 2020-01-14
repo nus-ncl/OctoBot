@@ -1,9 +1,11 @@
 package com.webbrowsingbot.app;
 
+//Java imports
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 //Selenium imports
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

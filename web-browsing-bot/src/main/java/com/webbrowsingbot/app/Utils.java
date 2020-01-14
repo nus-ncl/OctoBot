@@ -5,7 +5,9 @@ import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -80,10 +82,23 @@ public class Utils{
 
     public static ArrayList<String> getLinks(WebDriver driver, String domain, ArrayList<String> blacklistUrl, boolean sameDomain){
         //This portion finds easy links (means anchor tag with href)
-        List<WebElement> linkElements = driver.findElements(By.cssSelector("a[href]"));
+        List<WebElement> linkElements = null;
         
+        //This may throw timeout exception because implicit wait is set
+        try{
+            linkElements = driver.findElements(By.cssSelector("a[href]"));
+        }catch(TimeoutException e){
+            System.err.printf("\033[91mTimeoutException: Cannot find links in %s\033[0m%n", driver.getCurrentUrl());
+        }catch(Exception e){
+            System.err.printf("\033[91mError getting links: %s\033[0m%n", e);
+        }
+
         //Final output variable
         ArrayList<String> linksInPage = new ArrayList<String>();
+
+        if(linkElements == null){
+            return linksInPage;
+        }
 
         for(WebElement we: linkElements){
             String url = "";
