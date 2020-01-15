@@ -17,16 +17,6 @@ import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
 public class Main {
-    public static void sigintListener(){
-        Runtime.getRuntime().addShutdownHook(new Thread()
-        {
-            @Override
-            public void run()
-            {
-                System.out.printf("\033[1;36mGracefully terminating program\033[0m%n");
-            }
-        });
-    }
     public static ArgumentParser createArgumentParser(){
         ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                                 .description("Bot that browses the web");
@@ -47,6 +37,10 @@ public class Main {
               .action(Arguments.storeTrue())
               .type(Boolean.class)
               .help("Boolean to launch browser in headless mode");
+        parser.addArgument("-L", "--log") //Max depth
+              .action(Arguments.storeTrue())
+              .type(Boolean.class)
+              .help("Boolean on whether to log");
         parser.addArgument("-o", "--other-domain") //Allow other domain
               .action(Arguments.storeTrue())
               .type(Boolean.class)
@@ -72,8 +66,6 @@ public class Main {
     }
 
     public static void main(String[] args)throws Exception {
-        sigintListener();
-
         /* Start of argparse */
         //Parse arguments using argparse4j
         ArgumentParser parser = createArgumentParser();

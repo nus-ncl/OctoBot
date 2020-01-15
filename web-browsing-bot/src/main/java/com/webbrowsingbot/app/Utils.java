@@ -82,6 +82,7 @@ public class Utils{
         return getLinks(driver, domain, blacklistUrl, true);
     }
 
+    //Returns null for problems, empty list for no links, or list of urls
     public static ArrayList<String> getLinks(WebDriver driver, String domain, ArrayList<String> blacklistUrl, boolean sameDomain){
         //This portion finds easy links (means anchor tag with href)
         List<WebElement> linkElements = null;
@@ -90,13 +91,15 @@ public class Utils{
         try{
             linkElements = driver.findElements(By.cssSelector("a[href]"));
         }catch(TimeoutException e){
-            System.err.printf("\033[91mTimeoutException: Cannot find links in %s\033[0m%n", driver.getCurrentUrl());
+            System.err.printf("\033[91mTimeoutException: Cannot find links\033[0m%n");
+            return null;
         }catch(UnhandledAlertException e){
-            System.err.printf("Unhandled alert exception: Trying to close the alert%n");
+            System.err.printf("\033[91mUnhandled alert exception: Trying to close the alert\033[0m%n");
             Alert alert = driver.switchTo().alert();
             alert.accept();
         }catch(Exception e){
             System.err.printf("\033[91mError getting links: %s\033[0m%n", e);
+            return null;
         }
 
         //Final output variable
