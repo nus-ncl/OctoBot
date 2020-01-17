@@ -101,15 +101,7 @@ public class BrowserBot{
 
     public void browseWithCrawl(int duration){
         LocalDateTime endTime = Utils.calculateEndTime(duration);
-        while(Utils.haveTime(endTime)){
-            //Choose a random page to visit
-            ArrayList<String> arrOfUrls = urls.get(loggedInUser);
-            int randint = (int)(Math.random()*arrOfUrls.size());
-            String url = arrOfUrls.get(randint);
-            
-            //Process the page
-            this.processPage(url);
-            
+        while(Utils.haveTime(endTime)){            
             //Sleep a bit
             int sleepDuration = (int)((maxTime-minTime)*Math.random())+minTime;
             try{
@@ -117,6 +109,14 @@ public class BrowserBot{
             }catch(Exception e){
                 System.err.println("Somehow failed to sleep(?)");
             }
+
+            //Choose a random page to visit
+            ArrayList<String> arrOfUrls = urls.get(loggedInUser);
+            int randint = (int)(Math.random()*arrOfUrls.size());
+            String url = arrOfUrls.get(randint);
+            
+            //Process the page
+            this.processPage(url);
         }
     }
 
@@ -127,6 +127,14 @@ public class BrowserBot{
         // Time things
         LocalDateTime endTime = Utils.calculateEndTime(duration);
         while(Utils.haveTime(endTime)){
+            //Sleep a while
+            int sleepDuration = (int)((maxTime-minTime)*Math.random())+minTime;
+            try{
+                TimeUnit.MILLISECONDS.sleep(sleepDuration);
+            }catch(Exception e){
+                System.err.printf("Failed to sleep: %s\n", e);
+            }
+
             //Important boolean variable
             boolean goBack = false;
 
@@ -176,14 +184,6 @@ public class BrowserBot{
             prevUrl = url;
             //Loads next page
             url = nextUrl;
-
-            //Sleep a while
-            int sleepDuration = (int)((maxTime-minTime)*Math.random())+minTime;
-            try{
-                TimeUnit.MILLISECONDS.sleep(sleepDuration);
-            }catch(Exception e){
-                System.err.printf("Failed to sleep: %s\n", e);
-            }
         }
     }
 }
