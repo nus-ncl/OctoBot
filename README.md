@@ -205,3 +205,5 @@ Answer: Most modern browsers support this feature. Open "inspect element" and ho
 
 ## Known issues
 * If firefox keeps crashing in docker, adding `--shm-size 2g` or `-v /dev/shm:/dev/shm` to the `docker run` command will stop it from crashing ([More information here](https://github.com/SeleniumHQ/docker-selenium/pull/485))
+* Logging into google does not work.
+![Google blocking automated logins](resources/img/gmail_failed_login.png)
