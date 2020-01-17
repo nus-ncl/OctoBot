@@ -142,7 +142,7 @@ public class Main {
         System.out.printf("Crawl\t\t:\t%b\n", toCrawl);
         System.out.printf("Max depth\t:\t%d\n", depth);
         System.out.printf("Headless\t:\t%b\n", isHeadless);
-        System.out.printf("Other domain\t:\t%b\n", sameDomain);
+        System.out.printf("Same domain\t:\t%b\n", sameDomain);
         System.out.printf("Time\t\t:\t%d\n", maxDuration);
         System.out.printf("User agent\t:\t%s\n", userAgent);
         System.out.printf("Login file\t:\t%s\n", loginfile_name);
@@ -190,7 +190,7 @@ public class Main {
         }
 
         // Start the actual browsing
-        BrowserBot browserBot = new BrowserBot(driver, uri.getHost(), urls, loginLogoutAction, pageActions);
+        BrowserBot browserBot = new BrowserBot(driver, uri.getHost(), urls, loginLogoutAction, pageActions, sameDomain);
         browserBot.browse(url, maxDuration);
 
         // After finish browsing, quit

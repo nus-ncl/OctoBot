@@ -17,18 +17,19 @@ public class BrowserBot{
     private int minTime, maxTime;
 
     //For browse no crawl
-    HashMap<String, ArrayList<String>> urls;
+    private boolean sameDomain;
+    private HashMap<String, ArrayList<String>> urls;
 
     //For browse with crawl
     private ArrayList<String> blacklistUrls;
 
     //Constructor #1
     public BrowserBot(WebDriver driver){
-        this(driver, null, null, null, null);
+        this(driver, null, null, null, null, false);
     }
 
     //Constructor #2
-    public BrowserBot(WebDriver driver, String domain, HashMap<String, ArrayList<String>> urls, HashMap<String, LoginLogoutAction> loginLogoutActions, ArrayList<PageAction> pageActions){
+    public BrowserBot(WebDriver driver, String domain, HashMap<String, ArrayList<String>> urls, HashMap<String, LoginLogoutAction> loginLogoutActions, ArrayList<PageAction> pageActions, boolean sameDomain){
         this.driver = driver;
         this.domain = domain;
         this.pageActions = pageActions;
@@ -38,6 +39,7 @@ public class BrowserBot{
 
         //For browse with crawl
         this.urls = urls;
+        this.sameDomain = sameDomain;
     
         //For browse no crawl
         this.blacklistUrls = new ArrayList<String>();
@@ -144,7 +146,7 @@ public class BrowserBot{
             }
 
             //Find links in page
-            ArrayList<String> linksInPage = Utils.getLinks(this.driver, this.domain, this.blacklistUrls);
+            ArrayList<String> linksInPage = Utils.getLinks(this.driver, this.domain, this.blacklistUrls, sameDomain);
 
             // If there are no links on that page.
             if(linksInPage == null || linksInPage.size() <= 0) {

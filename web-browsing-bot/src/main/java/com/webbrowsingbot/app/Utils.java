@@ -134,6 +134,7 @@ public class Utils{
             boolean sameHostname = (sameDomain) ? url.contains(domain) : true;
             boolean inBlacklist = blacklistUrl.contains(url);
             boolean toAddToArrayList = !isEmpty && !isRepeated && sameHostname && !inBlacklist;
+
             if(toAddToArrayList){
                 linksInPage.add(url);
             }
