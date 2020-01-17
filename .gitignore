@@ -1,4 +1,4 @@
 web-browsing-bot/.*
-web-browsing-bot/*.json
+web-browsing-bot/json_files
 web-browsing-bot/web-browsing-bot.iml
 /.idea
