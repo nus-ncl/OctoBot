@@ -94,30 +94,23 @@ public class Main {
         boolean isHeadless = (boolean)res.get("headless");
 
         //Actions
-        String file_name = res.get("action_file");
+        String actionJson = res.get("action_file");
         ArrayList<PageAction> pageActions = null;
         try{
-            if(file_name != null)
-                pageActions = PageAction.parse(new FileReader(file_name));
-        }catch(java.io.FileNotFoundException e){
-            System.err.printf("\033[91mCannot open file reader: %s\033[0m\n", e);
-            System.exit(1);
+            if(actionJson != null)
+                pageActions = PageAction.parse(actionJson);
         }catch(Exception e){
             System.err.printf("\033[91mSomething went wrong parsing page actions: %s\033[0m\n", e);
             System.exit(1);
         }
 
         //Login
-        String loginfile_name = res.get("login_file");
+        String loginJson = res.get("login_file");
         HashMap<String, LoginLogoutAction> loginLogoutAction = null;
         try{
-            if(loginfile_name!=null)
-                loginLogoutAction = LoginLogoutAction.parse(new FileReader(loginfile_name));   
-        }catch(java.io.FileNotFoundException e){
-            System.err.printf("\033[91mCannot open file reader: %s\033[0m\n", e);
-            System.exit(1);
-        }
-        catch(Exception e){
+            if(loginJson!=null)
+                loginLogoutAction = LoginLogoutAction.parse(loginJson);   
+        }catch(Exception e){
             System.err.printf("\033[91mSomething went wrong parsing login and logout information: %s\033[0m\n", e);
             System.exit(1);
         }
@@ -145,8 +138,8 @@ public class Main {
         System.out.printf("Same domain\t:\t%b\n", sameDomain);
         System.out.printf("Time\t\t:\t%d\n", maxDuration);
         System.out.printf("User agent\t:\t%s\n", userAgent);
-        System.out.printf("Login file\t:\t%s\n", loginfile_name);
-        System.out.printf("Action file\t:\t%s\n", file_name);
+        System.out.printf("Login file\t:\t%s\n", loginJson!=null);
+        System.out.printf("Action file\t:\t%s\n", actionJson!=null);
         /* End of printing argparse arguments */
 
         //BrowserSelection (We stick with firefox for now)     

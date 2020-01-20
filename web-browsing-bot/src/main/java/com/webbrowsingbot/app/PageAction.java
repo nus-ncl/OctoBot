@@ -62,11 +62,11 @@ public class PageAction{
 		this.actions = actions;
 	}
 
-    public static ArrayList<PageAction> parse(FileReader f){
+    public static ArrayList<PageAction> parse(String actionJson){
         Gson gson = new Gson();
 
         Type type = new TypeToken<ArrayList<PageAction>>(){}.getType();
-        return gson.fromJson(f, type);
+        return gson.fromJson(actionJson, type);
     }
 
     public static PageAction getPageAction(String url, ArrayList<PageAction> pageActions){
