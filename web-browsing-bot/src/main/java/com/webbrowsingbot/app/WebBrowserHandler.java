@@ -72,7 +72,7 @@ public class WebBrowserHandler{
         }
 
         if(driver != null){
-            driver.manage().timeouts().pageLoadTimeout(22, TimeUnit.SECONDS);
+            driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
             driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); //https://www.machmetrics.com/speed-blog/average-page-load-times-websites-2018/	
             
             return driver;

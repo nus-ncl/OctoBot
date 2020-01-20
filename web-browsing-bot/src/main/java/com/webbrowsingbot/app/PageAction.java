@@ -1,6 +1,5 @@
 package com.webbrowsingbot.app;
 
-import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -111,17 +109,10 @@ public class PageAction{
                 continue;
             }
 
-            //Wait for 3 seconds or until the element is clickable
-            try{
-                new WebDriverWait(driver, 3).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
-            }catch(Exception e){
-                //Dont show the error
-            }
-
             //Obtain the elements
             WebElement webElement = null;
             try {
-                webElement = (WebElement)driver.findElement(By.cssSelector(selector));
+                webElement = new WebDriverWait(driver, 3).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
             }catch(NoSuchElementException e){
                 System.err.printf("\033[91mNo such element: %s\033[0m%n", selector);
                 continue;
@@ -131,12 +122,6 @@ public class PageAction{
                 continue;
             }
 
-            try {
-                new WebDriverWait(driver, 3)
-                    .until(ExpectedConditions.elementToBeClickable(webElement));
-            }catch(TimeoutException e){
-                //Ignore and don't print error message
-            }
             //Decide what to do with the element
             String sentValue = null; //DEBUG Things
             String finalAction = null;
@@ -164,7 +149,6 @@ public class PageAction{
                     sentValue = key;
                     for(String k: keyArr){
                         webElement.sendKeys(Keys.valueOf(k));
-
                     }
                 }
                 else if(d.get("value") != null){

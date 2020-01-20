@@ -1,7 +1,5 @@
 package com.webbrowsingbot.app;
 
-//Java imports
-import java.io.FileReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
