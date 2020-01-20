@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="1" failures="0" name="com.webbrowsingbot.app.AppTest" time="0.007" errors="0" skipped="0">
+<testsuite tests="1" failures="0" name="com.webbrowsingbot.app.AppTest" time="0.009" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="11.0.5+10-post-Ubuntu-0ubuntu1.118.04"/>
@@ -32,7 +32,7 @@
     <property name="java.class.version" value="55.0"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
-    <property name="os.version" value="5.0.0-37-generic"/>
+    <property name="os.version" value="5.3.0-26-generic"/>
     <property name="library.jansi.path" value="/usr/share/maven/lib/jansi-native"/>
     <property name="user.home" value="/home/whyare"/>
     <property name="user.timezone" value="Asia/Singapore"/>
@@ -61,5 +61,5 @@
     <property name="sun.desktop" value="gnome"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="com.webbrowsingbot.app.AppTest" name="testApp" time="0.007"/>
+  <testcase classname="com.webbrowsingbot.app.AppTest" name="testApp" time="0.009"/>
 </testsuite>

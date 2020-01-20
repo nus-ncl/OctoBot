@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 //This bot will randomly browse webpages
-public class BrowserBot{
+public class BrowserBot {
     private WebDriver driver;
     private String domain;
     private String loggedInUser;
@@ -16,20 +19,22 @@ public class BrowserBot{
     private ArrayList<PageAction> pageActions;
     private int minTime, maxTime;
 
-    //For browse no crawl
+    // For browse no crawl
     private boolean sameDomain;
     private HashMap<String, ArrayList<String>> urls;
 
-    //For browse with crawl
+    // For browse with crawl
     private ArrayList<String> blacklistUrls;
 
-    //Constructor #1
-    public BrowserBot(WebDriver driver){
+    // Constructor #1
+    public BrowserBot(WebDriver driver) {
         this(driver, null, null, null, null, false);
     }
 
-    //Constructor #2
-    public BrowserBot(WebDriver driver, String domain, HashMap<String, ArrayList<String>> urls, HashMap<String, LoginLogoutAction> loginLogoutActions, ArrayList<PageAction> pageActions, boolean sameDomain){
+    // Constructor #2
+    public BrowserBot(WebDriver driver, String domain, HashMap<String, ArrayList<String>> urls,
+            HashMap<String, LoginLogoutAction> loginLogoutActions, ArrayList<PageAction> pageActions,
+            boolean sameDomain) {
         this.driver = driver;
         this.domain = domain;
         this.pageActions = pageActions;
@@ -37,65 +42,72 @@ public class BrowserBot{
         this.minTime = 2000;
         this.maxTime = 5000;
 
-        //For browse with crawl
+        // For browse with crawl
         this.urls = urls;
         this.sameDomain = sameDomain;
-    
-        //For browse no crawl
+
+        // For browse no crawl
         this.blacklistUrls = new ArrayList<String>();
     }
 
     /* This function will take in a */
-    public void browse(String url, int duration){
-        if(this.urls != null){
+    public void browse(String url, int duration) {
+        if (this.urls != null) {
             this.browseWithCrawl(duration);
-        }else{
+        } else {
             this.browseNoCrawl(url, duration);
         }
-        
+
         System.out.printf("\033[1;36mTerminating because %d seconds are over %n\033[0m", duration);
     }
 
     public boolean processPage(String url){
-        //Enter the URL
-        try{
-            this.driver.get(url);
-        }catch(org.openqa.selenium.TimeoutException e){
-            System.err.printf("\033[91mTimeout loading %s: %s\033[0m\n", url, e);
-            return false;
-        }catch(org.openqa.selenium.WebDriverException e){
-            System.err.printf("\033[91mError getting webpage %s: %s\033[0m\n", url, e);
-            return false;
-        }
+        try{// Enter the URL
+            try {
+                this.driver.get(url);
+                
+                //This is just so that the redirect will work
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                System.err.println("Something wrong with sleeping");
+            } catch (TimeoutException e) {
+                System.err.printf("\033[91mTimeout loading %s: %s\033[0m\n", url, e);
+                // return false;
+            } catch (WebDriverException e) {
+                System.err.printf("\033[91mError getting webpage %s: %s\033[0m\n", url, e);
+                return false;
+            }
 
-        //Logout things.
-        LoginLogoutAction logoutAction = LoginLogoutAction.getUserLogoutAction(url, loggedInUser, loginLogoutActions);
-        if(logoutAction != null){
-            logoutAction.performLogout(driver, null);
-            loggedInUser = null;
-        }
+            //Logout things.
+            LoginLogoutAction logoutAction = LoginLogoutAction.getUserLogoutAction(url, loggedInUser, loginLogoutActions);
+            if(logoutAction != null){
+                logoutAction.performLogout(driver, null);
+                loggedInUser = null;
+            }
 
-        if(driver.getCurrentUrl().equals(url)){
-            System.out.printf("GET: %s\n", url);
-        }else{
-            System.out.printf("GET: %s -> %s\n", url, driver.getCurrentUrl());
-            url = driver.getCurrentUrl();
-        }
+            if(driver.getCurrentUrl().equals(url)){
+                System.out.printf("GET: %s\n", url);
+            }else{
+                System.out.printf("GET: %s -> %s\n", url, driver.getCurrentUrl());
+                url = driver.getCurrentUrl();
+            }
 
-        // Check if it is the login URL
-        String username = LoginLogoutAction.getRandomUsername(url, loginLogoutActions);
-        if(username != null){
-            LoginLogoutAction loginAction = loginLogoutActions.get(username);
-            loginAction.performLogin(driver, null);
-            loggedInUser = username;
+            // Check if it is the login URL
+            String username = LoginLogoutAction.getRandomUsername(url, loginLogoutActions);
+            if(username != null){
+                LoginLogoutAction loginAction = loginLogoutActions.get(username);
+                loginAction.performLogin(driver, null);
+                loggedInUser = username;
+            }
+            
+            //Do actions
+            PageAction pageAction = PageAction.getPageAction(url, pageActions);
+            if(pageAction != null){
+                pageAction.doActions(this.driver);
+            }
+        }catch(UnhandledAlertException e){
+            return true;
         }
-        
-        //Do actions
-        PageAction pageAction = PageAction.getPageAction(url, pageActions);
-        if(pageAction != null){
-            pageAction.doActions(this.driver);
-        }
-
         return true;
     }
 

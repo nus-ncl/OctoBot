@@ -4,12 +4,14 @@ package com.webbrowsingbot.app;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 //Selenium imports
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.CapabilityType;
 
 public class WebBrowserHandler{
     private static String jarFilePath = null;
@@ -45,6 +47,7 @@ public class WebBrowserHandler{
                     firefoxOptions.addPreference("general.useragent.override", userAgent);
                 }
 
+                firefoxOptions.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
                 driver = new FirefoxDriver(firefoxOptions);
                 break;
 
@@ -67,6 +70,7 @@ public class WebBrowserHandler{
 
                 // This is for chrome to launch properly
                 chromeOptions.addArguments("--no-sandbox", "--disable-dev-shm-usage");
+                chromeOptions.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
                 driver = new ChromeDriver(chromeOptions);
                 break;
         }
