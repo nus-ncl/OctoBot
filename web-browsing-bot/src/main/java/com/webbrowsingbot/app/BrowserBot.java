@@ -82,7 +82,7 @@ public class BrowserBot{
             url = driver.getCurrentUrl();
         }
 
-        //Try this logic to do login first
+        // Check if it is the login URL
         String username = LoginLogoutAction.getRandomUsername(url, loginLogoutActions);
         if(username != null){
             LoginLogoutAction loginAction = loginLogoutActions.get(username);
@@ -107,7 +107,7 @@ public class BrowserBot{
             try{
                 TimeUnit.MILLISECONDS.sleep(sleepDuration);
             }catch(Exception e){
-                System.err.println("Somehow failed to sleep(?)");
+                System.err.println("Somehow failed to sleep");
             }
 
             //Choose a random page to visit
