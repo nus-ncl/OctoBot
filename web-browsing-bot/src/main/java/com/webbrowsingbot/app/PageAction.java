@@ -12,6 +12,7 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -109,10 +110,18 @@ public class PageAction{
                 continue;
             }
 
+            try {
+                new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(selector)));
+            }catch(TimeoutException e){
+                if(selector.contains("textarea")){
+                    System.out.println("GOT PROBLEM");
+                }
+            }
+
             //Obtain the elements
             WebElement webElement = null;
-            try {
-                webElement = new WebDriverWait(driver, 3).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
+            try{
+                webElement = driver.findElement(By.cssSelector(selector));
             }catch(NoSuchElementException e){
                 System.err.printf("\033[91mNo such element: %s\033[0m%n", selector);
                 continue;

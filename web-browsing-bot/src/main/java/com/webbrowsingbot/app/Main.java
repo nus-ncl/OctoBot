@@ -46,6 +46,10 @@ public class Main {
         parser.addArgument("-t", "--time") //Time to browse
               .type(Integer.class)
               .help("Max time to browse (seconds)");
+        parser.addArgument("-T", "--test") //Time to browse
+              .metavar("username")
+              .type(String.class)
+              .help("Test user actions");
         parser.addArgument("-u", "--user-agent") //Time to browse
               .type(String.class)
               .help("User agent to use");
@@ -84,6 +88,9 @@ public class Main {
 
         //Time
         int maxDuration = (res.get("time") == null) ? -1: res.get("time");
+
+        //Test
+        String testUser = (String)res.get("test");
 
         //Same domain
         boolean sameDomain = !(boolean)res.get("other_domain");
@@ -135,6 +142,7 @@ public class Main {
         System.out.printf("Headless\t:\t%b\n", isHeadless);
         System.out.printf("Same domain\t:\t%b\n", sameDomain);
         System.out.printf("Time\t\t:\t%d\n", maxDuration);
+        System.out.printf("Test\t\t:\t%s\n", testUser);
         System.out.printf("User agent\t:\t%s\n", userAgent);
         System.out.printf("Login file\t:\t%s\n", loginJson!=null);
         System.out.printf("Action file\t:\t%s\n", actionJson!=null);
@@ -145,6 +153,13 @@ public class Main {
         if(driver == null){
             System.err.printf("\033[91mBrowser '%s' cannot be found\033[0m\n", browser);
             System.exit(1);
+        }
+
+        //If test, execute test first
+        if(testUser != null){
+            Utils.doTests(driver, uri, testUser, loginLogoutAction, pageActions);
+            driver.quit();
+            System.exit(0);
         }
 
         //Crawler section
