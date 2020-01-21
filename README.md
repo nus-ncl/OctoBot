@@ -73,4 +73,4 @@ browsing-bot \
 ```
 
 ## Documentation
-Detailed documentation and more samples can be found on the (wiki page)[wiki].
+Detailed documentation and more samples can be found on the [wiki page](wiki).
