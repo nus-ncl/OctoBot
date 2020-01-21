@@ -4,7 +4,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -152,5 +154,54 @@ public class Utils{
         
         //Still have time
         return (endTime == null) ? true : now.isBefore(endTime);
+    }
+
+    //Takes the protocol, host, and port and add together with the respective path
+    public static String craftUrl(URI uri, String loginLogoutPath){
+        String path = uri.getPath();
+        String fullUrl = uri.toString();
+        return fullUrl.substring(0, fullUrl.length() - path.length()) + loginLogoutPath;
+    }
+
+    public static void doTests(WebDriver driver, URI uri, String testUser, HashMap<String, LoginLogoutAction> loginLogoutActionHashMap, ArrayList<PageAction> pageActionArrayList){
+        LoginLogoutAction l = null;
+        if(testUser != null && loginLogoutActionHashMap != null){
+            l = loginLogoutActionHashMap.get(testUser);
+        }
+        
+        if(l != null){
+            String loginUrl = l.getLoginAction().getUrl();
+            if(loginUrl == null){
+                loginUrl = craftUrl(uri, l.getLoginAction().getPath());
+            }
+            l.performLogin(driver, loginUrl);
+        }
+
+        if(pageActionArrayList != null){
+            for(PageAction p : pageActionArrayList){
+                String actionUrl = p.getUrl();
+                if(actionUrl == null){
+                    actionUrl = craftUrl(uri, p.getPath());
+                }
+                driver.get(actionUrl);
+                try{
+                    TimeUnit.SECONDS.sleep(2);
+                }catch(InterruptedException e){
+                    System.err.println("Something went wrong with sleeping");
+                }
+                if(!driver.getCurrentUrl().equals(actionUrl)){
+                    continue;
+                }
+                p.doActions(driver);
+            }
+        }
+
+        if(l != null){
+            String logoutUrl = l.getLogoutAction().getUrl();
+            if(logoutUrl == null){
+                logoutUrl = craftUrl(uri, l.getLogoutAction().getPath());
+            }
+            l.performLogout(driver, logoutUrl);
+        }
     }
 }

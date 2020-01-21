@@ -1,6 +1,5 @@
 package com.webbrowsingbot.app;
 
-import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,11 +61,11 @@ public class PageAction{
 		this.actions = actions;
 	}
 
-    public static ArrayList<PageAction> parse(FileReader f){
+    public static ArrayList<PageAction> parse(String actionJson){
         Gson gson = new Gson();
 
         Type type = new TypeToken<ArrayList<PageAction>>(){}.getType();
-        return gson.fromJson(f, type);
+        return gson.fromJson(actionJson, type);
     }
 
     public static PageAction getPageAction(String url, ArrayList<PageAction> pageActions){
@@ -111,17 +110,18 @@ public class PageAction{
                 continue;
             }
 
-            //Wait for 3 seconds or until the element is clickable
-            try{
-                new WebDriverWait(driver, 3).until(ExpectedConditions.elementToBeClickable(By.cssSelector(selector)));
-            }catch(Exception e){
-                //Dont show the error
+            try {
+                new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(selector)));
+            }catch(TimeoutException e){
+                if(selector.contains("textarea")){
+                    System.out.println("GOT PROBLEM");
+                }
             }
 
             //Obtain the elements
             WebElement webElement = null;
-            try {
-                webElement = (WebElement)driver.findElement(By.cssSelector(selector));
+            try{
+                webElement = driver.findElement(By.cssSelector(selector));
             }catch(NoSuchElementException e){
                 System.err.printf("\033[91mNo such element: %s\033[0m%n", selector);
                 continue;
@@ -131,12 +131,6 @@ public class PageAction{
                 continue;
             }
 
-            try {
-                new WebDriverWait(driver, 3)
-                    .until(ExpectedConditions.elementToBeClickable(webElement));
-            }catch(TimeoutException e){
-                //Ignore and don't print error message
-            }
             //Decide what to do with the element
             String sentValue = null; //DEBUG Things
             String finalAction = null;
@@ -164,7 +158,6 @@ public class PageAction{
                     sentValue = key;
                     for(String k: keyArr){
                         webElement.sendKeys(Keys.valueOf(k));
-
                     }
                 }
                 else if(d.get("value") != null){
@@ -185,6 +178,7 @@ public class PageAction{
 
             //DEBUG Things
             System.out.printf("%s: %s=%s\n", finalAction, selector, sentValue);
+
         }
     }
 }

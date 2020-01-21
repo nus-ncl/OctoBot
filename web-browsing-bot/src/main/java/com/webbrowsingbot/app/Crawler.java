@@ -38,13 +38,6 @@ public class Crawler{
         this.domain = domain;
     }
 
-    //Takes the protocol, host, and port and add together with the respective path
-    private static String craftLoginLogoutUrl(URI uri, String loginLogoutPath){
-        String path = uri.getPath();
-        String fullUrl = uri.toString();
-        return fullUrl.substring(0, fullUrl.length() - path.length()) + loginLogoutPath;
-    }
-
     public String performLogin(URI uri){
         if(this.loginLogoutActions == null || this.loginLogoutActions.size() <= 0){
             return null;
@@ -61,7 +54,7 @@ public class Crawler{
 
         String loginUrl = this.loginLogoutAction.getLoginAction().getUrl();
         if(loginUrl == null){
-            loginUrl = craftLoginLogoutUrl(uri, this.loginLogoutAction.getLoginAction().getPath());
+            loginUrl = Utils.craftUrl(uri, this.loginLogoutAction.getLoginAction().getPath());
         }
 
         this.loginLogoutAction.performLogin(this.driver, loginUrl);
@@ -75,7 +68,7 @@ public class Crawler{
 
         String logoutUrl = loginLogoutAction.getLogoutAction().getUrl();
         if(logoutUrl == null){
-            logoutUrl = craftLoginLogoutUrl(uri, loginLogoutAction.getLogoutAction().getPath());
+            logoutUrl = Utils.craftUrl(uri, loginLogoutAction.getLogoutAction().getPath());
         }
 
         loginLogoutAction.performLogout(driver, logoutUrl);

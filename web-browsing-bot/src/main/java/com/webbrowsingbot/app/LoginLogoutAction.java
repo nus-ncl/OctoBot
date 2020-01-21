@@ -1,6 +1,5 @@
 package com.webbrowsingbot.app;
 
-import java.io.FileReader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -157,14 +156,14 @@ public class LoginLogoutAction {
     }
 
     //Converts json file into java objects
-    public static HashMap<String, LoginLogoutAction> parse(FileReader f){
+    public static HashMap<String, LoginLogoutAction> parse(String loginJson){
         Gson gson = new Gson();
 
         Type type = new TypeToken<ArrayList<LoginLogoutAction>>(){}.getType();
         
         //Obtains information from json
         ArrayList<LoginLogoutAction> loginLogoutActionsArrayList = null;
-        loginLogoutActionsArrayList = gson.fromJson(f, type);
+        loginLogoutActionsArrayList = gson.fromJson(loginJson, type);
 
         //Creates new new arraylist to store new information after rearranging data from json
         HashMap<String, LoginLogoutAction> reformattedLoginLogoutActions = new HashMap<String, LoginLogoutAction>();

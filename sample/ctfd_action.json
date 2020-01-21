@@ -17,6 +17,15 @@
         ]
     },
     {
+        "path": "/register",
+        "actions": [
+            {"id": "name-input", "value": ["user1", "user2", "user3", "user4", "user5"]},
+            {"id": "email-input", "value": ["user1@email.com", "user2@email.com", "user3@email.com", "user4@email.com", "user5@email.com"]},
+            {"id": "password-input", "value": ["password"]},
+            {"id": "password-input", "key": ["ENTER"]}
+        ]
+    },
+    {
         "path": "/admin/challenges/new",
         "actions": [
             {"id": "create-chals-select", "value": "dynamic"},

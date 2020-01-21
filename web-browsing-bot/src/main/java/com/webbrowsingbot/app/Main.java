@@ -1,7 +1,5 @@
 package com.webbrowsingbot.app;
 
-//Java imports
-import java.io.FileReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +19,7 @@ public class Main {
         ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                                 .description("Bot that browses the web");
         parser.addArgument("-b", "--browser") //Browser
-              .metavar("browser_name")
+              .metavar("BROWSER_NAME")
               .setDefault("chrome")
               .type(String.class)
               .help("Browser to utilise (Default chrome)");
@@ -30,35 +28,39 @@ public class Main {
               .type(Boolean.class)
               .help("Boolean on whether to crawl first or not");
         parser.addArgument("-d", "--depth") //Max depth
-              .metavar("depth")
+              .metavar("DEPTH")
               .type(Integer.class)
               .help("Depth to crawl website from entrypoint");
         parser.addArgument("-H", "--headless") //Max depth
               .action(Arguments.storeTrue())
               .type(Boolean.class)
               .help("Boolean to launch browser in headless mode");
-        parser.addArgument("-L", "--log") //Max depth
-              .action(Arguments.storeTrue())
-              .type(Boolean.class)
-              .help("Boolean on whether to log");
         parser.addArgument("-o", "--other-domain") //Allow other domain
               .action(Arguments.storeTrue())
               .type(Boolean.class)
               .help("Allow to crawl to different domain");
         parser.addArgument("-t", "--time") //Time to browse
+              .metavar("DURATION")
               .type(Integer.class)
               .help("Max time to browse (seconds)");
+        parser.addArgument("-T", "--test") //Time to browse
+              .metavar("USERNAME")
+              .nargs("?")
+              .setConst("")
+              .type(String.class)
+              .help("Test user actions");
         parser.addArgument("-u", "--user-agent") //Time to browse
+              .metavar("USER_AGENT")
               .type(String.class)
               .help("User agent to use");
-        parser.addArgument("-l", "--login-file")
+        parser.addArgument("-l", "--login")
               .type(String.class)
-              .metavar("login_file")
-              .help("File that contains login credentials");
-        parser.addArgument("-a", "--action-file")
-              .metavar("action_file")
+              .metavar("LOGIN_JSON")
+              .help("JSON configuration for login");
+        parser.addArgument("-a", "--action")
+              .metavar("ACTION_JSON")
               .type(String.class)
-              .help("File that contains actions to do on selected page(s)");
+              .help("JSON configuration for actions");
         parser.addArgument("url")
               .type(String.class)
               .help("URL to crawl and do actions");
@@ -87,6 +89,9 @@ public class Main {
         //Time
         int maxDuration = (res.get("time") == null) ? -1: res.get("time");
 
+        //Test
+        String testUser = (String)res.get("test");
+
         //Same domain
         boolean sameDomain = !(boolean)res.get("other_domain");
 
@@ -94,30 +99,23 @@ public class Main {
         boolean isHeadless = (boolean)res.get("headless");
 
         //Actions
-        String file_name = res.get("action_file");
+        String actionJson = res.get("action");
         ArrayList<PageAction> pageActions = null;
         try{
-            if(file_name != null)
-                pageActions = PageAction.parse(new FileReader(file_name));
-        }catch(java.io.FileNotFoundException e){
-            System.err.printf("\033[91mCannot open file reader: %s\033[0m\n", e);
-            System.exit(1);
+            if(actionJson != null)
+                pageActions = PageAction.parse(actionJson);
         }catch(Exception e){
             System.err.printf("\033[91mSomething went wrong parsing page actions: %s\033[0m\n", e);
             System.exit(1);
         }
 
         //Login
-        String loginfile_name = res.get("login_file");
+        String loginJson = res.get("login");
         HashMap<String, LoginLogoutAction> loginLogoutAction = null;
         try{
-            if(loginfile_name!=null)
-                loginLogoutAction = LoginLogoutAction.parse(new FileReader(loginfile_name));   
-        }catch(java.io.FileNotFoundException e){
-            System.err.printf("\033[91mCannot open file reader: %s\033[0m\n", e);
-            System.exit(1);
-        }
-        catch(Exception e){
+            if(loginJson!=null)
+                loginLogoutAction = LoginLogoutAction.parse(loginJson);   
+        }catch(Exception e){
             System.err.printf("\033[91mSomething went wrong parsing login and logout information: %s\033[0m\n", e);
             System.exit(1);
         }
@@ -144,9 +142,10 @@ public class Main {
         System.out.printf("Headless\t:\t%b\n", isHeadless);
         System.out.printf("Same domain\t:\t%b\n", sameDomain);
         System.out.printf("Time\t\t:\t%d\n", maxDuration);
+        System.out.printf("Test\t\t:\t%s\n", testUser);
         System.out.printf("User agent\t:\t%s\n", userAgent);
-        System.out.printf("Login file\t:\t%s\n", loginfile_name);
-        System.out.printf("Action file\t:\t%s\n", file_name);
+        System.out.printf("Login file\t:\t%s\n", loginJson!=null);
+        System.out.printf("Action file\t:\t%s\n", actionJson!=null);
         /* End of printing argparse arguments */
 
         //BrowserSelection (We stick with firefox for now)     
@@ -154,6 +153,13 @@ public class Main {
         if(driver == null){
             System.err.printf("\033[91mBrowser '%s' cannot be found\033[0m\n", browser);
             System.exit(1);
+        }
+
+        //If test, execute test first
+        if(testUser != null){
+            Utils.doTests(driver, uri, testUser, loginLogoutAction, pageActions);
+            driver.quit();
+            System.exit(0);
         }
 
         //Crawler section
@@ -179,7 +185,6 @@ public class Main {
                 urlsCrawled = crawler.startCrawl(url, depth);
                 urls.put(username, urlsCrawled);
             }
-
 
             System.out.println("\033[1;36mCrawled links:\033[0m");
             System.out.println(urls);
