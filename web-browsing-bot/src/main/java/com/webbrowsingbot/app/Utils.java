@@ -165,7 +165,7 @@ public class Utils{
 
     public static void doTests(WebDriver driver, URI uri, String testUser, HashMap<String, LoginLogoutAction> loginLogoutActionHashMap, ArrayList<PageAction> pageActionArrayList){
         LoginLogoutAction l = null;
-        if(testUser != null){
+        if(testUser != null && loginLogoutActionHashMap != null){
             l = loginLogoutActionHashMap.get(testUser);
         }
         
@@ -174,27 +174,26 @@ public class Utils{
             if(loginUrl == null){
                 loginUrl = craftUrl(uri, l.getLoginAction().getPath());
             }
-            System.out.println("LoginURL is " + loginUrl);
             l.performLogin(driver, loginUrl);
         }
 
-        for(PageAction p : pageActionArrayList){
-            String actionUrl = p.getUrl();
-            if(actionUrl == null){
-                actionUrl = craftUrl(uri, p.getPath());
+        if(pageActionArrayList != null){
+            for(PageAction p : pageActionArrayList){
+                String actionUrl = p.getUrl();
+                if(actionUrl == null){
+                    actionUrl = craftUrl(uri, p.getPath());
+                }
+                driver.get(actionUrl);
+                try{
+                    TimeUnit.SECONDS.sleep(2);
+                }catch(InterruptedException e){
+                    System.err.println("Something went wrong with sleeping");
+                }
+                if(!driver.getCurrentUrl().equals(actionUrl)){
+                    continue;
+                }
+                p.doActions(driver);
             }
-            driver.get(actionUrl);
-            try{
-                TimeUnit.SECONDS.sleep(2);
-            }catch(InterruptedException e){
-                System.err.println("Somethign went wrong with sleeping");
-            }
-            System.out.println(driver.getCurrentUrl());
-            System.out.println(actionUrl);
-            if(!driver.getCurrentUrl().equals(actionUrl)){
-                continue;
-            }
-            p.doActions(driver);
         }
 
         if(l != null){

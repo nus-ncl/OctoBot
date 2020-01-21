@@ -19,7 +19,7 @@ public class Main {
         ArgumentParser parser = ArgumentParsers.newFor("prog").build()
                                 .description("Bot that browses the web");
         parser.addArgument("-b", "--browser") //Browser
-              .metavar("browser_name")
+              .metavar("BROWSER_NAME")
               .setDefault("chrome")
               .type(String.class)
               .help("Browser to utilise (Default chrome)");
@@ -28,39 +28,39 @@ public class Main {
               .type(Boolean.class)
               .help("Boolean on whether to crawl first or not");
         parser.addArgument("-d", "--depth") //Max depth
-              .metavar("depth")
+              .metavar("DEPTH")
               .type(Integer.class)
               .help("Depth to crawl website from entrypoint");
         parser.addArgument("-H", "--headless") //Max depth
               .action(Arguments.storeTrue())
               .type(Boolean.class)
               .help("Boolean to launch browser in headless mode");
-        parser.addArgument("-L", "--log") //Max depth
-              .action(Arguments.storeTrue())
-              .type(Boolean.class)
-              .help("Boolean on whether to log");
         parser.addArgument("-o", "--other-domain") //Allow other domain
               .action(Arguments.storeTrue())
               .type(Boolean.class)
               .help("Allow to crawl to different domain");
         parser.addArgument("-t", "--time") //Time to browse
+              .metavar("DURATION")
               .type(Integer.class)
               .help("Max time to browse (seconds)");
         parser.addArgument("-T", "--test") //Time to browse
-              .metavar("username")
+              .metavar("USERNAME")
+              .nargs("?")
+              .setConst("")
               .type(String.class)
               .help("Test user actions");
         parser.addArgument("-u", "--user-agent") //Time to browse
+              .metavar("USER_AGENT")
               .type(String.class)
               .help("User agent to use");
-        parser.addArgument("-l", "--login-file")
+        parser.addArgument("-l", "--login")
               .type(String.class)
-              .metavar("login_file")
-              .help("File that contains login credentials");
-        parser.addArgument("-a", "--action-file")
-              .metavar("action_file")
+              .metavar("LOGIN_JSON")
+              .help("JSON configuration for login");
+        parser.addArgument("-a", "--action")
+              .metavar("ACTION_JSON")
               .type(String.class)
-              .help("File that contains actions to do on selected page(s)");
+              .help("JSON configuration for actions");
         parser.addArgument("url")
               .type(String.class)
               .help("URL to crawl and do actions");
@@ -99,7 +99,7 @@ public class Main {
         boolean isHeadless = (boolean)res.get("headless");
 
         //Actions
-        String actionJson = res.get("action_file");
+        String actionJson = res.get("action");
         ArrayList<PageAction> pageActions = null;
         try{
             if(actionJson != null)
@@ -110,7 +110,7 @@ public class Main {
         }
 
         //Login
-        String loginJson = res.get("login_file");
+        String loginJson = res.get("login");
         HashMap<String, LoginLogoutAction> loginLogoutAction = null;
         try{
             if(loginJson!=null)

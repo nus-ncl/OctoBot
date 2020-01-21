@@ -1,0 +1,20 @@
+[
+    {
+        "loginAction": {
+            "url": "https://login.live.com/login.srf",
+            "actions": [
+                {"id": "i0116", 
+                "value": "<email>"},
+                {"id": "i0116", "key": "ENTER"},
+                
+                {"id": "i01SSSS18", 
+                "value": "<password>"},
+                {"id": "i0118", "key": "ENTER"}
+            ]
+        },
+        "logoutAction": {
+            "url": "https://login.live.com/logout.srf",
+            "path": "/logout.srf"
+        }
+    }
+]
