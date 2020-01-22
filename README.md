@@ -57,10 +57,11 @@ whyare@BrowsingBot:~$ sudo docker run -it --rm browsing-bot <url>
 ```
 
 ## Sample
-Enter the sample folder and run docker-compose to run the CTFd
+Clone CTFd repository and bring it up
 ```console
-whyare@BrowsingBot:~/webbrowsingbot$ cd sample/CTFd
-whyare@BrowsingBot:~/webbrowsingbot/sample/CTFd$ docker-compose up
+whyare@BrowsingBot:~$ git clone https://github.com/CTFd/CTFd.git
+whyare@BrowsingBot:~$ cd CTFd/
+whyare@BrowsingBot:~/CTFd$ docker-compose up
 ```
 
 Run the web-browsing-bot

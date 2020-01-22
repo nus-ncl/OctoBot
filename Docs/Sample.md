@@ -5,8 +5,9 @@ The actions in the json file tells sets up CTFd automatically, creates new pages
 
 Go to the ```sample/CTFd``` and run ```docker-compose up```.
 ```console
-whyare@BrowsingBot:~/webbrowsingbot$ cd sample/CTFd
-whyare@BrowsingBot:~/webbrowsingbot/sample/CTFd$ docker-compose up
+whyare@BrowsingBot:~$ git clone https://github.com/CTFd/CTFd.git
+whyare@BrowsingBot:~$ cd CTFd/
+whyare@BrowsingBot:~/CTFd$ docker-compose up
 ```
 
 Run the bot. (Please replace <ip_address> with the IP address of the machine running docker)
