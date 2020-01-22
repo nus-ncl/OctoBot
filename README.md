@@ -74,4 +74,4 @@ browsing-bot \
 ```
 
 ## Documentation
-Detailed documentation and more samples can be found on the [wiki page](https://github.com/WhyAre/webbrowsingbot/wiki).
+Detailed documentation and more samples can be found on the [Docs](https://github.com/WhyAre/browsing-bot/Docs).
