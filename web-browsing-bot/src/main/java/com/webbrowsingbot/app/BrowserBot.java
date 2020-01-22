@@ -62,52 +62,51 @@ public class BrowserBot {
     }
 
     public boolean processPage(String url){
+        // Enter the URL
+        try {
+            this.driver.get(url);
+            
+            //This is just so that the redirect will work
+            TimeUnit.SECONDS.sleep(2); //They say that this is not good practice but there is no solid webdriverrwait expected condition
+        } catch (InterruptedException e) {
+            System.err.println("Something wrong with sleeping");
+        } catch (TimeoutException e) {
+            System.err.printf("\033[91mTimeout loading %s: %s\033[0m\n", url, e);
+            // return false;
+        } catch (WebDriverException e) {
+            System.err.printf("\033[91mError getting webpage %s: %s\033[0m\n", url, e);
+            return false;
+        }
+
+        //Logout things.
+        LoginLogoutAction logoutAction = LoginLogoutAction.getUserLogoutAction(url, loggedInUser, loginLogoutActions);
+        if(logoutAction != null){
+            logoutAction.performLogout(driver, null);
+            loggedInUser = null;
+        }
+
         try{
-            // Enter the URL
-            try {
-                this.driver.get(url);
-                
-                //This is just so that the redirect will work
-                TimeUnit.SECONDS.sleep(2); //They say that this is not good practice but there is no solid webdriverrwait expected condition
-            } catch (InterruptedException e) {
-                System.err.println("Something wrong with sleeping");
-            } catch (TimeoutException e) {
-                System.err.printf("\033[91mTimeout loading %s: %s\033[0m\n", url, e);
-                // return false;
-            } catch (WebDriverException e) {
-                System.err.printf("\033[91mError getting webpage %s: %s\033[0m\n", url, e);
-                return false;
-            }
-
-            //Logout things.
-            LoginLogoutAction logoutAction = LoginLogoutAction.getUserLogoutAction(url, loggedInUser, loginLogoutActions);
-            if(logoutAction != null){
-                logoutAction.performLogout(driver, null);
-                loggedInUser = null;
-            }
-
             if(driver.getCurrentUrl().equals(url)){
                 System.out.printf("GET: %s\n", url);
             }else{
                 System.out.printf("GET: %s -> %s\n", url, driver.getCurrentUrl());
                 url = driver.getCurrentUrl();
             }
-
-            // Check if it is the login URL
-            String username = LoginLogoutAction.getRandomUsername(url, loginLogoutActions);
-            if(username != null){
-                LoginLogoutAction loginAction = loginLogoutActions.get(username);
-                loginAction.performLogin(driver, null);
-                loggedInUser = username;
-            }
-            
-            //Do actions
-            PageAction pageAction = PageAction.getPageAction(url, pageActions);
-            if(pageAction != null){
-                pageAction.doActions(this.driver);
-            }
         }catch(UnhandledAlertException e){
-            return true;
+            System.err.printf("\033[91mUnhandled alert, trying to close it\033[0m%n");
+        }
+        // Check if it is the login URL
+        String username = LoginLogoutAction.getRandomUsername(url, loginLogoutActions);
+        if(username != null){
+            LoginLogoutAction loginAction = loginLogoutActions.get(username);
+            loginAction.performLogin(driver, null);
+            loggedInUser = username;
+        }
+        
+        //Do actions
+        PageAction pageAction = PageAction.getPageAction(url, pageActions);
+        if(pageAction != null){
+            pageAction.doActions(this.driver);
         }
         return true;
     }

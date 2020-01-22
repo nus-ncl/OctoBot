@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnhandledAlertException;
@@ -63,10 +62,10 @@ public class Utils{
         String actionPath = pageAction.getPath();
         String actionUrl = pageAction.getUrl();
         String path = getPath(url);
-        boolean pathMatch = (actionPath == null) ? true : path.matches(actionPath);
-        boolean urlMatch = (actionUrl == null) ? true : url.matches(actionUrl);
+        boolean pathMatch = (actionPath == null) ? false : path.matches(actionPath);
+        boolean urlMatch = (actionUrl == null) ? false : url.matches(actionUrl);
 
-        return pathMatch && urlMatch;
+        return pathMatch || urlMatch;
     }
 
     @SuppressWarnings("unchecked")
@@ -110,8 +109,6 @@ public class Utils{
             return null;
         }catch(UnhandledAlertException e){
             System.err.printf("\033[91mUnhandled alert exception: Trying to close the alert\033[0m%n");
-            Alert alert = driver.switchTo().alert();
-            alert.accept();
         }catch(Exception e){
             System.err.printf("\033[91mError getting links: %s\033[0m%n", e);
             return null;
@@ -202,9 +199,17 @@ public class Utils{
                 }catch(InterruptedException e){
                     System.err.println("Something went wrong with sleeping");
                 }
-                if(!driver.getCurrentUrl().equals(actionUrl)){
-                    continue;
+
+                try{
+                    String currentPath = getPath(driver.getCurrentUrl());
+                    String actionPath = getPath(actionUrl);
+                    if(!currentPath.contains(actionPath)){
+                        continue;
+                    }
+                }catch(UnhandledAlertException e){
+                    System.err.printf("\033[91mUnhandled alert, trying to close it\033[0m%n");
                 }
+
                 p.doActions(driver);
             }
         }

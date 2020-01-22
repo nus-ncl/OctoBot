@@ -13,6 +13,7 @@ import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -86,8 +87,12 @@ public class PageAction{
 
     public void doActions(WebDriver driver){
         //DEBUG 
-        System.out.printf("\033[1;92mDoing actions...\033[0m %s\n", driver.getCurrentUrl());
-
+        try{
+            System.out.printf("\033[1;92mDoing actions...\033[0m %s\n", driver.getCurrentUrl());
+        }catch(UnhandledAlertException e){
+            System.err.printf("\033[91mUnhandled alert, trying to close it\033[0m%n");
+        }
+        
         //Fill in the inputs
         if(this.actions == null){
             return;
@@ -112,9 +117,6 @@ public class PageAction{
             try {
                 new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(selector)));
             }catch(TimeoutException e){
-                if(selector.contains("textarea")){
-                    System.out.println("GOT PROBLEM");
-                }
             }
 
             //Obtain the elements
