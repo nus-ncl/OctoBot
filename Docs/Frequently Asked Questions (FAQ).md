@@ -1,3 +1,4 @@
+# Frequently Asked Questions (FAQ)
 Question: How do I determine the CSS selector of elements
 
 Answer: Most modern browsers support this feature. Open "inspect element" and hover over the intended element, right click and there should be a option to copy the css selector. Below shows some examples on some browsers.

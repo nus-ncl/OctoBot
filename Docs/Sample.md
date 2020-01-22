@@ -1,3 +1,4 @@
+# Sample
 There are two samples, one using the CTFd website hosted locally and the other using Outlook Web Access (OWA).
 
 ## CTFd

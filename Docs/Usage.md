@@ -1,3 +1,4 @@
+# Usage
 Here is the help page for the program
 ```console
 whyare@BrowsingBot:~$ docker run -it --rm browsing-bot -h

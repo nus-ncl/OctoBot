@@ -1,3 +1,4 @@
+# Known Issues
 * Bot cannot log into gmail
 
 ![Gmail failed login](resources/img/gmail_failed_login.png)

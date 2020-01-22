@@ -1,3 +1,4 @@
+# Configuration
 There are 2 files that the program can accept, namely the login file and action file.
 * The action file consists of the page actions for selenium webdriver to do when it reaches that page
 * The login file consists of the login information and actions to carry out on the login/logout page using selenium
