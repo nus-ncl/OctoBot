@@ -56,6 +56,19 @@ public class Utils{
         return input;
     }
 
+    public static boolean matchUrl(String url, PageAction pageAction){
+        if(url == null || pageAction == null){
+            return false;
+        }
+        String actionPath = pageAction.getPath();
+        String actionUrl = pageAction.getUrl();
+        String path = getPath(url);
+        boolean pathMatch = (actionPath == null) ? true : path.matches(actionPath);
+        boolean urlMatch = (actionUrl == null) ? true : url.matches(actionUrl);
+
+        return pathMatch && urlMatch;
+    }
+
     @SuppressWarnings("unchecked")
     public static String chooseItem(Object obj, int randint){
         ArrayList<String> output = null;

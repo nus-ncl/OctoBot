@@ -75,10 +75,9 @@ public class PageAction{
 
         //Extract path from URL
         for(PageAction p: pageActions){
-            String path = Utils.getPath(url);
-            boolean urlMatch = (p.url == null) ? true : url.matches(p.url);
-            boolean pathMatch = (p.path == null) ? true : path.matches(p.path);
-            if(urlMatch && pathMatch){
+            boolean urlMatch = Utils.matchUrl(url, p);
+            
+            if(urlMatch){
                 return p;
             }
         }

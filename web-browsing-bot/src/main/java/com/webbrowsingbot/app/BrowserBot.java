@@ -62,12 +62,13 @@ public class BrowserBot {
     }
 
     public boolean processPage(String url){
-        try{// Enter the URL
+        try{
+            // Enter the URL
             try {
                 this.driver.get(url);
                 
                 //This is just so that the redirect will work
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(2); //They say that this is not good practice but there is no solid webdriverrwait expected condition
             } catch (InterruptedException e) {
                 System.err.println("Something wrong with sleeping");
             } catch (TimeoutException e) {

@@ -101,9 +101,15 @@ public class Crawler{
         //Load the URL
         if(toLoadUrl){
             try{
-                String path = Utils.getPath(url);
-                if(loginLogoutAction == null || !path.contains(loginLogoutAction.getLogoutAction().getPath()))
+                // Get logout action, loginLogoutAction can be null to represent not logged in user
+                PageAction logoutAction = (loginLogoutAction == null) ? null : loginLogoutAction.getLogoutAction();
+                
+                //Check whether the url is a logout url, if the logoutAction is null, no error will be thrown but isLogoutUrl will be false;
+                boolean isLogoutUrl = Utils.matchUrl(url, logoutAction);
+                
+                if(!isLogoutUrl) {//If it is not the logout URL, then load the page
                     this.driver.get(url);
+                }
             }catch(org.openqa.selenium.TimeoutException e){
                 System.err.printf("\033[91mWebpage timeout %s: %s\033[0m\n", url, e);
                 //this.visitedUrls.add(url); //Saves the URL into the arraylist

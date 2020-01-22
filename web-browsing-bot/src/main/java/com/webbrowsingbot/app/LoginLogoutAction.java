@@ -50,16 +50,12 @@ public class LoginLogoutAction {
         }
 
         ArrayList<String> usernames = new ArrayList<String>();
-        for(String username: loginLogoutActions.keySet()){
-            String path = Utils.getPath(url);
-            
+        for(String username: loginLogoutActions.keySet()){            
             LoginLogoutAction l = loginLogoutActions.get(username);
-            String loginUrl = l.getLoginAction().getUrl();
-            String loginPath = l.getLoginAction().getPath();
             
-            boolean urlMatch = (loginUrl == null) ? true : url.matches(loginUrl+".*");
-            boolean pathMatch = (loginPath == null) ? true : path.matches(loginPath+".*");
-            if(urlMatch && pathMatch){
+            boolean urlMatch = Utils.matchUrl(url, l.getLoginAction());
+
+            if(urlMatch){
                 usernames.add(username);
             }
         }
@@ -84,13 +80,9 @@ public class LoginLogoutAction {
             return null;
         }
 
-        String logoutPath = loginLogoutAction.getLogoutAction().getPath();
-        String logoutUrl = loginLogoutAction.getLogoutAction().getUrl();
-        String path = Utils.getPath(url);
-        boolean pathMatch = (logoutPath == null) ? true : path.matches(logoutPath+".*");
-        boolean urlMatch = (logoutUrl == null) ? true : url.matches(logoutUrl+".*");
+        boolean urlMatch = Utils.matchUrl(url, loginLogoutAction.getLogoutAction());
 
-        if(pathMatch && urlMatch){
+        if(urlMatch){
             return loginLogoutAction;
         }else{
             return null;
