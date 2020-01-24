@@ -2,13 +2,11 @@ package com.webbrowsingbot.app;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.UnhandledAlertException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.*;
 
 //This bot will randomly browse webpages
 public class BrowserBot {
@@ -139,7 +137,7 @@ public class BrowserBot {
         // Time things
         LocalDateTime endTime = Utils.calculateEndTime(duration);
         while(Utils.haveTime(endTime)){
-            //Sleep a while
+            // Sleep a while
             int sleepDuration = (int)((maxTime-minTime)*Math.random())+minTime;
             try{
                 TimeUnit.MILLISECONDS.sleep(sleepDuration);
@@ -147,17 +145,17 @@ public class BrowserBot {
                 System.err.printf("Failed to sleep: %s\n", e);
             }
 
-            //Important boolean variable
+            // Important boolean variable
             boolean goBack = false;
 
-            //Validate the URL first
+            // Validate the URL first
             boolean inBlacklist = blacklistUrls.contains(url);
             if(inBlacklist){
                 // Go back to previous page
                 goBack = true;
             }
 
-            //Process the page
+            // Process the page
             boolean successful = this.processPage(url);
             if(!successful){
                 blacklistUrls.add(url);
@@ -166,18 +164,17 @@ public class BrowserBot {
             }
 
             //Find links in page
-            ArrayList<String> linksInPage = Utils.getLinks(this.driver, this.domain, this.blacklistUrls, sameDomain);
+            ArrayList<Link> linksInPage = Utils.getLinks(this.driver, this.domain, this.blacklistUrls, sameDomain);
 
             // If there are no links on that page.
             if(linksInPage == null || linksInPage.size() <= 0) {
                 goBack = true;
-            }else if(linksInPage.size() == 1 && url.equals(linksInPage.get(0))){ //If there is only one choice\
+            }else if(linksInPage.size() == 1 && url.equals(linksInPage.get(0).getHref())){ //If there is only one choice\
                 //If there is only one link, and the one link is the current URL, go back
                 goBack = true;
             }else {
-                //Choose a link to go into
-                int randint = (int) (linksInPage.size() * Math.random());
-                nextUrl = linksInPage.get(randint);
+                Link chosenLink = Link.chooseRandLink(linksInPage);
+                nextUrl = chosenLink.getHref();
             }
 
             //Configure the URL to go back if goBack is true

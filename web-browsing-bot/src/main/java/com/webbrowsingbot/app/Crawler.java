@@ -123,7 +123,7 @@ public class Crawler{
         this.visitedUrls.add(url); //Saves the URL into the arraylist
 
         //Obtains all links in the current link
-        ArrayList<String> webLinks = null;
+        ArrayList<Link> webLinks = null;
         //If next depth is not going to be get accessed, then dont bother getting links for the current URL
         if(curDepth+1 <= this.maxDepth || this.maxDepth == -1){
             webLinks = Utils.getLinks(this.driver, this.domain, new ArrayList<String>(), sameDomain);
@@ -140,8 +140,8 @@ public class Crawler{
         }
 
         //Access all the links
-        for(String link: webLinks){
-            this.visit(link, curDepth+1, true);
+        for(Link link: webLinks){
+            this.visit(link.getHref(), curDepth+1, true);
         }
     }
 }

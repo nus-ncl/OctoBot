@@ -8,11 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.UnhandledAlertException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 public class Utils{
     public static URI parseURLtoURI(String url){
@@ -92,12 +88,12 @@ public class Utils{
         }
     }
     // Obtains all web links and stores them onto an arraylist
-    public static ArrayList<String> getLinks(WebDriver driver, String domain, ArrayList<String> blacklistUrl){
+    public static ArrayList<Link> getLinks(WebDriver driver, String domain, ArrayList<String> blacklistUrl){
         return getLinks(driver, domain, blacklistUrl, true);
     }
 
     //Returns null for problems, empty list for no links, or list of urls
-    public static ArrayList<String> getLinks(WebDriver driver, String domain, ArrayList<String> blacklistUrl, boolean sameDomain){
+    public static ArrayList<Link> getLinks(WebDriver driver, String domain, ArrayList<String> blacklistUrl, boolean sameDomain){
         //This portion finds easy links (means anchor tag with href)
         List<WebElement> linkElements = null;
         
@@ -115,7 +111,7 @@ public class Utils{
         }
 
         //Final output variable
-        ArrayList<String> linksInPage = new ArrayList<String>();
+        ArrayList<Link> linksInPage = new ArrayList<Link>();
 
         if(linkElements == null){
             return linksInPage;
@@ -147,8 +143,11 @@ public class Utils{
             boolean inBlacklist = blacklistUrl.contains(url);
             boolean toAddToArrayList = !isEmpty && !isRepeated && sameHostname && !inBlacklist;
 
+            // If the URL location is valid, then add to array list
             if(toAddToArrayList){
-                linksInPage.add(url);
+                Point location = we.getLocation();
+                Link l = new Link(url, location, driver.manage().window().getSize());
+                linksInPage.add(l);
             }
         }
         return linksInPage;
