@@ -1,0 +1,54 @@
+[
+    {
+        "comments": "Initial setup of CTF",
+        "path": "/setup",
+        "actions" : [
+            {"id": "ctf_name", "value": "MyCTF"},
+            {"id": "ctf_description", "value": "Setting up CTF automatically"},
+            {"id": "user_mode", "value": "User Mode"},
+            {"css": "#general > div.float-right > button", "action": "click"},
+            {"css": "#administration > div:nth-child(1) > input", "value": "admin"},
+            {"css": "#administration > div:nth-child(2) > input", "value": "admin@email.com"},
+            {"css": "#administration > div:nth-child(3) > input", "value": "admin"},
+            {"css": "#administration > div.float-right > button", "action": "click"},
+            {"css": "#style > div.float-right > button", "action": "click"},
+            {"css": "#datetime > div.float-right > button", "action": "click"},
+            {"css": "#integrations > div.submit-row.float-right > button", "action": "click"}
+        ]
+    },
+    {
+        "path": "/register",
+        "actions": [
+            {"id": "name-input", "value": ["user1", "user2", "user3", "user4", "user5"]},
+            {"id": "email-input", "value": ["user1@email.com", "user2@email.com", "user3@email.com", "user4@email.com", "user5@email.com"]},
+            {"id": "password-input", "value": ["password"]},
+            {"id": "password-input", "key": ["ENTER"]}
+        ]
+    },
+    {
+        "path": "/admin/challenges/new",
+        "actions": [
+            {"id": "create-chals-select", "value": "dynamic"},
+            {"name": "name", "value": ["Challenge #1", "Challenge #2"]},
+            {"name": "category", "value": ["Category #1", "Category #2"]},
+            {"name": "description", "value": "Description #1"},
+            {"name": "value", "value": "1000"},
+            {"css": "div.form-group:nth-child(7) > input:nth-child(2)", "value": "20"},
+            {"css": "div.form-group:nth-child(8) > input:nth-child(2)", "value": "100"},
+            {"css": "div.form-group:nth-child(8) > input:nth-child(2)", "key": "BACK_SPACE ENTER"},
+            {"css": "#challenge-create-options > div > div > div.modal-body > form > div:nth-child(1) > div > div.col-md-8 > input", "value": "FLAG"},
+            {"css": "#challenge-create-options > div > div > div.modal-body > form > div:nth-child(3) > select", "value": "visible"},
+            {"css": "#challenge-create-options > div > div > div.modal-body > form > div:nth-child(5) > button", "action": "click"}
+        ]
+    },
+    {
+        "path": "/admin/pages/new",
+        "actions": [
+            {"name": "title", "value": ["title1", "title2"]},
+            {"name": "route", "value": ["route1", "route2"]},
+            {"css": "#content-write > div.form-group > div > div.CodeMirror-scroll > div.CodeMirror-sizer > div > div > div > div.CodeMirror-code > div > pre", "action": "click"},
+            {"css": "#content-write > div.form-group > div > div:nth-child(1) > textarea", "value": ["content #1", "content #2"]},
+            {"id": "save-page", "action": "click"}
+        ]
+    }
+]

@@ -1,0 +1,18 @@
+[
+    {
+        "description": "Sends a random email to a random person.",
+        "url": "https://outlook.live.com/mail/0/inbox",
+        "path": "/mail/0/inbox.*",
+        "actions":[
+            {"css": "#app > div > div._3KAPMPOz8KsW24ooeUflK2 > div._2jR8Yc0t2ByBbcz_HIGqZ4 > div._1TpU2KF6f_EeQiytBaYj8I > div._25oA4qBLP_b6P080cw5s2H.css-44 > div._1waWmu4XtQsneHiFwpHx7b > div.qtRcagoPZ5dw3xsr114ze > button > span",
+            "action": "click"},
+            {"css": "#app > div > div._3KAPMPOz8KsW24ooeUflK2 > div._2jR8Yc0t2ByBbcz_HIGqZ4 > div._1TpU2KF6f_EeQiytBaYj8I > div._3mBjlqTqXMUiRuuWRKCPtX.css-41 > div._1jw6v9zFEgnOiXShpU1qqM > div > div.mm4nCLKbIRtx5HvuorDWT > div._1QDTZfBsizkS8O4Jej5a3A > div > div > div > div._29NreFcQ3QoBPNO3rKXKB0 > div._3Yr_hO7j5doGUkhrRiP6uY > div:nth-child(1) > div > div._31eKqae41uP_KBAvjXjCLQ > div > div > div > div > div.ms-FocusZone.css-58 > div > div > input",
+            "value": "<toEmail>"},
+            {"id": "subjectLine0", "value": ["Subject #1", "Subject 2", "Subject 3"]},
+            {"css": "#app > div > div._3KAPMPOz8KsW24ooeUflK2 > div._2jR8Yc0t2ByBbcz_HIGqZ4 > div._1TpU2KF6f_EeQiytBaYj8I > div._3mBjlqTqXMUiRuuWRKCPtX.css-41 > div._1jw6v9zFEgnOiXShpU1qqM > div > div.mm4nCLKbIRtx5HvuorDWT > div._1QDTZfBsizkS8O4Jej5a3A > div > div > div > div._29NreFcQ3QoBPNO3rKXKB0 > div._2_G1lB2DCB_6t73ZTT6vX3._2Hl0t2u2yIjuWmfatKUaJ2 > div._4utP_vaqQ3UQZH0GEBVQe.B1QSRkzQCtvCtutReyNZ._17ghdPL1NLKYjRvmoJgpoK._2s9KmFMlfdGElivl0o-GZb",
+            "value": "testing123"},
+            {"css": ".ms-Button--primary",
+            "action": "click"}
+        ]
+    }
+]
