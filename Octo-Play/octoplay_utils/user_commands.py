@@ -66,9 +66,11 @@ def get_containers():
     containers = z['spec']['template']['spec']['containers']
 
     for i, c in enumerate(containers):
-        command = " ".join(c['command']) if c['command'] is not None else None
-        if command is not None and len(command) > 50:
-            command = command[:50] + "..."
+        command = c.get('command', '')
+        if command:
+            for count, com in enumerate(command):
+                if len(com) > 50:
+                    command[count] = com[:50] + "..."
 
         print(f"- Index\t\t:\t{i}")
         print(f"  Name\t\t:\t{c['name']}")
