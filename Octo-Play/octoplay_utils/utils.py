@@ -5,6 +5,7 @@ import requests
 
 # Global Variables
 K8S_PORT = 12321
+KUBECTL_CMD = '/snap/bin/microk8s.kubectl'
 
 
 def push_yaml_file(filename):

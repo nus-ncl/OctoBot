@@ -147,7 +147,7 @@ def open_proxy(port=utils.K8S_PORT):
         raise e
 
     if pid == 0:  # This is the child process
-        command = "kubectl proxy -p {}".format(port)
+        command = f"{utils.KUBECTL_CMD} proxy -p {port}"
         params = command.split(" ")
 
         try:
@@ -345,7 +345,10 @@ def delete_pod(pod_name):
 
 def get_logs(args):
     """<pod> [container]
-    Get logs for containers"""
+    Get logs for containers
+
+    pod: Name of pod
+    container: Name of container in the pod"""
 
     # Split the string based on <space>
     args = shlex.split(args)
@@ -376,6 +379,45 @@ def get_logs(args):
                         .format(resp.json()['message']))
 
     return resp.text
+
+
+def run_job(params):
+    """<pod> <container> <command>
+    Runs the specified command on a container in a pod
+
+    pod: Name of pod
+    container: Name of container in the pod
+    command: Name of command to run in the container"""
+    # Make param a list
+    params = params.split(' ')
+
+    # Extract variables out
+    pod = params[0]
+    worker = params[1]
+    job = " ".join(params[2:])   # Makes job back into a string
+
+    # Get kubectl command
+    command = f"{utils.KUBECTL_CMD} exec {pod} {worker} -- {job}"
+
+    # Run the command
+    try:
+        os.system(command)
+    except Exception as e:
+        raise e
+
+
+def get_shell(param):
+    """<pod_name>
+    Gets shell for the specified pod
+
+    pod_name: Name of pod"""
+    pod = param
+    command = f"{utils.KUBECTL_CMD} exec -it {pod} -- /bin/bash"
+
+    try:
+        os.system(command)
+    except Exception as e:
+        raise e
 
 
 def get_current_config():

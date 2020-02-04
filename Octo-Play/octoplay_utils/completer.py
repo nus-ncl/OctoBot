@@ -9,7 +9,8 @@ class Completer(object):  # Custom completer
         self.commands = commands + ["help"]
         self.matches = []
 
-    def _path_completer(self, text):
+    @staticmethod
+    def _path_completer(text):
         """
             This is the tab completer for systems paths.
             Only tested on *nix systems

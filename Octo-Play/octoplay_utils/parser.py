@@ -28,6 +28,8 @@ commands = {"currentConfig": user_commands.get_current_config,
             "patchFile": user_commands.patch_file,
             "stopFile": user_commands.stop_file,
             "checkStatus": user_commands.check_status,
+            "runJob": user_commands.run_job,
+            "getShell": user_commands.get_shell,
             "deletePod": user_commands.delete_pod,
             "getLogs": user_commands.get_logs,
             "getLogsByCmd": user_commands.get_logs_by_command,
@@ -157,8 +159,7 @@ def interactive():
 
     # Configures completer
     comp = Completer(list(commands.keys()) + list(functions.keys()))
-    # we want to treat '/' as part of a word, so override the delimiters
-    readline.set_completer_delims(" \n\t;\"'")
+    readline.set_completer_delims(" \n\t;\"'")  # we want to treat '/' as part of a word, so override the delimiters
     readline.parse_and_bind("tab: complete")
     readline.set_completer(comp.complete)
 
