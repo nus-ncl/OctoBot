@@ -1,0 +1,5 @@
+web-browsing-bot/.*
+web-browsing-bot/json_files
+web-browsing-bot/web-browsing-bot.iml
+/.idea
+/__pycache__

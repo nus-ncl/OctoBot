@@ -1,0 +1,14 @@
+[{
+    "loginAction": 
+    {
+        "path": "/login",
+        "actions": [
+            {"name": "name", "value": ["admin", "john"]},
+            {"name": "password", "value": ["admin", "john"]},
+            {"css": "button[type='submit']", "action": "click"}
+        ]
+    },
+    "logoutAction":{
+        "path": "/logout"
+    }
+}]
