@@ -43,20 +43,20 @@ def set_name(name):
     print(f'Name: {name}')
 
 
-def get_replicas():
+def get_bot_numbers():
     """
-    Returns the number of replicas in the configuration"""
+    Returns the number of bots in the configuration"""
     return z['spec']['replicas']
 
 
-def set_replicas(number_of_replicas):
+def set_bot_numbers(number_of_bots):
     """<number_of_replicas>
-    Set the number of replicas in the configuration
+    Set the number of bots in the configuration
 
-    number_of_replicas: Number of replicas"""
+    number_of_bots: Number of bots"""
 
-    z['spec']['replicas'] = int(number_of_replicas)
-    print(f"Replicas: {z['spec']['replicas']}")
+    z['spec']['replicas'] = int(number_of_bots)
+    print(f"Bot Numbers: {z['spec']['replicas']}")
 
 
 def get_containers():
@@ -428,7 +428,7 @@ def get_current_config():
 
     print(f"API Version\t:\t{z['apiVersion']}")
     print(f"Name\t\t:\t{z['metadata']['name']}")
-    print(f"Replicas\t:\t{z['spec']['replicas']}")
+    print(f"Bot Numbers\t:\t{z['spec']['replicas']}")
     get_containers()
 
 
