@@ -20,9 +20,13 @@
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
+    - name: Get the latest stable version
+      shell: lsb_release -cs
+      register: stable_version
+
     - name: Add apt repository for stable version
       apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ stable_version.stdout_lines[0] }} stable
         state: present
 
     - name: Install docker and its dependecies
@@ -32,8 +36,8 @@
         update_cache: yes
       vars:
         packages:
-          - docker-ce=5:18.09.0~3-0~ubuntu-xenial
-          - docker-ce-cli=5:18.09.0~3-0~ubuntu-xenial
+          - docker-ce
+          - docker-ce-cli
           - containerd.io
       notify:
         - docker status
@@ -81,6 +85,11 @@
     - name: Get the host part of the IP 
       shell: host {{ ansible_fqdn }} | awk '{print $4}' 
       register: node_ip
+
+    - name: Creates Kubelet directory
+      file:
+        path: /etc/default/kubelet
+        state: touch 
 
     - name: Configure node ip
       lineinfile:

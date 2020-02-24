@@ -1,5 +1,8 @@
 #/bin/sh
 
+sudo apt-get update
+sudo apt-get install ansible -y
+
 while true; do
 	read -p "Please select your installation target? [Controller (c), Worker(w), All (a) or Exit (e)] " cwae
     case $cwae in
