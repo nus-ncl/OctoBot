@@ -26,7 +26,7 @@
 
     - name: Add apt repository for stable version
       apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ stable_version }} stable
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ stable_version.stdout_lines[0] }} stable
         state: present
 
     - name: Install docker and its dependecies
@@ -67,7 +67,7 @@
 
     - name: Adding apt repository for Kubernetes
       apt_repository:
-        repo: deb https://apt.kubernetes.io/ kubernetes-{{ stable_version }} main
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
         state: present
         filename: kubernetes.list
 
@@ -85,6 +85,11 @@
     - name: Get the host part of the IP 
       shell: host {{ ansible_fqdn }} | awk '{print $4}' 
       register: node_ip
+
+    - name: Creates Kubelet directory
+      file:
+        path: /etc/default/kubelet
+        state: touch 
 
     - name: Configure node ip
       lineinfile:
