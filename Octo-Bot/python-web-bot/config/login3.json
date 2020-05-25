@@ -1,0 +1,8 @@
+{
+    "url": "http://10.10.0.112",
+    "user1" : ["S0000011A", "LightEnterP@ssw0rd"],
+    "user2": ["S0000012A", "LightEnterP@ssw0rd"],
+    "user3" : ["S0000013A", "LightEnterP@ssw0rd"],
+    "user4" : ["S0000014A", "LightEnterP@ssw0rd"],
+    "user5" : ["S0000015A", "LightEnterP@ssw0rd"]
+  } 
