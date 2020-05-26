@@ -16,10 +16,10 @@ joelczk@OctoBot:~$ sudo apt update && sudo apt install git
 
 Build and Run Docker image
 ```console
-joelczk@OctoBot:~$ git clone https://github.com/joelczk/OctoBot.git
-joelczk@OctoBot:~$ cd OctoBot/
-joelczk@OctoBot:~$ sudo chmod 777 run.sh
-joelczk@OctoBot:~/OctoBot$ ./run.sh
+joelczk@OctoBot:~$ cd OctoBot/Octo-Bot/<bot-name>
+joelczk@OctoBot:~$OctoBot/Octo-Bot/<bot-name>$ git clone https://github.com/joelczk/OctoBot.git
+joelczk@OctoBot:~$OctoBot/Octo-Bot/<bot-name>$ sudo chmod 777 run.sh
+joelczk@OctoBot:~$OctoBot/Octo-Bot/<bot-name>$ ./run.sh
 ```
 
 Check the running container:
@@ -33,8 +33,8 @@ acfcdc3f568f        web-crawler:latest   "python -u ./main.py…"   2 days ago  
 Access the data scraped :
 
 ```console
-joelczk@OctoBot:~/OctoBot$ sudo docker cp <container name>:/data <directory>
-joelczk@OctoBot:~/OctoBot$ sudo chmod -R <directory>
-joelczk@OctoBot:~/OctoBot$ cd <directory>/data
+joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ sudo docker cp <container name>:/data <directory>
+joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ sudo chmod -R <directory>
+joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ cd <directory>/data
 ```
 Detailed Documentations can be found at [DOCS](https://github.com/joelczk/web-crawler/blob/master/Docs/README.md)
