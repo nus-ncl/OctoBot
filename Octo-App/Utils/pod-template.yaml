@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name:
+spec:
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+        claimName: task-pv-claim
+  containers:
+    - name: task-pv-container
+      image: ubuntu
+      command: ['sh', '-c', 'while true; do echo hello && sleep 10; done;']
+      volumeMounts:
+        - mountPath: "/mnt"
+          name: task-pv-storage
+  nodeName:

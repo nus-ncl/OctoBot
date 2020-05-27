@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
-import sys
 import datetime
-from appUtils import *
+
+from .appUtils import *
 
 commands = {"setPort": setPort,
             "openProxy": openProxy,
@@ -10,6 +10,10 @@ commands = {"setPort": setPort,
             "runJob": runJob,
             "getShell": getShell,
             "getLogs": getLogs,
+            "getNodes": getNodes,
+            "setBotNode": setBotNode,
+            "moveBotNode": moveBotNode,
+            "deleteBot": deleteBot,
             "exit": sys.exit
             }
 
@@ -19,7 +23,7 @@ def printPrompt():
     currFileName = sys.argv[0]
     currentDT = datetime.datetime.now()
     '''print("{}:~$ ".format(currFileName), end="")'''
-    print("{}:~$ ".format(currentDT), end="")
+    print("[{}]:~$ ".format(currentDT), end="")
 
 
 def parse(x):
@@ -52,9 +56,13 @@ def printSyntax(command):
     commands = {"setPort": "setPort <port for API to run on>",
                 "openProxy": "openProxy",
                 "checkStatus": "checkStatus",
-                "runJob" : "runJob <client name> <worker name> <job name>",
-                "getShell" : "getShell <client_name>",
+                "runJob": "runJob <client name> <worker name> <job name>",
+                "getShell": "getShell <client_name>",
                 "getLogs": "getLogs <client name> <worker name>",
+                "getNodes": "getNodes",
+                "setBotNode": "setBotNode <bot name> <node name>",
+                "moveBotNode": "moveBotNode <bot name> <new node name>",
+                "deleteBot": "deleteBot <bot name>",
                 "exit": "exit (exits the program)"
                 }
 
