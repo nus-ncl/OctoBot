@@ -1,2 +1,2 @@
-sudo docker build . -t web-crawler:latest
-sudo docker run web-crawler
+sudo docker build . -t healthcare-web-bot:latest
+sudo docker run healthcare-web-bot

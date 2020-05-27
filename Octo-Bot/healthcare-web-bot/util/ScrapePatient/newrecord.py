@@ -128,6 +128,7 @@ def createNewReadings(driver, data, token):
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
 def createNewRecords(driver):
+    print("Injection Information into website...")
     driver.find_element_by_id("A1").click()
     time.sleep(2)
     driver.find_element_by_id("navLinksSwitchRole").click()
