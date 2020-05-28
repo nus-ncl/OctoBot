@@ -1,18 +1,8 @@
 {
     "url": "http://10.10.0.112",
-    "user1": ["<username>", "<password>"],
-    "user2": ["<username>", "<password>"],
-    "user3": ["<username>", "<password>"],
-    "user4": ["<username>", "<password>"],
-    "user5": ["<username>", "<password>"],
-    "user6": ["<username>", "<password>"],
-    "user7": ["<username>", "<password>"],
-    "user8": ["<username>", "<password>"],
-    "user9" : ["<username>", "<password>"],
-    "user10": ["<username>", "<password>"],
-    "user11" : ["<username>", "<password>"],
-    "user12": ["<username>", "<password>"],
-    "user13" : ["<username>", "<password>"],
-    "user14" : ["<username>", "<password>"],
-    "user15" : ["<username>", "<password>"]
-}
+    "user1": ["S1234567B", "easyP@ssw0rd"],
+    "user2": ["S1234567B", "easyP@ssw0rd"],
+    "user3": ["S1234567B", "easyP@ssw0rd"],
+    "user4": ["S1234567B", "easyP@ssw0rd"],
+    "user5": ["<username>", "<password>"]
+  }
