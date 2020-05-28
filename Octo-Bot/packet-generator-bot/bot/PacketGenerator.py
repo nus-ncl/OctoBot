@@ -92,7 +92,6 @@ class PacketGenerator():
         if self.time is None: # No time indicated
             for i in range(1, self.loop + 1):
                     print ('Iteration #%i' % i)
-                    print ('sending %i packets a sec...' % send_rate)
                     sendp(self.packets,iface=self.interface)
                     if self.delay > 0:
                         print ("pausing for %i secs... " % self.delay)
