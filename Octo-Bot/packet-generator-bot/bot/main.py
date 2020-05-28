@@ -21,6 +21,10 @@ def main():
     parser.add_argument("-i", "--interface", help="(optional) specify interface", required=False, default='eth0')
     parser.add_argument("-r", "--pcap", help="pcap base to (r)eplay", required=False, action='append',default=[])
     parser.add_argument("-o", "--outfile", help="(optional) output packet capture file", required=False, default=None)
+    parser.add_argument("-t", "--time", help="(optional) continuously generate traffic for a set duration of time", required=False, default=None)
+    parser.add_argument("-l", "--loop", help="(optional) number of times to loop", type=int, required=False, default=1)
+    parser.add_argument("-d", "--delay", help="(optional) delay between each loop", required=False, default="0")
+
     args = parser.parse_args()
 
     #Use Scapy Interactive Console

@@ -1,8 +1,9 @@
 from scapy.all import *
 
+
 from PacketGenerator import *
 from helper.ReplayHelper import *
-
+from utils.TimeUtils import *
 
 def generateReplay(args):
 
@@ -52,9 +53,14 @@ def generateReplay(args):
             if isIPModified and isPortModified and isMacModified:
                 break
         
+        # Setup time
+        generator.time=timeStr2Secs(args.time) if args.time is not None else None
+        generator.loop=args.loop
+        generator.delay=timeStr2Secs(args.delay)
+
         # Setup connectivity
         generator.setupInterface(args.interface)
 
         # Generate Traffic!
-        generator.sendPackets()
+        generator.sendPackets(outfile=args.outfile)
     

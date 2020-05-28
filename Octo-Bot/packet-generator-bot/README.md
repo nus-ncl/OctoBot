@@ -1,4 +1,4 @@
-## OctoBot Quick Start Guide
+## [OCTO-BOT] Packet-Generator-Bot Quick Start Guide
 
 ### Install Dependencies
 
@@ -69,4 +69,37 @@ Run locally the public docker image.
 
 ```console
 ncl@orchestrator:~/OctoBot/Octo-Bot/packet-generator-bot$ docker run korona/packet-generator-bot:latest -r captures/http.cap -a 192.168.0.1 -A 192.168.1.254
+```
+
+## Help and Arguments
+
+You can display the help right within the bot.
+
+```console
+ncl@orchestrator:~/OctoBot/Octo-Bot/packet-generator-bot$ python main.py -h
+usage: main.py [-h] [--interactive] [-a SRC] [-A DST] [-p SPORT] [-P DPORT]
+               [-m SMAC] [-M DMAC] [-i INTERFACE] [-r PCAP] [-o OUTFILE]
+               [-t TIME] [-l LOOP] [-d DELAY]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --interactive         use scapy interactive console
+  -a SRC, --src SRC     (optional) specify source ip
+  -A DST, --dst DST     (optional) specify destination ip
+  -p SPORT, --sport SPORT
+                        (optional) specify source port
+  -P DPORT, --dport DPORT
+                        (optional) specify destination port
+  -m SMAC, --smac SMAC  (optional) specify source mac
+  -M DMAC, --dmac DMAC  (optional) specify destination mac
+  -i INTERFACE, --interface INTERFACE
+                        (optional) specify interface
+  -r PCAP, --pcap PCAP  pcap base to (r)eplay
+  -o OUTFILE, --outfile OUTFILE
+                        (optional) output packet capture file
+  -t TIME, --time TIME  (optional) continuously generate traffic for a set
+                        duration of time
+  -l LOOP, --loop LOOP  (optional) number of times to loop
+  -d DELAY, --delay DELAY
+                        (optional) delay between each loop
 ```
