@@ -4,6 +4,22 @@ from scapy.all import *
 
 
 class PacketGenerator():
+    '''
+    Represents a packet generator. 
+    Should be instantiated by other modules to setup the type of packets to generate.
+
+    Attributes:
+        interface: network interface to use
+        packets: packets to send
+        ipMap: map for modifying IPs
+        portMap: map for modifying port numbers
+        isIPRemap: flag to trigger IP modifications
+        isPortRemap: flag to trigger Port modifications
+        isMacRemap: flag to trigger Mac modifications
+        time: duration of generation
+        loop: number of times to generate (mutually exclusive with time)
+        delay: delay between each repetition
+    '''
 
     def __init__(self):
         self.interface = None
@@ -70,9 +86,7 @@ class PacketGenerator():
                     outfile = None):
 
         if outfile != None:
-            wrpcap(outfile,self.packets)
-
-        
+            wrpcap(outfile,self.packets)        
     
         for pkt in self.packets:
             if self.isIPRemap and pkt.haslayer(IP):
@@ -90,24 +104,19 @@ class PacketGenerator():
                 pkt[Ether].dst = self.remapMac(pkt[Ether].dst)
 
         if self.time is None: # No time indicated
-            for i in range(1, self.loop + 1):
-                    print ('Iteration #%i' % i)
-                    sendp(self.packets,iface=self.interface)
-                    if self.delay > 0:
-                        print ("pausing for %i secs... " % self.delay)
-                        time.sleep(self.delay)
+            for i in range(1, self.loop + 1):      
+                sendp(self.packets,iface=self.interface)
+                if self.delay > 0:
+                    time.sleep(self.delay)
+
         elif self.time is not None: # time indicated, loops ignored
             timestart = time.time()
             timeend = timestart + self.time
             i = 1
             while time.time() < timeend:
-                print ('Iteration #%i' % i)
                 sendp(self.packets,iface=self.interface)
-                print ('stopping in %3f secs' % max((timeend - time.time(), 0)))
                 if self.delay > 0:
-                    print ("pausing for %3f secs... " % self.delay)
                     time.sleep(self.delay)
-                print("")
                 i += 1
 
 

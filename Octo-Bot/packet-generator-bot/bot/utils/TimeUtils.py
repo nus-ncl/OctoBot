@@ -4,6 +4,16 @@ HOUR_IN_SECS = 3600
 DAY_IN_SECS = 86400
 
 def timeStr2Secs(timeStr):
+    '''
+    Converts at timeStr string in the format (DD:HH:MM:SS) into seconds.
+
+    Arguments:
+        timeStr (str): timeStr string in the format (DD:HH:MM:SS)
+    
+    Returns:
+        totalSecs (int): timeStr string in seconds.
+    '''
+
     totalSecs = 0
 
     timeStrings = timeStr.split(':')

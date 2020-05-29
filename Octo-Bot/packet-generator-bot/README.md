@@ -76,10 +76,11 @@ ncl@orchestrator:~/OctoBot/Octo-Bot/packet-generator-bot$ docker run korona/pack
 You can display the help right within the bot.
 
 ```console
-ncl@orchestrator:~/OctoBot/Octo-Bot/packet-generator-bot$ python main.py -h
+ncl@orchestrator:~/OctoBot/Octo-Bot/packet-generator-bot$ docker run korona/packet-generator-bot:latest --help
 usage: main.py [-h] [--interactive] [-a SRC] [-A DST] [-p SPORT] [-P DPORT]
                [-m SMAC] [-M DMAC] [-i INTERFACE] [-r PCAP] [-o OUTFILE]
-               [-t TIME] [-l LOOP] [-d DELAY]
+               [-t TIME] [-l LOOP] [-d DELAY] [-w WORKERS]
+               [--workers-no-random]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -102,4 +103,9 @@ optional arguments:
   -l LOOP, --loop LOOP  (optional) number of times to loop
   -d DELAY, --delay DELAY
                         (optional) delay between each loop
+  -w WORKERS, --workers WORKERS
+                        (optional) number of workers to run in parallel
+  --workers-no-random   (optional) set all workers to use the same IP, Port &
+                        Mac
+
 ```
