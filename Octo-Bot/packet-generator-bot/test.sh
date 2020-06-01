@@ -10,7 +10,7 @@ cp -r tests/test_*.py bot
 # Run all tests
 for test in bot/test_*.py
 do
-    python $test
+    python3 $test
 done
 
 # Remove copied files
