@@ -6,6 +6,17 @@ from helper.ReplayHelper import *
 
 
 class TestReplayHelperMethods(unittest.TestCase):
+    '''
+    Unit tests to ensure the replay helper functions work as expected. 
+    If any tests fail, please check for regression.
+
+    Expected output:
+        ....
+        ----------------------------------------------------------------------
+        Ran 4 tests in X.XXXs
+
+        OK
+    '''
 
     def test_openCorrect(self):
         self.assertIsNotNone(openPcap("captures/http.cap"))

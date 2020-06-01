@@ -3,6 +3,17 @@ import unittest
 from utils.TimeUtils import *
 
 class TestTimeUtilsMethods(unittest.TestCase):
+    '''
+    Unit tests to ensure the time utils functions work as expected.
+    If any tests fail, please check for regression.
+
+    Expected output:
+        ....
+        ----------------------------------------------------------------------
+        Ran 10 tests in X.XXXs
+
+        OK
+    '''
 
     def test_timeStr2Secs_JustSeconds(self):
         timeStr = "123456"
