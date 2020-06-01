@@ -1,5 +1,11 @@
 # Runs all unit tests in the ./tests directory
 
+# Install dependencies
+if ! command -v python3 >/dev/null 2>&1; then
+echo "Please install python3 first!"
+fi
+pip3 install scapy >/dev/null
+
 # Setup permissions
 chmod a+x *.sh &&
 
