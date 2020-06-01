@@ -5,14 +5,16 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
 from util.ScrapeAdmin.admin import viewAccountPages
 
 paginationXpath =  "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[7]/td/table/tbody/tr/td["
 
-'''Functions to get the contact info
-Functions to progrssively crawl contact info
-'''
+""" Saves all contact information for each user
+saveContactInformation obtains contact information for each user
+getContactInformationOnePage obtains all contact information for each user in 1 page
+getAllContactInformation saves the contact information for all users into individual text files
+"""
+
 def saveContactInformation(driver, contactToken, directory):
     print("Getting contact information...")
     time.sleep(3)
@@ -30,7 +32,7 @@ def saveContactInformation(driver, contactToken, directory):
     savedFile.write("Email: " + email + "\n")
     savedFile.write("Contact Number: " + contactNumber + "\n")
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    # driver.find_element_by_class_name("close").click()
+
 def getContactInformationOnePage(driver, directory):
     number = 2
     while (number <= 6):
@@ -51,13 +53,11 @@ def getAllContactInformation(driver):
             getContactInformationOnePage(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
             if (number == maxNumber):
                 break
             number += 1
             driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
-            time.sleep(10)
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getContactInformationOnePage(driver, directory)

@@ -1,6 +1,10 @@
 import time 
-from util.Driver.role import getRole
 
+""" Helper functions to automate login and logout process
+
+login function gets the username and password and automates the login process
+logout function logouts the user from the account
+"""
 def login(driver, username, password):
     print("Logging in...")
     username_box = driver.find_element_by_id('BodyContent_inputNRIC')
@@ -14,7 +18,6 @@ def login(driver, username, password):
         print("Invalid credentials. Please try again!")
     else:
         print("Logged in!")
-        getRole(driver)
 
 def logout(driver):
     script = "__doPostBack('ctl00$ctl13','')"

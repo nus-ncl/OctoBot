@@ -5,14 +5,16 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
 from util.ScrapeAdmin.admin import viewAccountPages
 
 paginationXpath =  "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[7]/td/table/tbody/tr/td["
 
-'''Functions to get the Therapist info
-Functions to progrssively crawl therapist info
-'''
+"""Saves all researcher information for each user
+
+saveResearcherInformation obtains the researcher information for each user
+getResearcherInformationOnePage obtains all the researcher information for all the users in one page
+getAllResearcherInformation saves all the researcher information for each user into individual text files
+"""
 
 def saveResearcherInformation(driver, researcherToken, directory):
     print("Printing researcher information...")
@@ -54,13 +56,11 @@ def getAllResearcherInformation(driver):
             getResearcherInformationOnePage(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
             if (number == maxNumber):
                  break
             number += 1
             driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
-            time.sleep(10)
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getResearcherInformationOnePage(driver, directory)

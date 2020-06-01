@@ -5,14 +5,17 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
 from util.ScrapeAdmin.admin import viewAccountPages
 
 paginationXpath =  "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[7]/td/table/tbody/tr/td["
 
-'''Functions used to obtain personal Information
-These are the functions used to progrssively scrape out all the information listed under the Personal
-'''
+""" Saves all the personal information for each user
+
+savePersonalInformation function obtains all the information for each user
+getPersonalInformationOnePage obtains all the personal information for each user in one page
+getAllPersonalInformation saves all the personal information for each user into individual text files
+"""
+
 def savePersonalInformation(driver, personalToken, directory):
     print("Printing personal information...")
     time.sleep(3)
@@ -50,8 +53,7 @@ def getPersonalInformationOnePage(driver, directory):
             personalToken = "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[" + str(number) + "]/td[2]/a"
             savePersonalInformation(driver, personalToken, directory)
             number += 1
-        except Exception as e:
-            print(e)
+        except:
             number +=1
 
 def getAllPersonalInformation(driver):
@@ -67,13 +69,11 @@ def getAllPersonalInformation(driver):
             getPersonalInformationOnePage(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
             if (number == maxNumber):
                 break
             number += 1
             driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
-            time.sleep(10)
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getPersonalInformationOnePage(driver,directory)

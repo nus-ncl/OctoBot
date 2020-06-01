@@ -1,3 +1,10 @@
+""" Checks the role of the user
+isAdmin function checks if the user is an admin
+isPatient function checks if the user is a patient
+isResearcher function checks if the user is a reasearcher
+isTherapist function checks if the user is a researcher
+"""
+
 def isAdmin(driver):
     try:
         driver.find_element_by_id('BodyContent_buttonLoginAdmin')
@@ -25,14 +32,3 @@ def isTherapist(driver):
         return True
     except:
         return False
-
-def getRole(driver):
-    print("User privileges:")
-    if (isAdmin(driver)):
-        print(" -Admin")
-    if (isResearcher(driver)):
-        print(" -Researcher")
-    if (isTherapist(driver)):
-        print(" -Therapist")
-    if (isPatient(driver)):
-        print(" -Patient")

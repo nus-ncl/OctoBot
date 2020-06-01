@@ -1,11 +1,13 @@
+import argparse
+import os
+import random
 import time
 
 from selenium import webdriver
-# from webdriver_manager.chrome import ChromeDriverManager
-# from webdriver_manager.firefox import GeckoDriverManager
 
 from util.Driver.login import login, logout
-from util.Driver.parser import getUrl, getCredentials
+from util.Driver.parser import getUrl, genAdminFiles, getCredentials, writeBack, checkFilesExist
+from util.Driver.role import isAdmin
 from util.ScrapeAdmin.accountlogs import getAllAccountLogs
 from util.ScrapeAdmin.contact import getAllContactInformation
 from util.ScrapeAdmin.NRIC import getAllNric
@@ -17,11 +19,7 @@ from util.ScrapeAdmin.researcher import getAllResearcherInformation
 from util.ScrapeAdmin.status import getAllStatusInformation
 from util.ScrapeAdmin.therapist import getAllTherapistInformation
 from util.ScrapePatient.newrecord import createNewRecords
-from util.Driver.role import isAdmin
-import os
-import random
 
-path = str(os.getcwd()) + "/util/resources/drivers/geckodriver.exe"
 def getDriver(username, password, url):
     profile = webdriver.FirefoxProfile()
     profile.accept_untrusted_certs = True
@@ -35,57 +33,82 @@ def getDriver(username, password, url):
     login(driver, username, password)
     return driver
 
-def driverRun(username, password, url, func):
-    driver = getDriver(username, password, url)
-    func(driver)
-    logout(driver)
-    time.sleep(10)
-    driver.close()
-    driver.quit()
+def adminActions(driver, sleepTime):
+    getAllNric(driver)
+    time.sleep(sleepTime)
+    getAllPersonalInformation(driver)
+    time.sleep(sleepTime)
+    getAllContactInformation(driver)
+    time.sleep(sleepTime)
+    getAllTherapistInformation(driver)
+    time.sleep(sleepTime)
+    getAllResearcherInformation(driver)
+    time.sleep(sleepTime)
+    getAllStatusInformation(driver)
+    time.sleep(sleepTime)
+    getAllPatientInformation(driver)
+    time.sleep(sleepTime)
+    getAllAccountLogs(driver)
+    time.sleep(sleepTime)
+    getAllRecordLogs(driver)
+    time.sleep(sleepTime)
+    getAllPermissionLogs(driver)
+    time.sleep(sleepTime)
+    createNewRecords(driver)
 
-def run(username, password, url):
-    driver = getDriver(username,password,url)
-    if isAdmin(driver):
-        getAllNric(driver)
-        time.sleep(3)
-        getAllPersonalInformation(driver)
-        time.sleep(3)
-        getAllContactInformation(driver)
-        time.sleep(3)
-        getAllTherapistInformation(driver)
-        time.sleep(3)
-        getAllResearcherInformation(driver)
-        time.sleep(3)
-        getAllStatusInformation(driver)
-        time.sleep(3)
-        getAllPatientInformation(driver)
-        time.sleep(3)
-        getAllAccountLogs(driver)
-        time.sleep(3)
-        getAllRecordLogs(driver)
-        time.sleep(3)
-        getAllPermissionLogs(driver)
-        time.sleep(3)
-        createNewRecords(driver)
-    logout(driver)
-    driver.close()
-    driver.quit()
-
-def patientRun(username, password, url):
-    print("Preparing to create new patient records...")
-    driverRun(username, password, url, createNewRecords)
-
-if __name__ == "__main__":
-    number = random.randint(1,2000)%17
-    time.sleep(number)
-    url = getUrl()
-    number = random.randint(1,1345) % 13
-    time.sleep(number)
-    credentials = getCredentials()
-    username = credentials[0]
-    password = credentials[1]
+def adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
+    if (checkUsername == '' or checkPassword == ''):
+        if (checkFilesExist(botNumbers) == False):
+            genAdminFiles(botNumbers)
+        credentials = getCredentials(botNumbers)
+        username = credentials[0]
+        password = credentials[1]
+        fileNumber = credentials[2]
+    else:
+        fileNumber = "No files are used"
+        username = checkUsername
+        password = checkPassword
     print("Username used: " + str(username))
     print("Password used: " + str(password))
+    print("File Number used: " + str(fileNumber))
+    driver = getDriver(username,password,url)
+    if isAdmin(driver):
+        print("Running admin role...")
+        adminActions(driver, sleepTime)
+    else:
+        print("Invalid role found!")
+    logout(driver)
+    writeBack(username, password, fileNumber)
+    driver.close()
+    driver.quit()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description = \
+        "Arguments for program")
+    parser.add_argument('-t', metavar = 'time', type=int, \
+        help='Time to sleep between crawling of website links', default = 0)
+    parser.add_argument('-r', metavar = 'role', type=str, \
+        help='Role that the bot should login as', default = "admin")
+    parser.add_argument('-b', metavar = 'bot', type=int, \
+        help='Number of bots for the choosen role', default = 1)
+    parser.add_argument('-u', metavar = 'username', type=str, \
+        help='Username to be used for login', default = '')
+    parser.add_argument('-p', metavar = 'password', type=str, \
+        help='Password to be used for login', default = '')
+    args = parser.parse_args()
+    sleepTime = args.t
+    role = args.r
+    botNumbers = args.b
+    number = random.randint(sleepTime,2000)%17
+    time.sleep(number)
+    url = getUrl()
+    number = random.randint(sleepTime,1345) % 13
+    time.sleep(number)
+    checkUsername = str(args.u)
+    checkPassword = str(args.p)
     print("Preparing to scrap website...")
-    run(username, password, url)
-    print("Website scraping completed!")
+    if role.lower() == "admin":
+        adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers)
+        print("Website scraping completed!")
+    else:
+        print("No such roles found")

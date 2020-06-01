@@ -6,10 +6,15 @@ from prettytable import PrettyTable
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
 from util.ScrapeAdmin.admin import viewAccountPages
 
 paginationXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
+
+""" Saves all the permission logs of the website
+
+savePermissionLogs obtains all the perrmission logs for one page
+saveAllPermissionLogs saves all the available permission logs into a single text file
+"""
 
 def savePermissionLogs(driver, directory):
     print("Getting permission logs...")
@@ -55,13 +60,14 @@ def getAllPermissionLogs(driver):
             savePermissionLogs(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
             if (number == maxNumber):
                 break
             number += 1
             driver.get("https://10.10.0.112/Admin/View-Logs/Permission-Logs")
-            time.sleep(10)
+            time.sleep(2)
+            driver.find_element_by_id("BodyContent_ButtonSearch").click()
+            time.sleep(3)
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     savePermissionLogs(driver, directory)

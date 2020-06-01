@@ -2,19 +2,21 @@ import os
 import time
 
 from bs4 import BeautifulSoup
+from prettytable import PrettyTable
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
 from util.ScrapeAdmin.admin import viewAccountPages
-
-from prettytable import PrettyTable
 
 paginationXpath =  "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[7]/td/table/tbody/tr/td["
 
-'''Functions to get the patient info
-Functions to progrssively crawl patient info
-'''
+""" Saves all patient information
+
+savePatientInformation function obtains the patient information for each user
+getPatientInformationOnePage obtains patient information for all users in a page
+getAllPatientInformation saves all the patient information into individual text files
+"""
+
 def savePatientInformation(driver, patientToken, directory):
     print("Getting patient information...")
     time.sleep(3)
@@ -82,13 +84,11 @@ def getAllPatientInformation(driver):
             getPatientInformationOnePage(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
             if (number == maxNumber):
                 break
             number += 1
             driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
-            time.sleep(10)
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getPatientInformationOnePage(driver, directory)

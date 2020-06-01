@@ -5,12 +5,15 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
 from util.ScrapeAdmin.admin import viewAccountPages
 
 from prettytable import PrettyTable
 
+""" Saves all record logs
 
+saveRecordLogs function saves the record logs into a text file for each of the individual pages
+getAllRecordLogs function iterates through all available pages and saves record logs
+"""
 paginationXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
 
 def saveRecordLogs(driver, directory):
@@ -57,13 +60,14 @@ def getAllRecordLogs(driver):
             saveRecordLogs(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
             if (number == maxNumber):
                 break
             number += 1
             driver.get("https://10.10.0.112/Admin/View-Logs/Account-Logs")
-            time.sleep(10)
+            time.sleep(2)
+            driver.find_element_by_id("BodyContent_ButtonSearch").click()
+            time.sleep(3)
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     saveRecordLogs(driver, directory)

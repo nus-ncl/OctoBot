@@ -10,6 +10,15 @@ directory = str(os.getcwd()) + "/config/measurement.json"
 f = open(directory, "r")
 data = json.loads(f.read())
 
+""" Automates the injection of new records
+
+getHeight function obtains the height data to be injected
+getWeight function obtains the weight data to be injected
+getTemperature function obtains the temperature data to be injected
+getBloodPressure function obtains the blood pressure data to be injected
+createNewReadings automate new data for each field
+createNewRecords automate new data for all of the fields
+"""
 def getHeight():
     heightData = data["height"]
     heightInfo = []
@@ -111,11 +120,7 @@ def getBloodPressure():
     return bloodPressureInfo
 
 def createNewReadings(driver, data, token):
-    # if (driver.current_url == "https://10.10.0.112/Role-Selection"):
-    #     driver.find_element_by_id('BodyContent_buttonLoginPatient').click()
-    #     time.sleep(3)
     driver.get('https://10.10.0.112/Patient/My-Records/New-Record')
-    time.sleep(3)
     driver.find_element_by_id(token).click()
     driver.find_element_by_id('BodyContent_inputContent').send_keys(data[0])
     driver.find_element_by_id('BodyContent_inputTitle').send_keys(data[1])
@@ -124,19 +129,15 @@ def createNewReadings(driver, data, token):
     except:
         driver.find_element_by_id('BodyContent_inputDescription').send_keys(data[2])
     driver.find_element_by_id('BodyContent_buttonSubmit').click()
-    time.sleep(3)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
 def createNewRecords(driver):
-    print("Injection Information into website...")
+    print("Injection new records in ...")
+    print("Inject new records...")
     driver.find_element_by_id("A1").click()
-    time.sleep(2)
     driver.find_element_by_id("navLinksSwitchRole").click()
-    time.sleep(3)
     driver.find_element_by_id("BodyContent_buttonLoginPatient").click()
-    time.sleep(3)
     driver.get("https://10.10.0.112/Patient/My-Records/New-Record")
-    time.sleep(3)
     heightToken = 'RadioButtonTypeHeightMeasurement'
     weightToken = 'RadioButtonTypeWeightMeasurement'
     tempToken = 'RadioButtonTypeTemperatureReading'
