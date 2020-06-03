@@ -32,7 +32,7 @@ commands = {"currentConfig": user_commands.get_current_config,
             "getShell": user_commands.get_shell,
             "deleteBot": user_commands.delete_bot,
             "setBotNode": user_commands.set_bot_node,
-            "moveBotNode": user_commands.move_bot_node,
+            "moveBotNode": user_commands.move_bot_to_node,
             "getLogs": user_commands.get_logs,
             "getLogsByCmd": user_commands.get_logs_by_command,
             "exit": user_commands.exit

@@ -327,7 +327,7 @@ def get_logs_by_command(args):
     # Obtain the logs for that container name
     return get_logs(f"{pod} {container_name}")
 
-def set_bot_node(params):
+def set_bot_node(args):
     """<botname, nodename>
     Writes and apply current configuration
 
@@ -344,32 +344,32 @@ def set_bot_node(params):
 
     file_path = os.path.dirname(os.path.realpath(__file__))
     with open(f"{file_path}/pod-template.yaml", "r") as stream:
-        pod_template = yaml.safe_load(stream)
+        z = yaml.safe_load(stream)
 
-    botname = params[0]
-    pod_template['metadata']['name'] = str(botname)
+    args = shlex.split(args)
+    botname = args[0]
+    z['metadata']['name'] = str(botname)
     print(f'botName: {botname}')
 
-    nodename = params[1]
-    pod_template['spec']['nodeName'] = str(nodename)
+    nodename = args[1]
+    z['spec']['nodeName'] = str(nodename)
     print(f'nodeName: {nodename}')
 
     filename = botname + ".yaml"
 
-    with io.open(filename, "w") as pod_spec:
-        yaml.dump(pod_template, pod_spec, default_flow_style=False,
+    with io.open(filename, "w") as f:
+        yaml.dump(z, f, default_flow_style=False,
                   explicit_start=True,
                   allow_unicode=True, sort_keys=False)
+    f.close()
 
-    resp = requests.post(u, json=pod_spec)
+    resp = requests.post(u, json=z)
 
     # Check status code
-    if resp.status_code != 200:
+    if resp.status_code != 201:
         raise Exception(f"Error code {resp.status_code}: {resp.json().get('message', '')}")
     else:
-        print(f'Successfully running \'{pod_spec}\' into \'{nodename}\'')
-
-    pod_spec.close()
+        print(f'Successfully running \'{botname}\' into \'{nodename}\'')
 
 
 def delete_bot(bot_name):
@@ -388,30 +388,33 @@ def delete_bot(bot_name):
     else:
         print("Successfully deleted pod".format(bot_name))
 
-def move_bot_to_node(params):
+def move_bot_to_node(args):
     """<botname, nodename>
     Move not to new node name
 
     botname : pod which one to delete and re-create
     nodename : new nodename for recreated pod"""
 
+    args = shlex.split(args)
+
     try:
-        delete_bot(params[0])
+        delete_bot(args[0])
     except Exception as e:
         raise e
 
     try:
         url = "http://localhost:{}/".format(utils.K8S_PORT) + \
               "api/v1/namespaces/default/pods/" + \
-              "{}/status".format(params[0])
+              "{}/status".format(args[0])
         resp = requests.get(url)
 
         while resp.status_code == 200:
-            print("Pod {} still terminating".format(params[0]))
+            print("Pod {} still terminating".format(args[0]))
             time.sleep(1)
             resp = requests.get(url)
 
-        set_bot_node(params)
+        args = " ".join(args[0:])
+        set_bot_node(args)
 
     except Exception as e:
         raise e
