@@ -4,7 +4,7 @@ import yaml
 import requests
 
 # Global Variables
-K8S_PORT = 12321
+K8S_PORT = 8080
 KUBECTL_CMD = 'kubectl'
 
 

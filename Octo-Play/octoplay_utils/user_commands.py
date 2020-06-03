@@ -327,22 +327,94 @@ def get_logs_by_command(args):
     # Obtain the logs for that container name
     return get_logs(f"{pod} {container_name}")
 
+def set_bot_node(params):
+    """<botname, nodename>
+    Writes and apply current configuration
 
-def delete_pod(pod_name):
-    """<pod_name>
-    Deletes pod using the specified name
+    botname: Affinity pod name
+    nodename: worker node which bot will run"""
 
-    pod_name: Name of the pod to delete"""
+    '''
+    open pod template file to fill in values later
+    '''
+    u = "http://localhost:{}/".format(utils.K8S_PORT) + \
+        "api/v1/namespaces/default/pods"
+
+    print(u)
+
+    file_path = os.path.dirname(os.path.realpath(__file__))
+    with open(f"{file_path}/pod-template.yaml", "r") as stream:
+        pod_template = yaml.safe_load(stream)
+
+    botname = params[0]
+    pod_template['metadata']['name'] = str(botname)
+    print(f'botName: {botname}')
+
+    nodename = params[1]
+    pod_template['spec']['nodeName'] = str(nodename)
+    print(f'nodeName: {nodename}')
+
+    filename = botname + ".yaml"
+
+    with io.open(filename, "w") as pod_spec:
+        yaml.dump(pod_template, pod_spec, default_flow_style=False,
+                  explicit_start=True,
+                  allow_unicode=True, sort_keys=False)
+
+    resp = requests.post(u, json=pod_spec)
+
+    # Check status code
+    if resp.status_code != 200:
+        raise Exception(f"Error code {resp.status_code}: {resp.json().get('message', '')}")
+    else:
+        print(f'Successfully running \'{pod_spec}\' into \'{nodename}\'')
+
+    pod_spec.close()
+
+
+def delete_bot(bot_name):
+    """<bot_name>
+    Deletes bot using the specified name
+
+    bot_name: Name of the bot to delete"""
 
     url = "http://localhost:{}/".format(utils.K8S_PORT) + \
-          "api/v1/namespaces/default/pods/{}".format(pod_name)
+          "api/v1/namespaces/default/pods/{}".format(bot_name)
 
     resp = requests.delete(url)
 
     if resp.status_code not in (200, 202):
         raise Exception(f"Error with code {str(resp.status_code)}: {resp.json().get('message', '')}")
     else:
-        print("Successfully deleted pod".format(pod_name))
+        print("Successfully deleted pod".format(bot_name))
+
+def move_bot_to_node(params):
+    """<botname, nodename>
+    Move not to new node name
+
+    botname : pod which one to delete and re-create
+    nodename : new nodename for recreated pod"""
+
+    try:
+        delete_bot(params[0])
+    except Exception as e:
+        raise e
+
+    try:
+        url = "http://localhost:{}/".format(utils.K8S_PORT) + \
+              "api/v1/namespaces/default/pods/" + \
+              "{}/status".format(params[0])
+        resp = requests.get(url)
+
+        while resp.status_code == 200:
+            print("Pod {} still terminating".format(params[0]))
+            time.sleep(1)
+            resp = requests.get(url)
+
+        set_bot_node(params)
+
+    except Exception as e:
+        raise e
 
 
 def get_logs(args):
@@ -390,6 +462,7 @@ def run_job(params):
     pod: Name of pod
     container: Name of container in the pod
     command: Name of command to run in the container"""
+
     # Make param a list
     params = params.split(' ')
 
@@ -413,6 +486,7 @@ def get_shell(param):
     Gets shell for the specified pod
 
     pod_name: Name of pod"""
+
     pod = param
     command = f"{utils.KUBECTL_CMD} exec -it {pod} -- /bin/bash"
 
@@ -435,4 +509,5 @@ def get_current_config():
 def exit():
     """
     Exits the program"""
+
     sys.exit(0)
