@@ -3,8 +3,8 @@ import unittest
 import warnings
 import io
 import sys
-from util.Driver.parser import *
-from test import getDriver
+from testUtil.testDriver.testParser import *
+from testMain import getDriver
 
 class Testing(unittest.TestCase):
 
