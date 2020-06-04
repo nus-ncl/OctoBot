@@ -1,5 +1,5 @@
 import time 
-from util.Driver.role import getRole
+from testUtil.testDriver.testRole import getRole
 
 def login(driver, username, password):
     print("Logging in...")

@@ -6,8 +6,8 @@ from prettytable import PrettyTable
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
-from util.ScrapeAdmin.admin import viewAccountPages
+from testUtil.testDriver.testRole import isAdmin
+from testUtil.testScrapeAdmin.testAdmin import viewAccountPages
 
 paginationXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
 

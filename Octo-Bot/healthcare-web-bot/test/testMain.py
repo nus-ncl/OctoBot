@@ -4,24 +4,24 @@ from selenium import webdriver
 # from webdriver_manager.chrome import ChromeDriverManager
 # from webdriver_manager.firefox import GeckoDriverManager
 
-from util.Driver.login import login, logout
-from util.Driver.parser import getUrl, getCredentials
-from util.ScrapeAdmin.accountlogs import getAllAccountLogs
-from util.ScrapeAdmin.contact import getAllContactInformation
-from util.ScrapeAdmin.NRIC import getAllNric
-from util.ScrapeAdmin.patient import getAllPatientInformation
-from util.ScrapeAdmin.permissionslogs import getAllPermissionLogs
-from util.ScrapeAdmin.personal import getAllPersonalInformation
-from util.ScrapeAdmin.recordlogs import getAllRecordLogs
-from util.ScrapeAdmin.researcher import getAllResearcherInformation
-from util.ScrapeAdmin.status import getAllStatusInformation
-from util.ScrapeAdmin.therapist import getAllTherapistInformation
-from util.ScrapePatient.newrecord import createNewRecords
-from util.Driver.role import isAdmin
+from testUtil.testDriver.testLogin import login, logout
+from testUtil.testDriver.testParser import getUrl, getCredentials
+from testUtil.testScrapeAdmin.testAccountLogs import getAllAccountLogs
+from testUtil.testScrapeAdmin.testContact import getAllContactInformation
+from testUtil.testScrapeAdmin.testNRIC import getAllNric
+from testUtil.testScrapeAdmin.testPatient import getAllPatientInformation
+from testUtil.testScrapeAdmin.testPermissionsLogs import getAllPermissionLogs
+from testUtil.testScrapeAdmin.testPersonal import getAllPersonalInformation
+from testUtil.testScrapeAdmin.testRecordLogs import getAllRecordLogs
+from testUtil.testScrapeAdmin.testResearcher import getAllResearcherInformation
+from testUtil.testScrapeAdmin.testStatus import getAllStatusInformation
+from testUtil.testScrapeAdmin.testTherapist import getAllTherapistInformation
+from testUtil.testScrapePatient.testNewRecord import createNewRecords
+from testUtil.testDriver.testRole import isAdmin
 import os
 import random
 
-path = str(os.getcwd()) + "/util/resources/drivers/geckodriver.exe"
+path = str(os.getcwd()) + "/testUtil/resources/drivers/geckodriver.exe"
 def getDriver(username, password, url):
     profile = webdriver.FirefoxProfile()
     profile.accept_untrusted_certs = True
