@@ -6,38 +6,26 @@ import sys
 from util.Driver.parser import *
 from test import getDriver
 
-
-def test():
-    username = "S1234567B"
-    password = "easyP@ssw0rd"
-    url = "http://10.10.0.112"
-    out = io.StringIO()
-    sys.stdout = out
-    driver = getDriver(username, password, url)
-    sys.stdout = sys.__stdout__
-    print(out.getvalue())
-
 class Testing(unittest.TestCase):
 
-    test_failed = False
+    currentResult = None
 
     def setUp(self):
         warnings.simplefilter('ignore',category = DeprecationWarning)
-
-    def teardown(self):
-        super(Testing, self).teardown()
-        print(self.test_failed)
-
-    # def test_string(self):
-    #     a = 'some'
-    #     b = 'some'
-    #     self.assertEqual(a, b)
-
-    # def test_boolean(self):
-    #     a = True
-    #     b = True
-    #     self.assertEqual(a, b)
     
+    # tearDown and run functions was referenced from https://stackoverflow.com/questions/4414234/getting-pythons-unittest-results-in-a-teardown-method
+    def tearDown(self):
+        ok = self.currentResult.wasSuccessful()
+        errors = self.currentResult.errors
+        failures = self.currentResult.failures
+        if ok:
+            print("All tests passed so far!")
+        else:
+            print("%d errors and %d failures", len(errors), len(failures))
+    
+    def run(self, result=None):
+        self.currentResult = result
+        unittest.TestCase.run(self, result) 
     def testUrl(self):
         url = str(getUrl())
         actualUrl = "http://10.10.0.112"
@@ -65,4 +53,3 @@ class Testing(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-    # test()
