@@ -11,7 +11,7 @@ from testUtil.testScrapeAdmin.testAdmin import viewAccountPages
 paginationXpath =  "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[7]/td/table/tbody/tr/td["
 
 '''Functions to get the Therapist info
-Functions to progrssively crawl therapist info
+Functions to progressively crawl therapist info
 '''
 def saveTherapistInformation(driver, therapistToken, directory):
     print("Printing therapist information...")

@@ -7,7 +7,8 @@ from testUtil.testDriver.testParser import *
 from testMain import getDriver
 
 class Testing(unittest.TestCase):
-
+    ''' These are basic tests to check if the code is working well'''
+    
     currentResult = None
 
     def setUp(self):
@@ -26,6 +27,7 @@ class Testing(unittest.TestCase):
     def run(self, result=None):
         self.currentResult = result
         unittest.TestCase.run(self, result) 
+
     def testUrl(self):
         url = str(getUrl())
         actualUrl = "http://10.10.0.112"
@@ -36,6 +38,8 @@ class Testing(unittest.TestCase):
         password = "easyP@ssw0rd"
         url = "http://10.10.0.112"
         driver = getDriver(username, password, url)
+        driver.close()
+        driver.quit()
         self.assertIsNotNone(driver)
     
     def testLogin(self):
@@ -49,7 +53,14 @@ class Testing(unittest.TestCase):
         sys.stdout = sys.__stdout__
         if "Logged in" in out.getvalue():
             isLoggedIn = True
+        driver.close()
+        driver.quit()
         self.assertTrue(isLoggedIn)
+    
+    def testCredentials(self):
+        credentials = ["S1234567B", "easyP@ssw0rd"]
+        checkCredentials = getCredentials()
+        self.assertEqual(credentials, checkCredentials)
 
 if __name__ == '__main__':
     unittest.main()
