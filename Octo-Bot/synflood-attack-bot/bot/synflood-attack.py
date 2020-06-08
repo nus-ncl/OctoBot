@@ -25,7 +25,7 @@ def main():
     parser.add_argument("-t", "--target", help="specify target ip", required=True, nargs='+',default=None )
     parser.add_argument("-p", "--target-port", help=" specify target port", type=int, required=True, nargs='+', default=None)
     parser.add_argument("-i", "--interface", help="(optional) specify interface", required=False, default='eth0')
-    parser.add_argument("-d", "--duration", help="(optional) continuously generate traffic for a set duration of time", required=False, default=5)
+    parser.add_argument("-d", "--duration", help="(optional) continuously generate traffic for a set duration of time", required=False, default="5")
     parser.add_argument("-g", "--gap", help="(optional) gap (delay) between packets", type=int, required=False, default=0)
     parser.add_argument("-w", "--workers", help="(optional) number of workers to run in parallel per ip-port combination pair", type=int, required=False, default=1)
     args = parser.parse_args()
