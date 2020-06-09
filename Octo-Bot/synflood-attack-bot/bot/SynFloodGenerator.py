@@ -33,8 +33,8 @@ def scheduleSynFlood(args):
             for target in args.target:
                 for port in args.target_port:
                     for i in range(1, args.workers+1):
-                        params = {'origin_ip': origin if useRandomOrigin else GenerateRandomIp(),
-                                  'origin_port': oport if useRandomOriginPort else GenerateRandomSafePort(),
+                        params = {'origin_ip': origin if not useRandomOrigin else GenerateRandomIp(),
+                                  'origin_port': oport if not useRandomOriginPort else GenerateRandomSafePort(),
                                   'target_ip': target, 
                                   'target_port': port, 
                                   'interface' : args.interface,
