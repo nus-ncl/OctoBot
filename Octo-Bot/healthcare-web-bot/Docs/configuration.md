@@ -5,6 +5,8 @@ There are 2 files that the program can accept, namely the login file and measure
 
 ## Login File
 
+There are a total of 3 login files for the 3 different roles --> `admin.csv`, `patient.csv` and `therapist.csv`
+
 There are 2 properties to be included in the login file.
 * Username - username of the user for selenium webdriver to automate login process
 * Password - password of the user for the selenium webdriver to automate login process

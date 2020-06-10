@@ -2,46 +2,23 @@ import os
 import time
 
 from bs4 import BeautifulSoup
+from prettytable import PrettyTable
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
-from util.ScrapeAdmin.admin import viewAccountPages
-
-from prettytable import PrettyTable
-
+from testUtil.testScrapeAdmin.testadmin import viewAccountPages
 
 paginationXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
-scriptToken = "__doPostBack('ctl00$BodyContent$GridViewLogs','Page$"
 
-getRecordsXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
+""" Saves all the available account logs
 
-""" Helper functions to get record logs for the bot
-
-getNumberRecordPages counts the number of pages that the bot has to automate
-saveRecordLogs saves the record logs for each page 
-getAllRecordLogs gets all the record logs from all of the pages
+saveAccountLogs obtains all the available account logs on a single page
+getAllAccountLogs saves all the available account logs into a single text file
 """
-def getNumberRecordPages(driver):
-    number = 1
-    scriptNumber = 2
-    while(True):
-        try:
-            token = str(scriptNumber) + "]/a"
-            newToken = getRecordsXpath + token
-            print(newToken)
-            driver.find_element_by_xpath(newToken).click()
-            scriptNumber += 1
-            number += 1
-            time.sleep(3)
-        except Exception as e:
-            print(e)
-            break
-    return (number + 1)
 
-def saveRecordLogs(driver, directory):
-    print("Printing record logs...")
-    outDirectory = directory + "/data/admin/RecordLogs.txt"
+def saveAccountLogs(driver, directory):
+    print("Getting account logs...")
+    outDirectory = directory + "/data/admin/AccountLogs.txt"
     savedFile = open(outDirectory, "a")
     table = PrettyTable(["Date/Time", "Subject", "Action", "Description"])
     table.align["Date/Time"] = "l"
@@ -68,29 +45,30 @@ def saveRecordLogs(driver, directory):
     savedFile.close()
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
-def getAllRecordLogs(driver):
-    driver.get("https://10.10.0.112/Admin/View-Logs/Account-Logs")
+def getAllAccountLogs(driver):
+    driver.get("https://10.10.0.112/Admin/View-Logs/Record-Logs")
     time.sleep(2)
     driver.find_element_by_id("BodyContent_ButtonSearch").click()
-    time.sleep(5)
-    maxNumber = getNumberRecordPages(driver)
-    print("Max number is: " + str(maxNumber))
+    time.sleep(3)
+    maxNumber = viewAccountPages(driver)
     number = 2
     directory = str(os.getcwd())
     while (number < maxNumber + 1):
         try:
             token = str(number) + "]/a"
             Xpath = paginationXpath + token
-            saveRecordLogs(driver, directory)
+            saveAccountLogs(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
-            if (number == maxNumber):
-                break
             number += 1
-            driver.get("https://10.10.0.112/Admin/View-Logs/Account-Logs")
-            time.sleep(10)
+            driver.get("https://10.10.0.112/Admin/View-Logs/Record-Logs")
+            time.sleep(2)
+            driver.find_element_by_id("BodyContent_ButtonSearch").click()
+            time.sleep(3)
+            if (number > maxNumber):
+                break
+            token = str(number) + "]/a"
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
-    saveRecordLogs(driver, directory)
+    saveAccountLogs(driver, directory)

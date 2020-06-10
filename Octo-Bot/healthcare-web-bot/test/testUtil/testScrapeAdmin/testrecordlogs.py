@@ -5,8 +5,8 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
-from util.ScrapeAdmin.admin import viewAccountPages
+from testUtil.testDriver.testrole import isAdmin
+from testUtil.testScrapeAdmin.testadmin import viewAccountPages
 
 from prettytable import PrettyTable
 
@@ -15,13 +15,6 @@ paginationXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/t
 scriptToken = "__doPostBack('ctl00$BodyContent$GridViewLogs','Page$"
 
 getRecordsXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
-
-""" Helper functions to get record logs for the bot
-
-getNumberRecordPages counts the number of pages that the bot has to automate
-saveRecordLogs saves the record logs for each page 
-getAllRecordLogs gets all the record logs from all of the pages
-"""
 def getNumberRecordPages(driver):
     number = 1
     scriptNumber = 2
