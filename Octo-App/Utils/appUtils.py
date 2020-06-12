@@ -39,8 +39,8 @@ def setBotNode(params):
 
     z['spec']['nodeName'] = str(nodename)
     print(f'nodeName: {nodename}')
-    print(f'nodeName: {imagename}')
-    print(f'nodeName: {command}')
+    print(f'image: {imagename}')
+    print(f'command: {command}')
     container = z['spec']['containers']
 
     # If there are no containers to be copied as a template, then create one on the spot now.
@@ -51,9 +51,7 @@ def setBotNode(params):
         to_append = {}
 
     # Fill in the dictionary
-    print(imagename)
     to_append['image'] = imagename
-    print(command)
     to_append['command'] = shlex.split(command)
     container.append(to_append)
 
@@ -62,7 +60,6 @@ def setBotNode(params):
     # Deletes all containers with image None
     for i, c in enumerate(container):
         if (c.get('image', None)) is None:
-            print(c)
             del_container(i)
 
     with io.open(filename, "w") as f:
