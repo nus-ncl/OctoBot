@@ -60,7 +60,7 @@ def printSyntax(command):
                 "getShell": "getShell <client_name>",
                 "getLogs": "getLogs <client name> <worker name>",
                 "getNodes": "getNodes",
-                "setBotNode": "setBotNode <bot name> <node name>",
+                "setBotNode": "setBotNode <bot name> <node name> <image name> <command>",
                 "moveBotNode": "moveBotNode <bot name> <new node name>",
                 "deleteBot": "deleteBot <bot name>",
                 "exit": "exit (exits the program)"

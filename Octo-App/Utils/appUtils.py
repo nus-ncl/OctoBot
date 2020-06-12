@@ -21,10 +21,12 @@ with open(f"{file_path}/pod-template.yaml", "r") as stream:
 
 
 def setBotNode(params):
-    """<botname, nodename>
+    """<botname, nodename, imagename, command>
     Writes and apply current configuration
     botname: Affinity pod name
-    nodename: worker node which bot will run"""
+    nodename: worker node which bot will run
+    imagename: image name need to be download
+    command: default command to keep the bot alive"""
 
     botname = params[0]
     z['metadata']['name'] = str(botname)
@@ -33,6 +35,14 @@ def setBotNode(params):
     nodename = params[1]
     z['spec']['nodeName'] = str(nodename)
     print(f'nodeName: {nodename}')
+
+    imagename = params[2]
+    z['spec']['containers']['image'] = str(imagename)
+    print(f'nodeName: {imagename}')
+
+    command = params[3]
+    z['spec']['containers']['command'] = str(command)
+    print(f'nodeName: {command}')
 
     filename = botname + ".yaml"
 
