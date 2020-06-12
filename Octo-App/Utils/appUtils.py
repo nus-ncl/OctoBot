@@ -5,6 +5,7 @@ import time
 import yaml
 import io
 import sys
+import shlex
 
 import requests
 
@@ -29,22 +30,40 @@ def setBotNode(params):
     command: default command to keep the bot alive"""
 
     botname = params[0]
+    nodename = params[1]
+    imagename = params[2]
+    command = " ".join(params[3:])
+
     z['metadata']['name'] = str(botname)
     print(f'botName: {botname}')
 
-    nodename = params[1]
     z['spec']['nodeName'] = str(nodename)
     print(f'nodeName: {nodename}')
-
-    imagename = params[2]
-    z['spec']['containers']['image'] = str(imagename)
     print(f'nodeName: {imagename}')
-
-    command = params[3]
-    z['spec']['containers']['command'] = str(command)
     print(f'nodeName: {command}')
+    container = z['spec']['containers']
+
+    # If there are no containers to be copied as a template, then create one on the spot now.
+    if len(container) > 0:
+        # Make a copy of the template
+        to_append = container[0].copy()
+    else:  # if there is no template to copy
+        to_append = {}
+
+    # Fill in the dictionary
+    print(imagename)
+    to_append['image'] = imagename
+    print(command)
+    to_append['command'] = shlex.split(command)
+    container.append(to_append)
 
     filename = botname + ".yaml"
+
+    # Deletes all containers with image None
+    for i, c in enumerate(container):
+        if (c.get('image', None)) is None:
+            print(c)
+            del_container(i)
 
     with io.open(filename, "w") as f:
         yaml.dump(z, f, default_flow_style=False,
@@ -67,6 +86,17 @@ def setBotNode(params):
         # wait for child process to terminate
         os.waitpid(pid, 0)
 
+def del_container(index):
+    """<index>
+    Deletes container at index from configuration
+
+    index: Index of the container in the configuration"""
+
+    c = z['spec']['containers']
+    try:
+        del c[int(index)]
+    except Exception as e:
+        raise e
 
 def openProxy():
     try:
