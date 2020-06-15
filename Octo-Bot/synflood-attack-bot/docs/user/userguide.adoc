@@ -1,0 +1,121 @@
+:nofooter:
+
+
+
+= User Guide for SynFlood-Attack-Bot
+:revnumber: 1.0 
+:revdate: 2020-06-05 09:38:08 +0800
+:revremark: {doctitle}: The handy manual 
+
+
+This user guide explains how to use to use the SynFlood-Attack-Bot in detail.
+
+'''
+
+== Setting up
+
+This section explains how to set up the bot with or without `docker`.
+
+=== Using Docker
+
+To use the docker container to run the bot, you will need to install `docker`. On Ubuntu, you can install `docker` with this following command:
+
+[source, console]
+----
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo docker run hello-world
+----
+
+The detailed steps can be found in this https://docs.docker.com/install/linux/docker-ce/ubuntu/[link].
+For other Linux distros, visit https://docs.docker.com/engine/install/[here]. (It is not recommended to use Windows for this)
+
+You can then build the image using the provided script like this:
+[source, console]
+----
+./build.sh
+----
+
+Finally you can run the bot with `docker run`, here's an example:
+[source, console]
+----
+docker run synflood-attack-bot:latest -t 10.10.0.189 -p 80 443
+----
+
+=== Running directly
+
+If you want to run it directly, you will need to install `python3` and `scapy`.
+
+First, install `python3` using the appropriate method for your OS. Then simply install `scapy` like this:
+[source, console]
+----
+pip3 install scapy
+----
+
+Finally, after navigating to the correct folder (with the `synflood-attack.py` file) you can run the bot with `python3`, here's an example:
+[source, console]
+----
+python3 synflood-attack.py -t 10.10.0.189 -p 80 443
+----
+
+== Parameter Guide
+
+This section details the parameters passed through the program arguments
+
+=== Inline help
+
+You can display help right in the console, you should see something like this:
+
+[source, console]
+----
+root@endpoint:~/OctoBot/Octo-Bot/synflood-attack-bot$ python3 synflood-attack.py --help
+usage: synflood-attack.py [-h] [--interactive] [-o ORIGIN [ORIGIN ...]]
+                          [-O ORIGIN_PORT [ORIGIN_PORT ...]] -t TARGET
+                          [TARGET ...] -p TARGET_PORT [TARGET_PORT ...]
+                          [-i INTERFACE] [-d DURATION] [-g GAP] [-w WORKERS]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --interactive         use scapy interactive console
+  -o ORIGIN [ORIGIN ...], --origin ORIGIN [ORIGIN ...]
+                        (optional) specify source (origin) ip
+  -O ORIGIN_PORT [ORIGIN_PORT ...], --origin-port ORIGIN_PORT [ORIGIN_PORT ...]
+                        (optional) specify source (origin) port
+  -t TARGET [TARGET ...], --target TARGET [TARGET ...]
+                        specify target ip
+  -p TARGET_PORT [TARGET_PORT ...], --target-port TARGET_PORT [TARGET_PORT ...]
+                        specify target port
+  -i INTERFACE, --interface INTERFACE
+                        (optional) specify interface
+  -d DURATION, --duration DURATION
+                        (optional) continuously generate traffic for a set
+                        duration of time
+  -g GAP, --gap GAP     (optional) gap (delay) between packets
+  -w WORKERS, --workers WORKERS
+                        (optional) number of workers to run in parallel per
+                        ip-port combination pair
+----
+
+=== Jobs Scheduling
+
+The bot schedules an attack for every ip address and port combination pair given, meaning that every origin ip address and port combination will be paired with with every target ip address and port combination, then duplicated by the amount of workers indicated.
+
+The formula works like this:
+[source]
+----
+total attacks scheduled = ORIGIN x ORIGIN_PORT x TARGET x TARGET_PORT x WORKERS
+----
+
+A command like this:
+
+[source, console]
+----
+python3 synflood-attack.py -o 10.10.0.69 -O 22 533 633 -t 10.10.0.189 -p 80 443 -w 10
+----
+
+will yield `1 x 3 x 1 x 2 x 10 = 60` attacks.
+
+Take note of the number to better understand the output and prevent overloading your machine!
+
+'''
+Last revised: {revdate}
