@@ -26,15 +26,19 @@ from util.ScrapePatient.newrecord import createNewRecords
 from util.ScrapeTherapist.viewPatients import iteratePage, loginTherapist
 from util.ScrapePatient.viewDiagnosis import getDiagnosisInformation
 
-""" Main function for the logic behind the bot
-
-getDriver creates the firefox driver for the automation process to start
-adminActions specifies the actions taken by the bot for admin users
-adminRun specifies the logic for the bot for admin users
-therapistRun specifies the logic for the bot for therapist users
-patientRun specifies the logic for the bot for patient users
-"""
 def getDriver(username, password, url):
+    
+    '''
+    Obtains the driver to be used to start the firefox instance
+
+    Arguments:
+        username(str) : Username of credentials that the driver is to be logging in to
+        password(str) : password of credentials that the driver is logging in to
+        url(str) : url of the website that the driver is accessing
+    
+    Returns:
+        driver object
+    '''
     profile = webdriver.FirefoxProfile()
     profile.accept_untrusted_certs = True
     firefox_options = webdriver.FirefoxOptions()
@@ -48,6 +52,17 @@ def getDriver(username, password, url):
     return driver
 
 def adminActions(driver, sleepTime):
+
+    '''
+    Main Logic behind all the actions carried out by the admin role
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python 
+        sleepTime(int) : The sleeptime between each admin actions defined by the user
+    
+    Returns:
+        None
+    '''
     getAllNric(driver)
     time.sleep(sleepTime)
     getAllPersonalInformation(driver)
@@ -71,6 +86,19 @@ def adminActions(driver, sleepTime):
     createNewRecords(driver)
 
 def therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
+
+    '''
+    Main Logic behind all the therapist actions
+
+    Arguments:
+        checkUsername(str) : Username that the bot is going to log in with
+        checkPassword(str) : password that the bot is going to log in with
+        sleepTime(int) : sleep time between each therapist actions taken by the bot
+        botNumbers(int) : Number of consecutive therapist bots running at the same time
+    
+    Returns:
+        None
+    '''
     if (checkUsername == '' or checkPassword == ''):
         if (therapistCheckFilesExist(botNumbers) == False):
             genTherapistFiles(botNumbers)
@@ -107,6 +135,20 @@ def therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
 
         
 def adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
+
+    '''
+    Main logic behind the actins taken by an admin bot
+
+    Arguments:
+        checkUsername(str) : Username that the bot is going to login with
+        checkPassword(str) : Password that the bot is going to login with
+        url(str) : Url that the bot is going to login with
+        sleepTime(int) : Sleep time between each admin actions as defined by the user
+        botNumbers(int) : Number of admin bots running consecutively
+    
+    Returns:
+        None
+    '''
     if (checkUsername == '' or checkPassword == ''):
         if (checkFilesExist(botNumbers) == False):
             genAdminFiles(botNumbers)
@@ -133,6 +175,20 @@ def adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
     driver.quit()
 
 def patientRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
+
+    '''
+    Main logic behind the actins taken by a patient bot
+    
+    Arguments:
+        checkUsername(str) : Username that the bot is going to login with
+        checkPassword(str) : Password that the bot is going to login with
+        url(str) : Url that the bot is going to login with
+        sleepTime(int) : Sleep time between each patient actions as defined by the user
+        botNumbers(int) : Number of patient bots running consecutively
+    
+    Returns:
+        None
+    '''
     if (checkUsername == '' or checkPassword == ''):
         if (patientCheckFilesExist(botNumbers) == False):
             genPatientFiles(botNumbers)
@@ -201,14 +257,17 @@ if __name__ == "__main__":
         daemonMode()
     else:
         print("Preparing to scrap website...")
-        if role.lower() == "admin":
-            adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers)
-            print("Website scraping completed!")
-        elif role.lower() == "therapist":
-            therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers)
-            print("Website scraping completed")
-        elif role.lower() == "patient":
-            patientRun(checkUsername, checkPassword, url, sleepTime, botNumbers)
-            print("Website scraping completed")
-        else:
-            print("No such roles found")
+        try:
+            if role.lower() == "admin":
+                adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers)
+                print("Website scraping completed!")
+            elif role.lower() == "therapist":
+                therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers)
+                print("Website scraping completed")
+            elif role.lower() == "patient":
+                patientRun(checkUsername, checkPassword, url, sleepTime, botNumbers)
+                print("Website scraping completed")
+            else:
+                print("No such roles found")
+        except:
+            print("Error in csv file. Please check again!")

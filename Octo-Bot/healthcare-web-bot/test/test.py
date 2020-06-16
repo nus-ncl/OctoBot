@@ -2,10 +2,10 @@ import unittest
 import warnings
 import io
 import sys
-from testUtil.testDriver.testdaemon import daemonMode
-from testUtil.testDriver.testadminparser import getUrl, getNumberRecords
-from testUtil.testDriver.testpatientparser import patientGetNumberRecords
-from testUtil.testDriver.testtherapistparser import therapistGetNumberRecords
+from testUtil.testDriver.daemon import daemonMode
+from testUtil.testDriver.adminparser import getUrl, getNumberRecords
+from testUtil.testDriver.patientparser import patientGetNumberRecords
+from testUtil.testDriver.therapistparser import therapistGetNumberRecords
 from testmain import getDriver
 
 class Testing(unittest.TestCase):

@@ -20,7 +20,7 @@ optional arguments:
 # Examples
 
 ## Crawl with waiting time in between website links
-This allows the bot to crawl website links with a specified sleep time between crawling. The default value is set to 0, if this is not specified
+This allows the bot to crawl website links with a specified sleep time between crawling. The default value is set to 0, if this field is not specified.
 ```console
 joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ docker run healthcare-web-bot -t 20
 ```

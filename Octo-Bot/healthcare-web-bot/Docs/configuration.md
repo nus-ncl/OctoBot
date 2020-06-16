@@ -11,7 +11,7 @@ There are 2 properties to be included in the login file.
 * Username - username of the user for selenium webdriver to automate login process
 * Password - password of the user for the selenium webdriver to automate login process
 
-Here is an example of a sample login file. Any other fields that are inside the file will be ignored.
+Here is an example of a sample login file. Any other fields that are inside the file will be ignored.The format of the login files are the same for `admin.csv`, `patient.csv` and `therapist.csv`.
 ```csv
 <username>, <password>
 <username>, <password>

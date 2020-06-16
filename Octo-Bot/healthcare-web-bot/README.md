@@ -79,5 +79,10 @@ Specify the username and password to login and crawl the website. The bot will l
 ```console
 joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ docker run healthcare-web-bot -u <usernam> -p <password>
 ```
+## Execute the bot in a daemon mode
+The bot will start to execute in daemon mode and start to run in the background in another thread. This argument is optional and should only be specified if the user wants to run the bot in daemon mode.
+```console
+joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ docker run healthcare-web-bot -m daemon
+```
 
 Detailed Documentations can be found at [DOCS](https://github.com/joelczk/web-crawler/blob/master/Docs/README.md)

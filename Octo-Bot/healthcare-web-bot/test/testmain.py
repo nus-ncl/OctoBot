@@ -5,39 +5,40 @@ import time
 
 from selenium import webdriver
 
-from testUtil.testDriver.testadminparser import (
-    checkFilesExist, genAdminFiles, getCredentials, getUrl, writeBack)
-from testUtil.testDriver.testdaemon import daemonMode
-from testUtil.testDriver.testlogin import login, logout
-from testUtil.testDriver.testpatientparser import (genPatientFiles,
-                                                   patientCheckFilesExist,
-                                                   patientGetCredentials,
-                                                   patientGetNumberRecords,
-                                                   patientWriteBack)
-from testUtil.testDriver.testrole import isAdmin, isPatient, isTherapist
-from testUtil.testDriver.testtherapistparser import (
-    genTherapistFiles, therapistCheckFilesExist, therapistGetCredentials,
-    therapistGetNumberRecords, therapistWriteBack)
-from testUtil.testScrapeAdmin.testaccountlogs import getAllAccountLogs
-from testUtil.testScrapeAdmin.testcontact import getAllContactInformation
-from testUtil.testScrapeAdmin.testNRIC import getAllNric
-from testUtil.testScrapeAdmin.testpatient import getAllPatientInformation
-from testUtil.testScrapeAdmin.testpermissionslogs import getAllPermissionLogs
-from testUtil.testScrapeAdmin.testpersonal import getAllPersonalInformation
-from testUtil.testScrapeAdmin.testrecordlogs import getAllRecordLogs
-from testUtil.testScrapeAdmin.testresearcher import getAllResearcherInformation
-from testUtil.testScrapeAdmin.teststatus import getAllStatusInformation
-from testUtil.testScrapeAdmin.testtherapist import getAllTherapistInformation
-from testUtil.testScrapePatient.testnewrecord import createNewRecords
-from testUtil.testScrapePatient.testviewdiagnosis import \
-    getDiagnosisInformation
-from testUtil.testScrapePatient.testviewtherapist import \
-    getTherapistInformation
-from testUtil.testScrapeTherapist.testviewpatients import (iteratePage,
-                                                           loginTherapist)
-
+from testUtil.testDriver.therapistparser import therapistGetNumberRecords, therapistCheckFilesExist, therapistWriteBack, genTherapistFiles, therapistGetCredentials
+from testUtil.testDriver.adminparser import checkFilesExist, genAdminFiles,getCredentials, getUrl, writeBack
+from testUtil.testDriver.patientparser import patientCheckFilesExist, patientGetNumberRecords, genPatientFiles, patientGetCredentials, patientWriteBack
+from testUtil.testDriver.login import login, logout
+from testUtil.testDriver.role import isAdmin, isTherapist, isPatient
+from testUtil.testDriver.daemon import daemonMode
+from testUtil.testScrapeAdmin.accountlogs import getAllAccountLogs
+from testUtil.testScrapeAdmin.contact import getAllContactInformation
+from testUtil.testScrapeAdmin.NRIC import getAllNric
+from testUtil.testScrapeAdmin.patient import getAllPatientInformation
+from testUtil.testScrapeAdmin.permissionslogs import getAllPermissionLogs
+from testUtil.testScrapeAdmin.personal import getAllPersonalInformation
+from testUtil.testScrapeAdmin.recordlogs import getAllRecordLogs
+from testUtil.testScrapeAdmin.researcher import getAllResearcherInformation
+from testUtil.testScrapeAdmin.status import getAllStatusInformation
+from testUtil.testScrapeAdmin.therapist import getAllTherapistInformation
+from testUtil.testScrapePatient.viewTherapist import getTherapistInformation
+from testUtil.testScrapePatient.newrecord import createNewRecords
+from testUtil.testScrapeTherapist.viewPatients import iteratePage, loginTherapist
+from testUtil.testScrapePatient.viewDiagnosis import getDiagnosisInformation
 
 def getDriver(username, password, url):
+    
+    '''
+    Obtains the driver to be used to start the firefox instance
+
+    Arguments:
+        username(str) : Username of credentials that the driver is to be logging in to
+        password(str) : password of credentials that the driver is logging in to
+        url(str) : url of the website that the driver is accessing
+    
+    Returns:
+        driver object
+    '''
     profile = webdriver.FirefoxProfile()
     profile.accept_untrusted_certs = True
     firefox_options = webdriver.FirefoxOptions()
@@ -51,6 +52,17 @@ def getDriver(username, password, url):
     return driver
 
 def adminActions(driver, sleepTime):
+
+    '''
+    Main Logic behind all the actions carried out by the admin role
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python 
+        sleepTime(int) : The sleeptime between each admin actions defined by the user
+    
+    Returns:
+        None
+    '''
     getAllNric(driver)
     time.sleep(sleepTime)
     getAllPersonalInformation(driver)
@@ -74,6 +86,19 @@ def adminActions(driver, sleepTime):
     createNewRecords(driver)
 
 def therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
+
+    '''
+    Main Logic behind all the therapist actions
+
+    Arguments:
+        checkUsername(str) : Username that the bot is going to log in with
+        checkPassword(str) : password that the bot is going to log in with
+        sleepTime(int) : sleep time between each therapist actions taken by the bot
+        botNumbers(int) : Number of consecutive therapist bots running at the same time
+    
+    Returns:
+        None
+    '''
     if (checkUsername == '' or checkPassword == ''):
         if (therapistCheckFilesExist(botNumbers) == False):
             genTherapistFiles(botNumbers)
@@ -110,6 +135,20 @@ def therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
 
         
 def adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
+
+    '''
+    Main logic behind the actins taken by an admin bot
+
+    Arguments:
+        checkUsername(str) : Username that the bot is going to login with
+        checkPassword(str) : Password that the bot is going to login with
+        url(str) : Url that the bot is going to login with
+        sleepTime(int) : Sleep time between each admin actions as defined by the user
+        botNumbers(int) : Number of admin bots running consecutively
+    
+    Returns:
+        None
+    '''
     if (checkUsername == '' or checkPassword == ''):
         if (checkFilesExist(botNumbers) == False):
             genAdminFiles(botNumbers)
@@ -136,6 +175,20 @@ def adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
     driver.quit()
 
 def patientRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
+
+    '''
+    Main logic behind the actins taken by a patient bot
+    
+    Arguments:
+        checkUsername(str) : Username that the bot is going to login with
+        checkPassword(str) : Password that the bot is going to login with
+        url(str) : Url that the bot is going to login with
+        sleepTime(int) : Sleep time between each patient actions as defined by the user
+        botNumbers(int) : Number of patient bots running consecutively
+    
+    Returns:
+        None
+    '''
     if (checkUsername == '' or checkPassword == ''):
         if (patientCheckFilesExist(botNumbers) == False):
             genPatientFiles(botNumbers)
@@ -171,12 +224,6 @@ def patientRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
     patientWriteBack(username, password, fileNumber)
     driver.close()
     driver.quit()
-    # username = checkUsername
-    # password = checkPassword
-    # driver = getDriver(username, password, url)
-    # getDiagnosisInformation(driver, username)
-    # getTherapistInformation(driver, username)
-    # print(driver.current_url)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = \
@@ -191,7 +238,7 @@ if __name__ == "__main__":
         help='Username to be used for login', default = '')
     parser.add_argument('-p', metavar = 'password', type=str, \
         help='Password to be used for login', default = '')
-    parser.add_argument('-m', metavar = 'modeof execution', type=str, \
+    parser.add_argument('-m', metavar = 'mode of execution', type=str, \
         help='Mode for bot to be executed', default = '')
 
     args = parser.parse_args()

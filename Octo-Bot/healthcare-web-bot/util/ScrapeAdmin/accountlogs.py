@@ -10,13 +10,19 @@ from util.ScrapeAdmin.admin import viewAccountPages
 
 paginationXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
 
-""" Saves all the available account logs
-
-saveAccountLogs obtains all the available account logs on a single page
-getAllAccountLogs saves all the available account logs into a single text file
-"""
 
 def saveAccountLogs(driver, directory):
+
+    '''
+    Save the account logs in a single webpage
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+        directory(str) : Directory to save the account logs to
+    
+    Returns:
+        None
+    '''
     print("Getting account logs...")
     outDirectory = directory + "/data/admin/AccountLogs.txt"
     savedFile = open(outDirectory, "a")
@@ -46,6 +52,16 @@ def saveAccountLogs(driver, directory):
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
 def getAllAccountLogs(driver):
+
+    '''
+    Save the all the account logs from all the webpages
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+    
+    Returns:
+        None
+    '''
     driver.get("https://10.10.0.112/Admin/View-Logs/Record-Logs")
     time.sleep(2)
     driver.find_element_by_id("BodyContent_ButtonSearch").click()

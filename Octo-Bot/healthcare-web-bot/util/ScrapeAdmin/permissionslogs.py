@@ -10,13 +10,18 @@ from util.ScrapeAdmin.admin import viewAccountPages
 
 paginationXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
 
-""" Saves all the permission logs of the website
-
-savePermissionLogs obtains all the perrmission logs for one page
-saveAllPermissionLogs saves all the available permission logs into a single text file
-"""
-
 def savePermissionLogs(driver, directory):
+
+    '''
+    Main Logic to save permission Logs
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+        directory(str) : Directory to save permission logs
+    
+    Returns:
+        None
+    '''
     print("Getting permission logs...")
     outDirectory = directory + "/data/admin/PermissionLogs.txt"
     savedFile = open(outDirectory, "a")
@@ -46,6 +51,16 @@ def savePermissionLogs(driver, directory):
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
 def getAllPermissionLogs(driver):
+
+    '''
+    Obtain all permission logs
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+
+    Returns:
+        None
+    '''
     driver.get("https://10.10.0.112/Admin/View-Logs/Permission-Logs")
     time.sleep(2)
     driver.find_element_by_id("BodyContent_ButtonSearch").click()
