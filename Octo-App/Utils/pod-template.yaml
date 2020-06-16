@@ -8,9 +8,9 @@ spec:
       persistentVolumeClaim:
         claimName: task-pv-claim
   containers:
-    - name: task-pv-container
-      image: ubuntu
-      command: ['sh', '-c', 'while true; do echo hello && sleep 10; done;']
+    - name: worker-1
+      image:
+      command:
       volumeMounts:
         - mountPath: "/mnt"
           name: task-pv-storage

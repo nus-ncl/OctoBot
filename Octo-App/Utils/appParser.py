@@ -4,21 +4,22 @@ import datetime
 
 from .appUtils import *
 
-commands = {"setPort": setPort,
-            "openProxy": openProxy,
-            "checkStatus": checkStatus,
-            "runJob": runJob,
-            "getShell": getShell,
-            "getLogs": getLogs,
-            "getNodes": getNodes,
-            "setBotNode": setBotNode,
-            "moveBotNode": moveBotNode,
-            "deleteBot": deleteBot,
+commands = {"setPort": set_port,
+            "openProxy": open_proxy,
+            "checkStatus": check_status,
+            "runJob": run_job,
+            "getShell": get_shell,
+            "getLogs": get_logs,
+            "getNodes": get_nodes,
+            "loadFile": load_file,
+            "setBotNode": set_bot_node,
+            "moveBotNode": move_bot_to_node,
+            "deleteBot": delete_bot,
             "exit": sys.exit
             }
 
 
-def printPrompt():
+def print_prompt():
     ''' Use filename as prompt header'''
     currFileName = sys.argv[0]
     currentDT = datetime.datetime.now()
@@ -52,15 +53,16 @@ def parse(x):
         raise (e)
 
 
-def printSyntax(command):
+def print_syntax(command):
     commands = {"setPort": "setPort <port for API to run on>",
                 "openProxy": "openProxy",
                 "checkStatus": "checkStatus",
-                "runJob": "runJob <client name> <worker name> <job name>",
-                "getShell": "getShell <client_name>",
-                "getLogs": "getLogs <client name> <worker name>",
+                "runJob": "runJob <bot name> <worker name> <job name>",
+                "getShell": "getShell <bot name>",
+                "getLogs": "getLogs <bot name> <worker name>",
                 "getNodes": "getNodes",
-                "setBotNode": "setBotNode <bot name> <node name>",
+                "setBotNode": "setBotNode <bot name> <node name> "
+                              "<image name> <command>",
                 "moveBotNode": "moveBotNode <bot name> <new node name>",
                 "deleteBot": "deleteBot <bot name>",
                 "exit": "exit (exits the program)"
@@ -82,7 +84,7 @@ def help(arg):
         print("Type help <commandName> for help on syntax")
         print("Example - help changeName")
     else:
-        printSyntax(arg)
+        print_syntax(arg)
 
 
 def interactive():
@@ -91,7 +93,7 @@ def interactive():
     print("Type \"exit\" to exit the program")
 
     while True:
-        printPrompt()
+        print_prompt()
         x = input().strip()
 
         if (not x):
