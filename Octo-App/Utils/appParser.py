@@ -57,9 +57,9 @@ def print_syntax(command):
     commands = {"setPort": "setPort <port for API to run on>",
                 "openProxy": "openProxy",
                 "checkStatus": "checkStatus",
-                "runJob": "runJob <client name> <worker name> <job name>",
-                "getShell": "getShell <client_name>",
-                "getLogs": "getLogs <client name> <worker name>",
+                "runJob": "runJob <bot name> <worker name> <job name>",
+                "getShell": "getShell <bot name>",
+                "getLogs": "getLogs <bot name> <worker name>",
                 "getNodes": "getNodes",
                 "setBotNode": "setBotNode <bot name> <node name> "
                               "<image name> <command>",

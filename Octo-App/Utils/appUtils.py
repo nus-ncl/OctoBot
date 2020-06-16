@@ -257,16 +257,11 @@ def run_job(params):
     worker: Name of worker/container in the bot/pod
     command: Name of command to run in the worker/container"""
 
-    params = shlex.split(params)
     Pod = params[0]
     Worker = params[1]
-    Jobs = params[2:]
-    Command = ""
+    Jobs = " ".join(params[2:])
 
-    for Job in Jobs:
-        Command = Command + " " + str(Job)
-
-    Command = "kubectl exec " + Pod + " " + Worker + " -- " + Command
+    Command = "kubectl exec " + Pod + " " + Worker + " -- " + Jobs
 
     try:
         os.system(Command)
