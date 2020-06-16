@@ -32,11 +32,12 @@ def load_file(filename):
     print(f'Successfully loaded file \'{filename}\'')
 
 def set_bot_node(params):
-    """<botname, nodename, imagename, command>
+    """<bot, node, image, command>
     Writes and apply current configuration
-    botname: Affinity pod name
-    nodename: worker node which bot will run
-    imagename: image name need to be download
+
+    bot: Affinity pod name
+    node: worker node which bot will run
+    image: image name need to be download
     command: default command to keep the bot alive"""
 
     load_file("Utils/pod-template.yaml")
@@ -99,7 +100,7 @@ def set_bot_node(params):
 
 def del_container(index):
     """<index>
-    Deletes container at index from configuration
+    Deletes worker/container at index from configuration
 
     index: Index of the container in the configuration"""
 
@@ -110,6 +111,11 @@ def del_container(index):
         raise e
 
 def open_proxy():
+    """[port]
+    Configures kubernetes proxy to listen on the specified port
+
+    port: Port to kubernetes proxy to listen to"""
+
     try:
         pid = os.fork()
     except Exception as e:
@@ -129,11 +135,22 @@ def open_proxy():
 
 
 def set_port(p):
+    """<port>
+    Sets the port to communicate with the kubernetes proxy
+
+    port: Port to communicate with the kubernetes API"""
+
     global K8S_PORT
     K8S_PORT = int(p)
 
 
 def parse_status_json(dct):
+
+    """<dct>
+    Parse the YAML config/template file
+
+    dct: content of the YAML file"""
+
     for pods in dct['items']:
 
         name = pods["metadata"]["name"]
@@ -149,12 +166,21 @@ def parse_status_json(dct):
 
 
 def parse_node_json(dct):
+
+    """<dct>
+    Get the Node name metadata from the YAML config/template file
+
+    dct: content of the YAML file"""
+
     for node in dct['items']:
         name = node["metadata"]["name"]
         print("Node name: {}".format(name))
 
 
 def check_status():
+    """
+    Checks status of the running bots/pods"""
+
     try:
         pid = os.fork()
     except Exception as e:
@@ -180,6 +206,11 @@ def check_status():
 
 
 def get_logs(params):
+    """<bot, worker>
+    Get logs for bots or specific worker name
+
+    bot: Name of bot/pod
+    worker: Name of worker/container in the bot/pod"""
 
     params = shlex.split(params)
     pod = params[0]
@@ -207,7 +238,7 @@ def get_logs(params):
         raise(e)
 
     if (resp.status_code == 204):
-        return "No logs for pod: {}, container :{}". \
+        return "No logs for bot: {}, worker :{}". \
             format(pod, container[0])
 
     elif (resp.status_code != 200):
@@ -219,6 +250,13 @@ def get_logs(params):
 
 
 def run_job(params):
+    """<bot> <worker> <command>
+    Runs the specified command on a container in a bot/pod
+
+    bot: Name of bot/pod
+    worker: Name of worker/container in the bot/pod
+    command: Name of command to run in the worker/container"""
+
     params = shlex.split(params)
     Pod = params[0]
     Worker = params[1]
@@ -236,8 +274,13 @@ def run_job(params):
         raise e
 
 
-def get_shell(param):
-    Pod = param
+def get_shell(bot):
+    """<bot>
+    Gets shell for the specified pod
+
+    bot: Name of bot/pod"""
+
+    Pod = bot
     Command = "kubectl exec -it " + Pod + " -- /bin/bash"
 
     try:
@@ -247,6 +290,10 @@ def get_shell(param):
 
 
 def get_nodes():
+    """
+    Gets all available nodes for bot/pod
+    """
+
     try:
         pid = os.fork()
     except Exception as e:
@@ -272,6 +319,11 @@ def get_nodes():
 
 
 def push_pod_yaml_file(filename):
+    """<filename>
+    Deploy bot/pod base on the YAML file
+
+    filename: Name of YAML file"""
+
     try:
         u = "http://localhost:{}/".format(K8S_PORT) + \
             "api/v1/namespaces/default/pods"
@@ -286,20 +338,21 @@ def push_pod_yaml_file(filename):
             raise Exception(f"Error with code {str(resp.status_code)}: "
                             f"{resp.json().get('message')}")
         else:
-            print("Pod successfully in designated node")
+            print("Bot successfully in designated node")
 
     except Exception as e:
         print(e)
 
 
-def delete_bot(pod_name):
-    """<pod_name>
-    Deletes pod using the specified name
+def delete_bot(bot):
+    """<bot>
+    Deletes bot/pod using the specified name
 
-    pod_name: Name of the pod to delete"""
+    bot: Name of the bot/pod to delete"""
 
+    pod = bot
     url = "http://localhost:{}/".format(K8S_PORT) + \
-          "api/v1/namespaces/default/pods/{}".format(pod_name)
+          "api/v1/namespaces/default/pods/{}".format(pod)
 
     resp = requests.delete(url)
 
@@ -307,14 +360,15 @@ def delete_bot(pod_name):
         raise Exception(f"Error with code {str(resp.status_code)}: "
                         f"{resp.json().get('message', '')}")
     else:
-        print("Successfully deleted pod".format(pod_name))
+        print("Successfully deleted pod".format(pod))
 
 
 def move_bot_to_node(params):
-    """<botname, nodename>
-    Move not to new node name
-    botname : pod which one to delete and re-create
-    nodename : new nodename for recreated pod"""
+    """<bot, node>
+    Move not to new node
+
+    bot : bot/pod which one to delete and re-create
+    node : new node name for recreate bot/pod"""
 
     try:
         delete_bot(params[0])
@@ -329,7 +383,7 @@ def move_bot_to_node(params):
 
         while resp.status_code == 200:
             print("Pod {} still terminating".format(params[0]))
-            time.sleep(1)
+            time.sleep(5)
             resp = requests.get(url)
 
         set_bot_node(params)
