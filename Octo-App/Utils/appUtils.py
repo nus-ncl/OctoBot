@@ -12,7 +12,6 @@ import requests
 # some random high value port, can change using setPort command
 K8S_PORT = 8080
 
-
 '''
 open template file to fill in values later
 '''
@@ -20,14 +19,27 @@ file_path = os.path.dirname(os.path.realpath(__file__))
 with open(f"{file_path}/pod-template.yaml", "r") as stream:
     z = yaml.safe_load(stream)
 
+def load_file(filename):
+    """<filename>
+    Loads specified file/template into current configuration
 
-def setBotNode(params):
+    filename: Filename of the configuration file/template"""
+
+    global z
+    with open(filename) as stream:
+        z = yaml.safe_load(stream)
+
+    print(f'Successfully loaded file \'{filename}\'')
+
+def set_bot_node(params):
     """<botname, nodename, imagename, command>
     Writes and apply current configuration
     botname: Affinity pod name
     nodename: worker node which bot will run
     imagename: image name need to be download
     command: default command to keep the bot alive"""
+
+    load_file("Utils/pod-template.yaml")
 
     botname = params[0]
     nodename = params[1]
@@ -43,7 +55,9 @@ def setBotNode(params):
     print(f'command: {command}')
     container = z['spec']['containers']
 
-    # If there are no containers to be copied as a template, then create one on the spot now.
+    # If there are no containers to be copied as a template,
+    # then create one on the spot now.
+
     if len(container) > 0:
         # Make a copy of the template
         to_append = container[0].copy()
@@ -95,7 +109,7 @@ def del_container(index):
     except Exception as e:
         raise e
 
-def openProxy():
+def open_proxy():
     try:
         pid = os.fork()
     except Exception as e:
@@ -114,12 +128,12 @@ def openProxy():
         # let child sleep in background
 
 
-def setPort(p):
+def set_port(p):
     global K8S_PORT
     K8S_PORT = int(p)
 
 
-def parseStatusJson(dct):
+def parse_status_json(dct):
     for pods in dct['items']:
 
         name = pods["metadata"]["name"]
@@ -134,13 +148,13 @@ def parseStatusJson(dct):
         print("==================")
 
 
-def parseNodeJson(dct):
+def parse_node_json(dct):
     for node in dct['items']:
         name = node["metadata"]["name"]
         print("Node name: {}".format(name))
 
 
-def checkStatus():
+def check_status():
     try:
         pid = os.fork()
     except Exception as e:
@@ -159,14 +173,15 @@ def checkStatus():
             print("Success with status code 200, \
                     parsing response...")
 
-            parseStatusJson(resp.json())
+            parse_status_json(resp.json())
 
     else:
         os.waitpid(pid, 0)
 
 
-def getLogs(params):
+def get_logs(params):
 
+    params = shlex.split(params)
     pod = params[0]
 
     try:
@@ -203,7 +218,8 @@ def getLogs(params):
     return resp.text
 
 
-def runJob(params):
+def run_job(params):
+    params = shlex.split(params)
     Pod = params[0]
     Worker = params[1]
     Jobs = params[2:]
@@ -220,7 +236,7 @@ def runJob(params):
         raise e
 
 
-def getShell(param):
+def get_shell(param):
     Pod = param
     Command = "kubectl exec -it " + Pod + " -- /bin/bash"
 
@@ -230,7 +246,7 @@ def getShell(param):
         raise e
 
 
-def getNodes():
+def get_nodes():
     try:
         pid = os.fork()
     except Exception as e:
@@ -249,7 +265,7 @@ def getNodes():
             print("Success with status code 200, \
                     parsing response...")
 
-            parseNodeJson(resp.json())
+            parse_node_json(resp.json())
 
     else:
         os.waitpid(pid, 0)
@@ -276,7 +292,7 @@ def push_pod_yaml_file(filename):
         print(e)
 
 
-def deleteBot(pod_name):
+def delete_bot(pod_name):
     """<pod_name>
     Deletes pod using the specified name
 
@@ -294,14 +310,14 @@ def deleteBot(pod_name):
         print("Successfully deleted pod".format(pod_name))
 
 
-def moveBotNode(params):
+def move_bot_to_node(params):
     """<botname, nodename>
     Move not to new node name
     botname : pod which one to delete and re-create
     nodename : new nodename for recreated pod"""
 
     try:
-        deleteBot(params[0])
+        delete_bot(params[0])
     except Exception as e:
         raise e
 
@@ -316,7 +332,7 @@ def moveBotNode(params):
             time.sleep(1)
             resp = requests.get(url)
 
-        setBotNode(params)
+        set_bot_node(params)
 
     except Exception as e:
         raise e
