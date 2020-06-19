@@ -26,13 +26,15 @@ from util.ScrapePatient.newrecord import createNewRecords
 from util.ScrapeTherapist.viewPatients import iteratePage, loginTherapist
 from util.ScrapePatient.viewDiagnosis import getDiagnosisInformation
 
+headerUrl = "https://10.10.0.112/"
+
 def getDriver(username, password, url):
     
     '''
     Obtains the driver to be used to start the firefox instance
 
     Arguments:
-        username(str) : Username of credentials that the driver is to be logging in to
+        username(str) : Username of credentials that the driver is logging in to
         password(str) : password of credentials that the driver is logging in to
         url(str) : url of the website that the driver is accessing
     
@@ -51,7 +53,7 @@ def getDriver(username, password, url):
     login(driver, username, password)
     return driver
 
-def adminActions(driver, sleepTime):
+def adminActions(driver, sleepTime, headerUrl):
 
     '''
     Main Logic behind all the actions carried out by the admin role
@@ -63,29 +65,29 @@ def adminActions(driver, sleepTime):
     Returns:
         None
     '''
-    getAllNric(driver)
+    getAllNric(driver, headerUrl)
     time.sleep(sleepTime)
-    getAllPersonalInformation(driver)
+    getAllPersonalInformation(driver, headerUrl)
     time.sleep(sleepTime)
-    getAllContactInformation(driver)
+    getAllContactInformation(driver, headerUrl)
     time.sleep(sleepTime)
-    getAllTherapistInformation(driver)
+    getAllTherapistInformation(driver, headerUrl)
     time.sleep(sleepTime)
-    getAllResearcherInformation(driver)
+    getAllResearcherInformation(driver, headerUrl)
     time.sleep(sleepTime)
-    getAllStatusInformation(driver)
+    getAllStatusInformation(driver, headerUrl)
     time.sleep(sleepTime)
-    getAllPatientInformation(driver)
+    getAllPatientInformation(driver, headerUrl)
     time.sleep(sleepTime)
-    getAllAccountLogs(driver)
+    getAllAccountLogs(driver, headerUrl)
     time.sleep(sleepTime)
-    getAllRecordLogs(driver)
+    getAllRecordLogs(driver, headerUrl)
     time.sleep(sleepTime)
-    getAllPermissionLogs(driver)
+    getAllPermissionLogs(driver, headerUrl)
     time.sleep(sleepTime)
-    createNewRecords(driver)
+    createNewRecords(driver, headerUrl)
 
-def therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
+def therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers, headerUrl):
 
     '''
     Main Logic behind all the therapist actions
@@ -114,14 +116,14 @@ def therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
     print("Password used: " + str(password))
     print("File Number used: " + str(fileNumber))
     driver = getDriver(username, password, url)
-    if driver.current_url == "https://10.10.0.112/Therapist/Dashboard":
+    if driver.current_url == headerUrl + "Therapist/Dashboard":
         print("Logged in as a single-role therapist...")
         iteratePage(driver, username)
         time.sleep(sleepTime)
     else:
         print("Trying to login multi-role therapist..")
         if isTherapist(driver):
-            loginTherapist(driver)
+            loginTherapist(driver, headerUrl)
             time.sleep(sleepTime)
             print("Running therapist role...")
             iteratePage(driver, username)
@@ -134,7 +136,7 @@ def therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
     driver.quit()
 
         
-def adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
+def adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers, headerUrl):
 
     '''
     Main logic behind the actins taken by an admin bot
@@ -166,7 +168,7 @@ def adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
     driver = getDriver(username,password,url)
     if isAdmin(driver):
         print("Running admin role...")
-        adminActions(driver, sleepTime)
+        adminActions(driver, sleepTime, headerUrl)
     else:
         print("Invalid role found!")
     logout(driver)
@@ -174,7 +176,7 @@ def adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
     driver.close()
     driver.quit()
 
-def patientRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
+def patientRun(checkUsername, checkPassword, url, sleepTime, botNumbers, headerUrl):
 
     '''
     Main logic behind the actins taken by a patient bot
@@ -204,10 +206,10 @@ def patientRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
     print("Password used: " + str(password))
     print("File Number used: " + str(fileNumber))
     driver = getDriver(username,password,url)
-    if driver.current_url == "https://10.10.0.112/Patient/Dashboard":
+    if driver.current_url == headerUrl + "Patient/Dashboard":
         print("Logged in as a single-role patient...")
-        getDiagnosisInformation(driver, username)
-        getTherapistInformation(driver, username)
+        getDiagnosisInformation(driver, username, headerUrl)
+        getTherapistInformation(driver, username, headerUrl)
         time.sleep(sleepTime)
     else:
         print("Trying to login multi-role patient..")
@@ -215,8 +217,8 @@ def patientRun(checkUsername, checkPassword, url, sleepTime, botNumbers):
             driver.find_element_by_id('BodyContent_buttonLoginPatient').click()
             time.sleep(sleepTime)
             print("Running patient role...")
-            getDiagnosisInformation(driver, username)
-            getTherapistInformation(driver, username)
+            getDiagnosisInformation(driver, username, headerUrl)
+            getTherapistInformation(driver, username, headerUrl)
             time.sleep(sleepTime)
         else:
             print("Invalid Role found!!")
@@ -259,13 +261,13 @@ if __name__ == "__main__":
         print("Preparing to scrap website...")
         try:
             if role.lower() == "admin":
-                adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers)
+                adminRun(checkUsername, checkPassword, url, sleepTime, botNumbers, headerUrl)
                 print("Website scraping completed!")
             elif role.lower() == "therapist":
-                therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers)
+                therapistRun(checkUsername, checkPassword, url, sleepTime, botNumbers, headerUrl)
                 print("Website scraping completed")
             elif role.lower() == "patient":
-                patientRun(checkUsername, checkPassword, url, sleepTime, botNumbers)
+                patientRun(checkUsername, checkPassword, url, sleepTime, botNumbers, headerUrl)
                 print("Website scraping completed")
             else:
                 print("No such roles found")

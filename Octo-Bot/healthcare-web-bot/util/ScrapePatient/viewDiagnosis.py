@@ -43,7 +43,7 @@ def checkResults(driver):
     else:
         return False
 
-def getDiagnosisInformation(driver, patientNRIC):
+def getDiagnosisInformation(driver, patientNRIC, headerUrl):
 
     '''
     Main Logic to obtain diagnosis information
@@ -55,7 +55,7 @@ def getDiagnosisInformation(driver, patientNRIC):
     Returns:
         None
     '''
-    driver.get("https://10.10.0.112/Patient/My-Diagnoses")
+    driver.get(headerUrl + "Patient/My-Diagnoses")
     time.sleep(2)
     savedDirectory = saveDirectory + str(patientNRIC) + "/"
     createDirectory(savedDirectory)

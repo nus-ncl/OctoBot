@@ -43,7 +43,7 @@ def checkResults(driver):
     else:
         return False
 
-def getTherapistInformation(driver, patientNRIC):
+def getTherapistInformation(driver, patientNRIC, headerUrl):
 
     '''
     Main logic for obtaining therapist information
@@ -55,7 +55,7 @@ def getTherapistInformation(driver, patientNRIC):
     Returns:
         None
     '''
-    driver.get("https://10.10.0.112/Patient/My-Therapists")
+    driver.get(headerUrl + "Patient/My-Therapists")
     time.sleep(2)
     savedDirectory = saveDirectory + str(patientNRIC) + "/"
     createDirectory(savedDirectory)
@@ -80,3 +80,4 @@ def getTherapistInformation(driver, patientNRIC):
                 f.write("Therapist Name: " + str(info[0]) + "\n")
                 f.write("     -Title: " + str(info[1]) + "\n")
                 f.write("     -Department: " + str(info[2]) + "\n")
+                

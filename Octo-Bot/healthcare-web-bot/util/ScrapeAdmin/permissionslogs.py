@@ -50,7 +50,7 @@ def savePermissionLogs(driver, directory):
     savedFile.close()
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
-def getAllPermissionLogs(driver):
+def getAllPermissionLogs(driver, headerUrl):
 
     '''
     Obtain all permission logs
@@ -61,7 +61,7 @@ def getAllPermissionLogs(driver):
     Returns:
         None
     '''
-    driver.get("https://10.10.0.112/Admin/View-Logs/Permission-Logs")
+    driver.get(headerUrl + "Admin/View-Logs/Permission-Logs")
     time.sleep(2)
     driver.find_element_by_id("BodyContent_ButtonSearch").click()
     time.sleep(3)
@@ -79,7 +79,7 @@ def getAllPermissionLogs(driver):
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/View-Logs/Permission-Logs")
+            driver.get(headerUrl + "Admin/View-Logs/Permission-Logs")
             time.sleep(2)
             driver.find_element_by_id("BodyContent_ButtonSearch").click()
             time.sleep(3)

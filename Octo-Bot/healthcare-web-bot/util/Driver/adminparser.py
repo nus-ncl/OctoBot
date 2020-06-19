@@ -54,7 +54,7 @@ def checkFilesExist(botNumber):
 def genAdminFiles(botNumbers):
     
     '''
-    Generate csv files for different usernames-passwords according to the number of botd
+    Generate csv files for different usernames-passwords according to the number of bots
 
     Arguments: 
         botNumber (int): Number of admin bot concurrently running

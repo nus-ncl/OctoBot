@@ -69,7 +69,7 @@ def getPersonalInformationOnePage(driver, directory):
         except:
             number +=1
 
-def getAllPersonalInformation(driver):
+def getAllPersonalInformation(driver, headerUrl):
 
     '''
     Obtains all peronsonal information from all the webpages
@@ -80,7 +80,7 @@ def getAllPersonalInformation(driver):
     Returns:
         None
     '''
-    driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+    driver.get(headerUrl + "Admin/Manage-Accounts/View")
     time.sleep(3)
     maxNumber = viewAccountPages(driver)
     number = 2
@@ -96,7 +96,7 @@ def getAllPersonalInformation(driver):
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+            driver.get(headerUrl + "Admin/Manage-Accounts/View")
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getPersonalInformationOnePage(driver,directory)

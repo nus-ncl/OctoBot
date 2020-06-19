@@ -51,7 +51,7 @@ def numberOfEnteries(driver):
         return 0
 
 
-def loginTherapist(driver):
+def loginTherapist(driver, headerUrl):
 
     '''
     Assist in login of therapist and directing them to the homepage of therapist
@@ -63,7 +63,7 @@ def loginTherapist(driver):
         None
     '''
     driver.find_element_by_id('BodyContent_buttonLoginTherapist').click()
-    driver.get("https://10.10.0.112/Therapist/My-Patients/View")
+    driver.get(headerUrl + "Therapist/My-Patients/View")
 
 def checkResults(driver):
 

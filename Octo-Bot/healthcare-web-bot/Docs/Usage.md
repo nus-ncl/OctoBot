@@ -14,7 +14,7 @@ optional arguments:
   -b bot                Number of credentials for the choosen role
   -u username           Username to be used for login
   -p password           Password to be used for login
-  -m mode of execution  Mode for bot to be executed
+  -m mode of execution  Mode for bot to be executed(daemon | non-daemon)
 ```
 
 # Examples
@@ -40,7 +40,7 @@ joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ docker run healthcare-web-bot -b 
 ## Crawl the bot with specified username and password
 Specify the username and password to login and crawl the website. The bot will login from the csv list of usernames and passwords if this is not specified.
 ```console
-joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ docker run healthcare-web-bot -u <usernam> -p <password>
+joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ docker run healthcare-web-bot -u <username> -p <password>
 ```
 
 ## Execute the bot in a daemon mode

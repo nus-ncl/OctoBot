@@ -75,7 +75,7 @@ def getStatusInformationOnePage(driver, directory):
         saveStatusInformation(driver, statusToken, directory)
         number +=1
 
-def getAllStatusInformation(driver):
+def getAllStatusInformation(driver, headerUrl):
 
     '''
     Obtains all the status information from all the webpages
@@ -86,7 +86,7 @@ def getAllStatusInformation(driver):
     Returns:
         None
     '''
-    driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+    driver.get(headerUrl + "Admin/Manage-Accounts/View")
     maxNumber = viewAccountPages(driver)
     number = 2
     directory = str(os.getcwd())
@@ -101,7 +101,7 @@ def getAllStatusInformation(driver):
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+            driver.get(headerUrl + "Admin/Manage-Accounts/View")
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getStatusInformationOnePage(driver, directory)

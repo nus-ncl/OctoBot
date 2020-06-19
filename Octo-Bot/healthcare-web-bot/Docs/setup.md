@@ -25,6 +25,7 @@ For other distributions, visit [here](https://docs.docker.com/engine/install/)
 
 You can then build the docker image using the provided script like this:
 ```console
+joelczk@OctoBot/Octo-Bot/<bot-name>:~$chmod 755 build.sh
 joelczk@OctoBot/Octo-Bot/<bot-name>:~$./build.sh 
 ```
 

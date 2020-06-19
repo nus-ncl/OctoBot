@@ -123,3 +123,4 @@ def therapistWriteBack(username, password, fileNumber):
     writeBack.append(username)
     writeBack.append(password)
     writer.writerow(writeBack)
+    

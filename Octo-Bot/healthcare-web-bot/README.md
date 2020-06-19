@@ -38,7 +38,7 @@ joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ sudo chmod -R <directory>
 joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ cd <directory>/data
 ```
 
-# Usage
+## Usage
 Here is the help page for the healthcare-web-bot program:
 ```console
 joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ docker run healthcare-web-bot -h

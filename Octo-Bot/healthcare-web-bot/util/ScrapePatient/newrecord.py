@@ -174,7 +174,7 @@ def createNewReadings(driver, data, token):
     driver.find_element_by_id('BodyContent_buttonSubmit').click()
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
-def createNewRecords(driver):
+def createNewRecords(driver, headerUrl):
     
     '''
     Creates new records
@@ -190,7 +190,7 @@ def createNewRecords(driver):
     driver.find_element_by_id("A1").click()
     driver.find_element_by_id("navLinksSwitchRole").click()
     driver.find_element_by_id("BodyContent_buttonLoginPatient").click()
-    driver.get("https://10.10.0.112/Patient/My-Records/New-Record")
+    driver.get(headerUrl + "Patient/My-Records/New-Record")
     heightToken = 'RadioButtonTypeHeightMeasurement'
     weightToken = 'RadioButtonTypeWeightMeasurement'
     tempToken = 'RadioButtonTypeTemperatureReading'

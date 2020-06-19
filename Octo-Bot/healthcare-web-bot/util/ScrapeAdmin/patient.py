@@ -87,7 +87,7 @@ def getPatientInformationOnePage(driver, directory):
         savePatientInformation(driver, patientToken, directory)
         number +=1
 
-def getAllPatientInformation(driver):
+def getAllPatientInformation(driver, headerUrl):
 
     '''
     Obtain patient information from all the webpages
@@ -98,7 +98,7 @@ def getAllPatientInformation(driver):
     Returns:
         None
     '''
-    driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+    driver.get(headerUrl + "Admin/Manage-Accounts/View")
     time.sleep(3)
     maxNumber = viewAccountPages(driver)
     number = 2
@@ -114,7 +114,7 @@ def getAllPatientInformation(driver):
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+            driver.get(headerUrl + "Admin/Manage-Accounts/View")
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getPatientInformationOnePage(driver, directory)

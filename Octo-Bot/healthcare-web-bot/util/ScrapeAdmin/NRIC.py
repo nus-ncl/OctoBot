@@ -58,7 +58,7 @@ def createFile(directory):
     file.write("The list of NRIC are:\n")
     return file
 
-def getAllNric(driver):
+def getAllNric(driver, headerUrl):
     
     '''
     Obtains all the NRIC that is available in the database
@@ -70,7 +70,7 @@ def getAllNric(driver):
         None
     '''
     driver.find_element_by_id('BodyContent_buttonLoginAdmin').click()
-    driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+    driver.get(headerUrl + "Admin/Manage-Accounts/View")
     maxNumber = viewAccountPages(driver)
     number = 2
     directory = str(os.getcwd())
@@ -86,7 +86,7 @@ def getAllNric(driver):
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+            driver.get(headerUrl + "Admin/Manage-Accounts/View")
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getAllNricInPage(driver, file, directory)

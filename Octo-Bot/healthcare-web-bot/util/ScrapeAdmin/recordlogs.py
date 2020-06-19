@@ -10,7 +10,6 @@ from util.ScrapeAdmin.admin import viewAccountPages
 
 from prettytable import PrettyTable
 
-
 paginationXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
 scriptToken = "__doPostBack('ctl00$BodyContent$GridViewLogs','Page$"
 
@@ -83,7 +82,7 @@ def saveRecordLogs(driver, directory):
     savedFile.close()
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
-def getAllRecordLogs(driver):
+def getAllRecordLogs(driver, headerUrl):
 
     '''
     Obtains all the records logs 
@@ -94,7 +93,7 @@ def getAllRecordLogs(driver):
     Returns:
         None
     '''
-    driver.get("https://10.10.0.112/Admin/View-Logs/Account-Logs")
+    driver.get(headerUrl + "Admin/View-Logs/Account-Logs")
     time.sleep(2)
     driver.find_element_by_id("BodyContent_ButtonSearch").click()
     time.sleep(5)
@@ -114,7 +113,7 @@ def getAllRecordLogs(driver):
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/View-Logs/Account-Logs")
+            driver.get(headerUrl + "Admin/View-Logs/Account-Logs")
             time.sleep(10)
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()

@@ -59,7 +59,7 @@ def getResearcherInformationOnePage(driver, directory):
         saveResearcherInformation(driver, therapistToken, directory)
         number +=1
 
-def getAllResearcherInformation(driver):
+def getAllResearcherInformation(driver, headerUrl):
 
     '''
     Obtains all the researcher information
@@ -70,7 +70,7 @@ def getAllResearcherInformation(driver):
     Returns:
         None
     '''
-    driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+    driver.get(headerUrl + "Admin/Manage-Accounts/View")
     time.sleep(3)
     maxNumber = viewAccountPages(driver)
     number = 2
@@ -86,7 +86,7 @@ def getAllResearcherInformation(driver):
             if (number == maxNumber):
                  break
             number += 1
-            driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+            driver.get(headerUrl + "Admin/Manage-Accounts/View")
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getResearcherInformationOnePage(driver, directory)

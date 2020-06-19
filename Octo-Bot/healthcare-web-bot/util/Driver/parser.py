@@ -7,8 +7,6 @@ import sys
 
 directory = str(os.getcwd())
 
-final_data = {"url": "http://10.10.0.112"}
-
 def getNumberRecords():
 
     fileDirectory = directory + "/config/admin.csv"

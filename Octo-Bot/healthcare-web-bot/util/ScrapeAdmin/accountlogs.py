@@ -51,7 +51,7 @@ def saveAccountLogs(driver, directory):
     savedFile.close()
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
-def getAllAccountLogs(driver):
+def getAllAccountLogs(driver, headerUrl):
 
     '''
     Save the all the account logs from all the webpages
@@ -62,7 +62,7 @@ def getAllAccountLogs(driver):
     Returns:
         None
     '''
-    driver.get("https://10.10.0.112/Admin/View-Logs/Record-Logs")
+    driver.get(headerUrl + "Admin/View-Logs/Record-Logs")
     time.sleep(2)
     driver.find_element_by_id("BodyContent_ButtonSearch").click()
     time.sleep(3)
@@ -78,7 +78,7 @@ def getAllAccountLogs(driver):
             number += 1
         except:
             number += 1
-            driver.get("https://10.10.0.112/Admin/View-Logs/Record-Logs")
+            driver.get(headerUrl + "Admin/View-Logs/Record-Logs")
             time.sleep(2)
             driver.find_element_by_id("BodyContent_ButtonSearch").click()
             time.sleep(3)

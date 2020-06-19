@@ -56,7 +56,7 @@ def getContactInformationOnePage(driver, directory):
         saveContactInformation(driver, contactToken, directory)
         number +=1
 
-def getAllContactInformation(driver):
+def getAllContactInformation(driver, headerUrl):
     
     '''
     Obtains contact information for all of the webpages
@@ -68,7 +68,7 @@ def getAllContactInformation(driver):
         None
     '''
     time.sleep(3)
-    driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+    driver.get(headerUrl + "Admin/Manage-Accounts/View")
     maxNumber = viewAccountPages(driver)
     number = 2
     directory = str(os.getcwd())
@@ -83,7 +83,7 @@ def getAllContactInformation(driver):
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+            driver.get(headerUrl + "Admin/Manage-Accounts/View")
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getContactInformationOnePage(driver, directory)
