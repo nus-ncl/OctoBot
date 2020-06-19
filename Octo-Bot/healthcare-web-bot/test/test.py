@@ -8,6 +8,8 @@ from testUtil.testDriver.patientparser import patientGetNumberRecords
 from testUtil.testDriver.therapistparser import therapistGetNumberRecords
 from testmain import getDriver
 
+url = "https://10.10.0.112"
+
 class Testing(unittest.TestCase):
 
     """
@@ -18,13 +20,11 @@ class Testing(unittest.TestCase):
     testTherapistCSV tests if the number of records in the therapist.csv files tally
     testDaemon tests if the daemon mode is running properly
     """
-    url = "https://10.10.0.112"
-
     def setUp(self):
         warnings.simplefilter('ignore',category = DeprecationWarning)
         warnings.simplefilter('ignore', category = ResourceWarning)
         
-    def testUrl(self, url):
+    def testUrl(self):
         adminUrl = getUrl()
         self.assertEqual(url, adminUrl)
 
@@ -40,7 +40,7 @@ class Testing(unittest.TestCase):
         number = therapistGetNumberRecords()
         self.assertEqual(number, 123)
     
-    def testDriver(self, url):
+    def testDriver(self):
         username = "S1234567B"
         password = "easyP@ssw0rd"
         driver = getDriver(username, password, url)

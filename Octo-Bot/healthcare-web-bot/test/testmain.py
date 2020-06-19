@@ -44,10 +44,6 @@ def getDriver(username, password, url):
     profile = webdriver.FirefoxProfile()
     profile.accept_untrusted_certs = True
     firefox_options = webdriver.FirefoxOptions()
-    firefox_options.add_argument("--headless")
-    firefox_options.add_argument("--no-sandbox")
-    firefox_options.add_argument("--disable-dev-shm-usage")
-    firefox_options.add_argument("--disable-gpu")
     driver = webdriver.Firefox(firefox_options = firefox_options,firefox_profile = profile)
     driver.get(url)
     login(driver, username, password)
