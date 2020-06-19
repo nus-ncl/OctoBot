@@ -6,12 +6,22 @@ from prettytable import PrettyTable
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
 from util.ScrapeAdmin.admin import viewAccountPages
 
 paginationXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
 
 def savePermissionLogs(driver, directory):
+
+    '''
+    Main Logic to save permission Logs
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+        directory(str) : Directory to save permission logs
+    
+    Returns:
+        None
+    '''
     print("Getting permission logs...")
     outDirectory = directory + "/data/admin/PermissionLogs.txt"
     savedFile = open(outDirectory, "a")
@@ -40,8 +50,18 @@ def savePermissionLogs(driver, directory):
     savedFile.close()
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
-def getAllPermissionLogs(driver):
-    driver.get("https://10.10.0.112/Admin/View-Logs/Permission-Logs")
+def getAllPermissionLogs(driver, headerUrl):
+
+    '''
+    Obtain all permission logs
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+
+    Returns:
+        None
+    '''
+    driver.get(headerUrl + "Admin/View-Logs/Permission-Logs")
     time.sleep(2)
     driver.find_element_by_id("BodyContent_ButtonSearch").click()
     time.sleep(3)
@@ -55,13 +75,14 @@ def getAllPermissionLogs(driver):
             savePermissionLogs(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/View-Logs/Permission-Logs")
-            time.sleep(10)
+            driver.get(headerUrl + "Admin/View-Logs/Permission-Logs")
+            time.sleep(2)
+            driver.find_element_by_id("BodyContent_ButtonSearch").click()
+            time.sleep(3)
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     savePermissionLogs(driver, directory)

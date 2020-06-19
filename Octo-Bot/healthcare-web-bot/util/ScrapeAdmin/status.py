@@ -5,15 +5,23 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
 from util.ScrapeAdmin.admin import viewAccountPages
 
 paginationXpath =  "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[7]/td/table/tbody/tr/td["
 
-'''Functions to get the Status info
-Functions to progrssively crawl status info
-'''
 def saveStatusInformation(driver, researcherToken, directory):
+    
+    '''
+    Main logic to save status information
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+        researcherToken(str) : Token to get the xpath for pagination
+        directory(str) : Directory to store status information
+    
+    Returns:
+        None
+    '''
     print("Printing status information...")
     time.sleep(3)
     driver.find_element_by_xpath(researcherToken).click()
@@ -50,15 +58,35 @@ def saveStatusInformation(driver, researcherToken, directory):
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
 def getStatusInformationOnePage(driver, directory):
+
+    '''
+    Obtains status information in a single webpage
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+        directory(str) : Directory to store status information
+    
+    Returns:
+        None
+    '''
     number = 2
     while (number <= 6):
         statusToken = "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[" + str(number) + "]/td[7]/a"
         saveStatusInformation(driver, statusToken, directory)
         number +=1
 
-def getAllStatusInformation(driver):
-        # driver.find_element_by_id('BodyContent_buttonLoginAdmin').click()
-    driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+def getAllStatusInformation(driver, headerUrl):
+
+    '''
+    Obtains all the status information from all the webpages
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python    
+    
+    Returns:
+        None
+    '''
+    driver.get(headerUrl + "Admin/Manage-Accounts/View")
     maxNumber = viewAccountPages(driver)
     number = 2
     directory = str(os.getcwd())
@@ -69,13 +97,11 @@ def getAllStatusInformation(driver):
             getStatusInformationOnePage(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
-            time.sleep(10)
+            driver.get(headerUrl + "Admin/Manage-Accounts/View")
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getStatusInformationOnePage(driver, directory)

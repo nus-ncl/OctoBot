@@ -39,5 +39,5 @@ COPY /main.py /
 ADD . /
 
 # Run our web-scraping script
-ENTRYPOINT ["python3", "-u", "main.py"] 
+ENTRYPOINT ["python3", "-u", "./main.py"] 
 

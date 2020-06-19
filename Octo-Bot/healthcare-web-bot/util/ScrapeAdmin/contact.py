@@ -5,15 +5,22 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from util.Driver.role import isAdmin
 from util.ScrapeAdmin.admin import viewAccountPages
 
 paginationXpath =  "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[7]/td/table/tbody/tr/td["
 
-'''Functions to get the contact info
-Functions to progrssively crawl contact info
-'''
 def saveContactInformation(driver, contactToken, directory):
+    '''
+    Main Logic behind saving contact information for each user
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+        contactToken(str): token to be used to find xpath by the driver
+        directory(str) : Directory to save the contact information
+    
+    Returns:
+        None
+    '''
     print("Getting contact information...")
     time.sleep(3)
     driver.find_element_by_xpath(contactToken).click()
@@ -30,17 +37,38 @@ def saveContactInformation(driver, contactToken, directory):
     savedFile.write("Email: " + email + "\n")
     savedFile.write("Contact Number: " + contactNumber + "\n")
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
-    # driver.find_element_by_class_name("close").click()
+
 def getContactInformationOnePage(driver, directory):
+
+    '''
+    Obtains the contact information for a single webpage
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+        directory(str) : Directory to save the contact information
+    
+    Returns:
+        None
+    '''
     number = 2
     while (number <= 6):
         contactToken = "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[" + str(number) + "]/td[3]/a"
         saveContactInformation(driver, contactToken, directory)
         number +=1
 
-def getAllContactInformation(driver):
+def getAllContactInformation(driver, headerUrl):
+    
+    '''
+    Obtains contact information for all of the webpages
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+    
+    Returns:
+        None
+    '''
     time.sleep(3)
-    driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+    driver.get(headerUrl + "Admin/Manage-Accounts/View")
     maxNumber = viewAccountPages(driver)
     number = 2
     directory = str(os.getcwd())
@@ -51,13 +79,11 @@ def getAllContactInformation(driver):
             getContactInformationOnePage(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
-            time.sleep(10)
+            driver.get(headerUrl + "Admin/Manage-Accounts/View")
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getContactInformationOnePage(driver, directory)

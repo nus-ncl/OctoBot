@@ -11,6 +11,16 @@ f = open(directory, "r")
 data = json.loads(f.read())
 
 def getHeight():
+
+    '''
+    Obtains height value to be injected
+
+    Arguments:
+        None
+    
+    Returns:
+        Dictionary object of height readings
+    '''
     heightData = data["height"]
     heightInfo = []
     height = 0
@@ -34,6 +44,16 @@ def getHeight():
     return heightInfo 
 
 def getWeight():
+
+    '''
+    Obtain weight information to be injected in
+
+    Arguments: 
+        None
+    
+    Returns:
+        Dictionary object of weight readigs
+    '''
     weightData = data["weight"]
     weightInfo = []
     weight = 0
@@ -57,6 +77,16 @@ def getWeight():
     return weightInfo
 
 def getTemperature():
+
+    '''
+    Obtains temperature information to be injected
+
+    Arguments:
+        None
+    
+    Returns:
+        Dictionary object of temperature readings
+    '''
     tempData = data["temperature"]
     tempInfo = []
     temp = 0
@@ -80,6 +110,16 @@ def getTemperature():
     return tempInfo
 
 def getBloodPressure():
+
+    '''
+    Obtains blood pressure information to be injected
+
+    Arguments:
+        None
+    
+    Returns:
+        Dictionary object of blodd pressure readings
+    '''
     bloodPressureData = data["blood pressure"]
     bloodPressureInfo = []
     sys = 0
@@ -111,11 +151,19 @@ def getBloodPressure():
     return bloodPressureInfo
 
 def createNewReadings(driver, data, token):
-    # if (driver.current_url == "https://10.10.0.112/Role-Selection"):
-    #     driver.find_element_by_id('BodyContent_buttonLoginPatient').click()
-    #     time.sleep(3)
+
+    '''
+    Main Logic behind injecting new records
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python 
+        data (dict) : Dictionary containing information to be injected
+        token(str): token to support pagination
+    
+    Returns:
+        None
+    '''
     driver.get('https://10.10.0.112/Patient/My-Records/New-Record')
-    time.sleep(3)
     driver.find_element_by_id(token).click()
     driver.find_element_by_id('BodyContent_inputContent').send_keys(data[0])
     driver.find_element_by_id('BodyContent_inputTitle').send_keys(data[1])
@@ -124,19 +172,25 @@ def createNewReadings(driver, data, token):
     except:
         driver.find_element_by_id('BodyContent_inputDescription').send_keys(data[2])
     driver.find_element_by_id('BodyContent_buttonSubmit').click()
-    time.sleep(3)
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
-def createNewRecords(driver):
-    print("Injection Information into website...")
+def createNewRecords(driver, headerUrl):
+    
+    '''
+    Creates new records
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python 
+    
+    Returns:
+        None
+    '''
+    print("Injection new records in ...")
+    print("Inject new records...")
     driver.find_element_by_id("A1").click()
-    time.sleep(2)
     driver.find_element_by_id("navLinksSwitchRole").click()
-    time.sleep(3)
     driver.find_element_by_id("BodyContent_buttonLoginPatient").click()
-    time.sleep(3)
-    driver.get("https://10.10.0.112/Patient/My-Records/New-Record")
-    time.sleep(3)
+    driver.get(headerUrl + "Patient/My-Records/New-Record")
     heightToken = 'RadioButtonTypeHeightMeasurement'
     weightToken = 'RadioButtonTypeWeightMeasurement'
     tempToken = 'RadioButtonTypeTemperatureReading'
