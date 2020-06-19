@@ -17,7 +17,7 @@ optional arguments:
   -m mode of execution  Mode for bot to be executed(daemon | non-daemon)
 ```
 
-# Examples
+## Examples
 
 ## Crawl with waiting time in between website links
 This allows the bot to crawl website links with a specified sleep time between crawling. The default value is set to 0, if this field is not specified.
