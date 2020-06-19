@@ -272,4 +272,4 @@ if __name__ == "__main__":
             else:
                 print("No such roles found")
         except:
-            print("Error in csv file. Please check again!")
+            print("The host unreachable. Check the server URL or IP address!")

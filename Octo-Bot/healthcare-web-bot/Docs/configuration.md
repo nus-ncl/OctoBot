@@ -7,6 +7,8 @@ There are 2 files that the program can accept, namely the login file and measure
 
 There are a total of 3 login files for the 3 different roles --> `admin.csv`, `patient.csv` and `therapist.csv`
 
+The `admin.csv`, `therapist.csv` and `patient.csv` files in the forked repo are not updated. Please do update it with the latest credentials for the bot to work.
+
 There are 2 properties to be included in the login file.
 * Username - username of the user for selenium webdriver to automate login process
 * Password - password of the user for the selenium webdriver to automate login process
