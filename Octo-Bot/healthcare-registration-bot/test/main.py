@@ -1,10 +1,13 @@
 import argparse
+import time
+
 from BotActions import (addDiagnosis, adminLogin, approvePermissions,
                         assignTherapist, createNewRecord, getDriver,
                         patientLogin, registerPatientAccount,
                         requestPermissions, therapistLogin, viewDiagnosis)
 from FileParser import (getAdminCredentials, getPatientCredentials,
                         getTherapistCredentials)
+
 
 def main(url):
     '''
@@ -21,23 +24,36 @@ def main(url):
         therapistCredentials = getTherapistCredentials()
         patientCredentials = getPatientCredentials()
         driver = getDriver(url)
+        time.sleep(3)
         adminLogin(url, driver, adminCredentials[0], adminCredentials[1])
+        time.sleep(3)
         registerPatientAccount(url, driver)
+        time.sleep(3)
         assignTherapist(url, driver)
         driver = getDriver(url)
+        time.sleep(3)
         patientLogin(url, driver, patientCredentials[0], patientCredentials[8])
+        time.sleep(3)
         createNewRecord(url, driver)
         driver = getDriver(url)
+        time.sleep(3)
         therapistLogin(url, driver, therapistCredentials[0], therapistCredentials[1])
+        time.sleep(3)
         requestPermissions(url, driver)
         driver = getDriver(url)
+        time.sleep(3)
         patientLogin(url, driver, patientCredentials[0], patientCredentials[8])
+        time.sleep(3)
         approvePermissions(url, driver)
         driver = getDriver(url)
+        time.sleep(3)
         therapistLogin(url, driver, therapistCredentials[0], therapistCredentials[1])
+        time.sleep(3)
         addDiagnosis(url, driver)
         driver = getDriver(url)
+        time.sleep(3)
         patientLogin(url, driver, patientCredentials[0], patientCredentials[8])
+        time.sleep(3)
         viewDiagnosis(url, driver)
     except:
         print("Invalid hostname. Please try again!")

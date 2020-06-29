@@ -4,6 +4,7 @@ import io
 import sys
 from FileParser import getAdminCredentials, getTherapistCredentials, getPatientCredentials
 from BotActions import getDriver
+from main import main
 
 class Testing(unittest.TestCase):
     '''
@@ -13,7 +14,7 @@ class Testing(unittest.TestCase):
     Expected output:
         ....
         ----------------------------------------------------------------------
-        Ran 4 tests in X.XXXs
+        Ran 5 tests in X.XXXs
         OK        
     '''
     def setUp(self):
@@ -38,7 +39,19 @@ class Testing(unittest.TestCase):
     def testGetDriver(self):
         url = "https://10.10.0.112/"
         driver = getDriver(url)
+        driver.close()
+        driver.quit()
         self.assertIsNotNone(driver)
-        
+    
+    def testMain(self):
+        error = False
+        url = "https://10.10.0.112/"
+        try:
+            main(url)
+        except Exception as e:
+            print(e)
+            error = True
+        self.assertFalse(error)
+
 if __name__ == '__main__':
     unittest.main()

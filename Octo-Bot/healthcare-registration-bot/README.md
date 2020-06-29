@@ -73,7 +73,7 @@ CONTAINER ID        IMAGE                                COMMAND                
 
 ## Flowchart of program flow
 
-![Program flow](/images/programflow.png)
+![Program flow](https://github.com/joelczk/OctoBot/blob/master/Octo-Bot/healthcare-registration-bot/images/programflow.png)
 
 ## Usage
 Here is the help page for the healthcare-registration-bot program:
