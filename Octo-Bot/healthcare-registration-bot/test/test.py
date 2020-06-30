@@ -1,10 +1,14 @@
-import unittest
-import warnings
 import io
 import sys
-from FileParser import getAdminCredentials, getTherapistCredentials, getPatientCredentials
-from BotActions import getDriver
+import unittest
+import warnings
+
+from BotActions import (adminLogin, assignTherapist, getDriver,
+                        getDriverStatus, registerPatientAccount)
+from FileParser import (getAdminCredentials, getPatientCredentials,
+                        getTherapistCredentials)
 from main import main
+
 
 class Testing(unittest.TestCase):
     '''
@@ -12,15 +16,17 @@ class Testing(unittest.TestCase):
     If any tests fail, please check for regression
 
     Expected output:
-        ....
+        ......
         ----------------------------------------------------------------------
-        Ran 5 tests in X.XXXs
+        Ran 7 tests in X.XXXs
         OK        
-    '''
+    ''' 
     def setUp(self):
         warnings.simplefilter('ignore',category = DeprecationWarning)
         warnings.simplefilter('ignore', category = ResourceWarning)
-    
+        text_trap = io.StringIO()
+        sys.stdout = text_trap
+
     def testGetAdminCredentials(self):
         adminCredentials = getAdminCredentials()
         adminCredentialsData = ["S0000001A", "DrasticP@ssw0rdPlayer"]
@@ -42,6 +48,29 @@ class Testing(unittest.TestCase):
         driver.close()
         driver.quit()
         self.assertIsNotNone(driver)
+    
+    def testGetDriverStatus(self):
+        url = "https://10.10.0.112/"
+        driver = getDriver(url)
+        driverStatus = getDriverStatus(driver)
+        self.assertEqual(driverStatus, "alive")
+        driver.close()
+        driver.quit()
+        driverStatus = getDriverStatus(driver)
+        self.assertEqual(driverStatus, "dead")
+    
+    def testAdminActions(self):
+        url = "https://10.10.0.112/"
+        adminCredentials = getAdminCredentials()
+        error = None
+        try:
+            driver = getDriver(url)
+            adminLogin(url, driver, adminCredentials[0], adminCredentials[1])
+            registerPatientAccount(url, driver)
+            assignTherapist(url, driver)
+        except Exception as e:
+            error = e
+        self.assertIsNone(error)
     
     def testMain(self):
         error = False

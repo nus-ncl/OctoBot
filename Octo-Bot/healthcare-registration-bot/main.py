@@ -1,9 +1,8 @@
 import argparse
-import time
 
 from BotActions import (addDiagnosis, adminLogin, approvePermissions,
                         assignTherapist, createNewRecord, getDriver,
-                        patientLogin, registerPatientAccount,
+                        getDriverStatus, patientLogin, registerPatientAccount,
                         requestPermissions, therapistLogin, viewDiagnosis)
 from FileParser import (getAdminCredentials, getPatientCredentials,
                         getTherapistCredentials)
@@ -19,44 +18,36 @@ def main(url):
     Returns:
         None
     '''
+    driver = None
     try:
         adminCredentials = getAdminCredentials()
         therapistCredentials = getTherapistCredentials()
         patientCredentials = getPatientCredentials()
         driver = getDriver(url)
-        time.sleep(3)
         adminLogin(url, driver, adminCredentials[0], adminCredentials[1])
-        time.sleep(3)
         registerPatientAccount(url, driver)
-        time.sleep(3)
         assignTherapist(url, driver)
         driver = getDriver(url)
-        time.sleep(3)
         patientLogin(url, driver, patientCredentials[0], patientCredentials[8])
-        time.sleep(3)
         createNewRecord(url, driver)
         driver = getDriver(url)
-        time.sleep(3)
         therapistLogin(url, driver, therapistCredentials[0], therapistCredentials[1])
-        time.sleep(3)
         requestPermissions(url, driver)
         driver = getDriver(url)
-        time.sleep(3)
         patientLogin(url, driver, patientCredentials[0], patientCredentials[8])
-        time.sleep(3)
         approvePermissions(url, driver)
         driver = getDriver(url)
-        time.sleep(3)
         therapistLogin(url, driver, therapistCredentials[0], therapistCredentials[1])
-        time.sleep(3)
         addDiagnosis(url, driver)
         driver = getDriver(url)
-        time.sleep(3)
         patientLogin(url, driver, patientCredentials[0], patientCredentials[8])
-        time.sleep(3)
         viewDiagnosis(url, driver)
     except:
-        print("Invalid hostname. Please try again!")
+        if (getDriverStatus(driver) == "alive"):
+            driver.quit()
+            print("Invalid hostname. Please try again!")
+        else:
+            print("Invalid hostname. Please try again!")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = \

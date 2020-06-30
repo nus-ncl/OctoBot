@@ -2,8 +2,11 @@ import time
 
 from FileParser import getPatientCredentials, getTherapistCredentials
 from selenium import webdriver
+from selenium.webdriver.remote.command import Command
 
 logoutScript = "__doPostBack('ct100$ct113','')"
+driverAlive = "alive"
+driverDead = "dead"
 
 def adminLogin(url, driver, username, password):
 
@@ -125,6 +128,13 @@ def getDriver(url):
     driver.get(url)
     return driver
 
+def getDriverStatus(driver):
+    try:
+        driver.execute(Command.STATUS)
+        return driverAlive
+    except:
+        return driverDead
+        
 def registerPatientAccount(url, driver):
 
     '''
@@ -220,7 +230,7 @@ def createNewRecord(url, driver):
     elif information == "bp":
         driver.find_element_by_id('RadioButtonBloodPressureReading').click()
     else:
-        print("Invalid data type!")
+        print("Invalid data type! Please use a valid data type(height/weight/temperature/bp)")
         return
     driver.find_element_by_id('BodyContent_inputContent').send_keys(data)
     driver.find_element_by_id('BodyContent_inputTitle').send_keys('Test Data')
@@ -273,6 +283,8 @@ def requestPermissions(url, driver):
         driver.quit()
         print(" -Therapist request for permission")
     except:
+        driver.close()
+        driver.quit()
         print("Permission already obtained")
 
 def approvePermissions(url, driver):

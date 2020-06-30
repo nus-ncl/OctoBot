@@ -2,8 +2,11 @@ import time
 
 from FileParser import getPatientCredentials, getTherapistCredentials
 from selenium import webdriver
+from selenium.webdriver.remote.command import Command
 
 logoutScript = "__doPostBack('ct100$ct113','')"
+driverAlive = "alive"
+driverDead = "dead"
 
 def adminLogin(url, driver, username, password):
 
@@ -129,6 +132,13 @@ def getDriver(url):
     driver.get(url)
     return driver
 
+def getDriverStatus(driver):
+    try:
+        driver.execute(Command.STATUS)
+        return driverAlive
+    except:
+        return driverDead
+        
 def registerPatientAccount(url, driver):
 
     '''
@@ -277,6 +287,8 @@ def requestPermissions(url, driver):
         driver.quit()
         print(" -Therapist request for permission")
     except:
+        driver.close()
+        driver.quit()
         print("Permission already obtained")
 
 def approvePermissions(url, driver):
