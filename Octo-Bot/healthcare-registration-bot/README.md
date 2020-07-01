@@ -111,5 +111,5 @@ Here is an example format of `patient.csv` file:
 
 Here is an example format of `patient.csv` file:
 ```csv
-<username>, <dob(yyyy-mm-dd)>, <first name>, <Last name>, <address>, <email>, <postal code>, <contact number>, <password>, <Field to be automated(height/weight/temp/bp)>, <data of field to be automated>
+<username>, <dob(yyyy-mm-dd)>, <first name>, <last name>, <address>, <email>, <postal code>, <contact number>, <password>, <Field to be automated(height/weight/temp/bp)>, <data of field to be automated>
 ```

@@ -35,4 +35,3 @@ ADD . /
 
 # Run our web-scraping script
 ENTRYPOINT ["python3", "-u", "./main.py"] 
-
