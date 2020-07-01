@@ -29,12 +29,12 @@ class Testing(unittest.TestCase):
 
     def testGetAdminCredentials(self):
         adminCredentials = getAdminCredentials()
-        adminCredentialsData = ["S0000001A", "DrasticP@ssw0rdPlayer"]
+        adminCredentialsData = ["S1234567C", "easyP@ssw0rd"]
         self.assertEqual(adminCredentials, adminCredentialsData)
     
     def testGetTherapistCredentials(self):
         therapistCredentials = getTherapistCredentials()
-        therapistCredentialsData = ["F0058132Q", "LightEnterP@ssw0rd", "Z9989"]
+        therapistCredentialsData = ["S1234567D", "easyP@ssw0rd", "Z9989"]
         self.assertEqual(therapistCredentials, therapistCredentialsData)
     
     def testGetPatientCredentials(self):
