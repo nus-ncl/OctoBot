@@ -1,11 +1,12 @@
 import argparse
 
-from BotActions import (addDiagnosis, adminLogin, approvePermissions,
-                        assignTherapist, createNewRecord, getDriver,
-                        getDriverStatus, patientLogin, registerPatientAccount,
-                        requestPermissions, therapistLogin, viewDiagnosis)
-from FileParser import (getAdminCredentials, getPatientCredentials,
-                        getTherapistCredentials)
+from TestBotActionsUI import (addDiagnosis, adminLogin, approvePermissions,
+                            assignTherapist, createNewRecord, getDriver,
+                            getDriverStatus, patientLogin,
+                            registerPatientAccount, requestPermissions,
+                            therapistLogin, viewDiagnosis)
+from TestFileParser import (getAdminCredentials, getPatientCredentials,
+                            getTherapistCredentials)
 
 
 def main(url):
@@ -58,14 +59,6 @@ if __name__ == '__main__':
     url = args.u
     urlPrintLine = "Preparing to access from " + str(url) + "..."
     print(urlPrintLine)
-    print("Registration bot starting up in 5...")
-    print("Registration bot starting up in 4...")
-    print("Registration bot starting up in 3...")
-    print("Registration bot starting up in 2...")
-    print("Registration bot starting up in 1...")
+    print("Starting up registration bot...")
     main(url)
-    print("Registration bot completed and closing down in 5...")
-    print("Registration bot completed and closing down in 4...")
-    print("Registration bot completed and closing down in 3...")
-    print("Registration bot completed and closing down in 2...")
-    print("Registration bot completed and closing down in 1...")
+    print("Closing down registration bot...")

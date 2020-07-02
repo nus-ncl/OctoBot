@@ -9,7 +9,11 @@ pip3 install selenium >/dev/null
 echo "All dependencies have been fulfilled!"
 
 # Run all unit tests
-python3 test/test.py
+echo "Running tests with Firefox UI!"
+python3 test/TestUI.py
+echo
+echo "Running tests without Firefox UI!"
+python3 test/TestNoUI.py
 
 echo
 echo "Please check if tests succeeded!"

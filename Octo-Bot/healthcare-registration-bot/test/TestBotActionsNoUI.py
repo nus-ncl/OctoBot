@@ -1,6 +1,6 @@
 import time
 
-from FileParser import getPatientCredentials, getTherapistCredentials
+from TestFileParser import getPatientCredentials, getTherapistCredentials
 from selenium import webdriver
 from selenium.webdriver.remote.command import Command
 
@@ -15,7 +15,7 @@ def adminLogin(url, driver, username, password):
 
     Arguments:
         url(str): target url
-        driver(obj): firefox webdriver instance in python 
+        driver(obj): Firefox webdriver instance in python 
         username(str): Username used for logging in
         password(str): Password used for logging in
     
@@ -49,7 +49,7 @@ def patientLogin(url, driver, username, password):
 
     Arguments:
         url(str): target url
-        driver(obj): firefox webdriver instance in python 
+        driver(obj): Firefox webdriver instance in python 
         username(str): Username used for logging in
         password(str): Password used for logging in
     
@@ -83,7 +83,7 @@ def therapistLogin(url, driver, username, password):
 
     Arguments:
         url(str): target url
-        driver(obj): firefox webdriver instance in python 
+        driver(obj): Firefox webdriver instance in python 
         username(str): Username used for logging in
         password(str): Password used for logging in
     
@@ -119,11 +119,15 @@ def getDriver(url):
         url(str): Target url
     
     Returns:
-        firefox webdriver instance in python
+        Firefox webdriver instance in python
     '''
     profile = webdriver.FirefoxProfile()
     profile.accept_untrusted_certs = True
     firefox_options = webdriver.FirefoxOptions()
+    firefox_options.add_argument("--headless")
+    firefox_options.add_argument("--no-sandbox")
+    firefox_options.add_argument("--disable-dev-shm-usage")
+    firefox_options.add_argument("--disable-gpu")
     driver = webdriver.Firefox(firefox_options = firefox_options,firefox_profile = profile)
     driver.get(url)
     return driver
@@ -138,11 +142,11 @@ def getDriverStatus(driver):
 def registerPatientAccount(url, driver):
 
     '''
-    Main Logic used for registering a patient account
+    Main logic used for registering a patient account
 
     Arguments:
         url(str): Target URL
-        driver(obj): firefox webdriver instance in python 
+        driver(obj): Firefox webdriver instance in python 
     
     Return:
         None
@@ -176,11 +180,11 @@ def registerPatientAccount(url, driver):
 
 def assignTherapist(url, driver):
     '''
-    Main Logic behind assigning therapist for the patient
+    Main logic behind assigning therapist for the patient
 
     Arguments:
         url(str): Target URL
-        driver(obj): firefox webdriver instance in python 
+        driver(obj): Firefox webdriver instance in python 
     
     Returns:
         None
@@ -208,11 +212,11 @@ def assignTherapist(url, driver):
 def createNewRecord(url, driver):
 
     '''
-    Main Logic behind creating new records for patient
+    Main logic behind creating new records for patient
 
     Arguments:
         url(str): Target URL
-        driver(obj): firefox webdriver instance in python 
+        driver(obj): Firefox webdriver instance in python 
     
     Returns:
         None
@@ -244,11 +248,11 @@ def createNewRecord(url, driver):
 def requestPermissions(url, driver):
 
     '''
-    Main Logic behind requesting permission for therapist to access patient records
+    Main logic behind requesting permission for therapist to access patient records
 
     Arguments:
         url(str): Target URL
-        driver(obj): firefox webdriver instance in python 
+        driver(obj): Firefox webdriver instance in python 
     
     Returns:
         None
@@ -290,11 +294,11 @@ def requestPermissions(url, driver):
 def approvePermissions(url, driver):
 
     '''
-    Main Logic behind approving permissions for therapist to access patient records
+    Main logic behind approving permissions for therapist to access patient records
 
     Arguments:
         url(str): Target URL
-        driver(obj): firefox webdriver instance in python 
+        driver(obj): Firefox webdriver instance in python 
     
     Returns:
         None
@@ -312,11 +316,11 @@ def approvePermissions(url, driver):
 def addDiagnosis(url, driver):
 
     '''
-    Main Logic behind addition of diagnosis for patient
+    Main logic behind addition of diagnosis for patient
 
     Arguments:
         url(str): Target URL
-        driver(obj): firefox webdriver instance in python 
+        driver(obj): Firefox webdriver instance in python 
     
     Returns:
         None
@@ -344,10 +348,10 @@ def addDiagnosis(url, driver):
 def viewDiagnosis(url, driver):
 
     '''
-    Main Logic behind view diagnosis for patients
+    Main logic behind view diagnosis for patients
     Arguments:
         url(str): Target URL
-        driver(obj): firefox webdriver instance in python 
+        driver(obj): Firefox webdriver instance in python 
     
     Returns:
         None
