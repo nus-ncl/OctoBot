@@ -86,4 +86,4 @@ The bot will start to execute in daemon mode and start to run in the background 
 joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ docker run healthcare-web-bot -m daemon
 ```
 
-Detailed Documentations can be found at [DOCS](https://github.com/joelczk/web-crawler/blob/master/Docs/README.md)
+Detailed Documentations can be found at [DOCS](https://github.com/nus-ncl/OctoBot/blob/master/Octo-Bot/healthcare-web-bot/Docs/README.md)
