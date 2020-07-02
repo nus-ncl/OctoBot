@@ -27,7 +27,7 @@ joelczk@OctoBot:~$ sudo apt-get install docker-ce docker-ce-cli containerd.io
 joelczk@OctoBot:~$ sudo docker run hello-world
 ```
 
-For other distributions, visit [here](https://docs.Docker.com/engine/install/). It is not recommended to use Docker using `Windows` OS.
+For other distributions, visit [here](https://docs.docker.com/engine/install/). It is not recommended to use Docker using `Windows` OS.
 
 You can then build the Docker image using the provided script like this:
 ```console
