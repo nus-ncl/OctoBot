@@ -122,7 +122,7 @@ There are 2 types of tests that can be run for `healthcare-registration-bot`, na
 joelczk@OctoBot/Octo-Bot/<bot-name>/test:~/OctoBot$ python3 TestUI.py
 ```
 
-### Running tests without Firefox interface UI (It does not requires a desktop terminal)
+### Running tests without Firefox interface UI (It does not require a desktop terminal)
 ```console
 joelczk@OctoBot/Octo-Bot/<bot-name>:~/OctoBot$ python3 TestNoUI.py
 ```
