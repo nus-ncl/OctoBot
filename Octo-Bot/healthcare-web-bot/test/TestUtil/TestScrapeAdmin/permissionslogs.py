@@ -6,25 +6,24 @@ from prettytable import PrettyTable
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from testUtil.testScrapeAdmin.admin import viewAccountPages
+from TestUtil.TestScrapeAdmin.admin import viewAccountPages
 
 paginationXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
 
-
-def saveAccountLogs(driver, directory):
+def savePermissionLogs(driver, directory):
 
     '''
-    Save the account logs in a single webpage
-
+    Main Logic to save permission Logs
+    
     Arguments:
         driver(obj): firefox webdriver instance in python
-        directory(str) : Directory to save the account logs to
+        directory(str) : Directory to save permission logs
     
     Returns:
         None
     '''
-    print("Getting account logs...")
-    outDirectory = directory + "/data/admin/AccountLogs.txt"
+    print("Getting permission logs...")
+    outDirectory = directory + "/data/admin/PermissionLogs.txt"
     savedFile = open(outDirectory, "a")
     table = PrettyTable(["Date/Time", "Subject", "Action", "Description"])
     table.align["Date/Time"] = "l"
@@ -51,18 +50,18 @@ def saveAccountLogs(driver, directory):
     savedFile.close()
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
-def getAllAccountLogs(driver, headerUrl):
+def getAllPermissionLogs(driver, headerUrl):
 
     '''
-    Save the all the account logs from all the webpages
+    Obtain all permission logs
     
     Arguments:
         driver(obj): firefox webdriver instance in python
-    
+
     Returns:
         None
     '''
-    driver.get(headerUrl + "Admin/View-Logs/Record-Logs")
+    driver.get(headerUrl + "Admin/View-Logs/Permission-Logs")
     time.sleep(2)
     driver.find_element_by_id("BodyContent_ButtonSearch").click()
     time.sleep(3)
@@ -73,18 +72,17 @@ def getAllAccountLogs(driver, headerUrl):
         try:
             token = str(number) + "]/a"
             Xpath = paginationXpath + token
-            saveAccountLogs(driver, directory)
+            savePermissionLogs(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
         except:
+            if (number == maxNumber):
+                break
             number += 1
-            driver.get(headerUrl + "Admin/View-Logs/Record-Logs")
+            driver.get(headerUrl + "Admin/View-Logs/Permission-Logs")
             time.sleep(2)
             driver.find_element_by_id("BodyContent_ButtonSearch").click()
             time.sleep(3)
-            if (number > maxNumber):
-                break
-            token = str(number) + "]/a"
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
-    saveAccountLogs(driver, directory)
+    savePermissionLogs(driver, directory)

@@ -5,8 +5,8 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from testUtil.testDriver.role import isAdmin
-from testUtil.testScrapeAdmin.admin import viewAccountPages
+from TestUtil.TestDriver.role import isAdmin
+from TestUtil.TestScrapeAdmin.admin import viewAccountPages
 
 from prettytable import PrettyTable
 

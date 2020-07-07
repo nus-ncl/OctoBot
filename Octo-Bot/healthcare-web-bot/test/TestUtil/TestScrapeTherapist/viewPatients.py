@@ -32,13 +32,13 @@ def createDirectory(savedFolder):
 def numberOfEnteries(driver):
 
     '''
-    Obtains the number of entries of therapist information
+    Obtains the number of enteries of therapist information
 
     Arguments:
         driver(obj): firefox webdriver instance in python 
     
     Returns:
-        Total number of entries for therapist information
+        Total number of enteries for therapist information
     '''
     try:
         soup = BeautifulSoup(driver.page_source,'html.parser')

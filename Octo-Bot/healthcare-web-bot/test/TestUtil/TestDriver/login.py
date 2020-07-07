@@ -1,10 +1,5 @@
 import time 
 
-""" Helper functions to automate login and logout process
-
-login function gets the username and password and automates the login process
-logout function logouts the user from the account
-"""
 def login(driver, username, password):
 
     '''

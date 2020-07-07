@@ -5,15 +5,20 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from testUtil.testDriver.testRole import isAdmin
-from testUtil.testScrapeAdmin.testAdmin import viewAccountPages
+from TestUtil.TestScrapeAdmin.admin import viewAccountPages
 
 paginationXpath =  "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[7]/td/table/tbody/tr/td["
 
-'''Functions used to obtain personal Information
-These are the functions used to progrssively scrape out all the information listed under the Personal
-'''
 def savePersonalInformation(driver, personalToken, directory):
+
+    '''
+    Main Logic to save personal information
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+        personalToken(str) : Token for the driver to find the xpath
+        directory(str) : Directory for storing the personal information
+    '''
     print("Printing personal information...")
     time.sleep(3)
     driver.find_element_by_xpath(personalToken).click()
@@ -44,18 +49,38 @@ def savePersonalInformation(driver, personalToken, directory):
     driver.find_element_by_class_name("close").click()
 
 def getPersonalInformationOnePage(driver, directory):
+    
+    '''
+    Obtains personal information from a single webpage
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+        directory(str) : Directory for storing personal information
+    
+    Returns:
+        None
+    '''
     number = 2
     while (number <= 6):
         try:
             personalToken = "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[" + str(number) + "]/td[2]/a"
             savePersonalInformation(driver, personalToken, directory)
             number += 1
-        except Exception as e:
-            print(e)
+        except:
             number +=1
 
-def getAllPersonalInformation(driver):
-    driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+def getAllPersonalInformation(driver, headerUrl):
+
+    '''
+    Obtains all peronsonal information from all the webpages
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+    
+    Returns:
+        None
+    '''
+    driver.get(headerUrl + "Admin/Manage-Accounts/View")
     time.sleep(3)
     maxNumber = viewAccountPages(driver)
     number = 2
@@ -67,13 +92,11 @@ def getAllPersonalInformation(driver):
             getPersonalInformationOnePage(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
-            time.sleep(10)
+            driver.get(headerUrl + "Admin/Manage-Accounts/View")
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getPersonalInformationOnePage(driver,directory)

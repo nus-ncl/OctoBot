@@ -2,20 +2,29 @@ import os
 import time
 
 from bs4 import BeautifulSoup
+from prettytable import PrettyTable
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from testUtil.testDriver.testRole import isAdmin
-from testUtil.testScrapeAdmin.testAdmin import viewAccountPages
-
-from prettytable import PrettyTable
-
+from TestUtil.TestScrapeAdmin.admin import viewAccountPages
 
 paginationXpath = "/html/body/form/div[4]/div[4]/div/div/table/tbody/tr[22]/td/table/tbody/tr/td["
 
-def saveRecordLogs(driver, directory):
-    print("Printing record logs...")
-    outDirectory = directory + "/data/admin/RecordLogs.txt"
+
+def saveAccountLogs(driver, directory):
+
+    '''
+    Save the account logs in a single webpage
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+        directory(str) : Directory to save the account logs to
+    
+    Returns:
+        None
+    '''
+    print("Getting account logs...")
+    outDirectory = directory + "/data/admin/AccountLogs.txt"
     savedFile = open(outDirectory, "a")
     table = PrettyTable(["Date/Time", "Subject", "Action", "Description"])
     table.align["Date/Time"] = "l"
@@ -42,8 +51,18 @@ def saveRecordLogs(driver, directory):
     savedFile.close()
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
-def getAllRecordLogs(driver):
-    driver.get("https://10.10.0.112/Admin/View-Logs/Account-Logs")
+def getAllAccountLogs(driver, headerUrl):
+
+    '''
+    Save the all the account logs from all the webpages
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python
+    
+    Returns:
+        None
+    '''
+    driver.get(headerUrl + "Admin/View-Logs/Record-Logs")
     time.sleep(2)
     driver.find_element_by_id("BodyContent_ButtonSearch").click()
     time.sleep(3)
@@ -54,16 +73,18 @@ def getAllRecordLogs(driver):
         try:
             token = str(number) + "]/a"
             Xpath = paginationXpath + token
-            saveRecordLogs(driver, directory)
+            saveAccountLogs(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
-            if (number == maxNumber):
-                break
             number += 1
-            driver.get("https://10.10.0.112/Admin/View-Logs/Account-Logs")
-            time.sleep(10)
+            driver.get(headerUrl + "Admin/View-Logs/Record-Logs")
+            time.sleep(2)
+            driver.find_element_by_id("BodyContent_ButtonSearch").click()
+            time.sleep(3)
+            if (number > maxNumber):
+                break
+            token = str(number) + "]/a"
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
-    saveRecordLogs(driver, directory)
+    saveAccountLogs(driver, directory)
