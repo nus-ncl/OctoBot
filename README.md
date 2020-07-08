@@ -24,12 +24,15 @@ National Cybersecurity R&D Laboratory (NCL)\
 National University of Singapore (NUS)\
 Singapore
 
-Maintainer : Aris Cahyadi Risdianto - ariscr@ncl.sg
- 
-Supervisor : Prof. Ee-chien Chang - changec@comp.nus.edu.sg
+Project Leader: Aris Cahyadi Risdianto - ariscr@ncl.sg
+Project Investigator (PI) : Prof. Ee-Chien Chang - changec@comp.nus.edu.sg
  
 Contributors:
 - Aris Cahyadi Risdianto (NCL/NUS)
 - DeZhang Lee (NUS)
+- Lai Yong Rong ()
+- Joel Chang Zhi Kai (NUS)
+- Ang Chin Guan, Melvin (NUS)
+
 
 ## License
