@@ -25,14 +25,21 @@ National University of Singapore (NUS)\
 Singapore
 
 Project Leader: Aris Cahyadi Risdianto - ariscr@ncl.sg
-Project Investigator (PI) : Prof. Ee-Chien Chang - changec@comp.nus.edu.sg
+
+Principal Investigator (PI) : Prof. Ee-Chien Chang - changec@comp.nus.edu.sg
  
 Contributors:
 - Aris Cahyadi Risdianto (NCL/NUS)
 - DeZhang Lee (NUS)
-- Lai Yong Rong ()
+- Lai Yong Rong (Singapore Polytechnic)
 - Joel Chang Zhi Kai (NUS)
 - Ang Chin Guan, Melvin (NUS)
 
+## Contribution
+
+Please check the [CONTRIBUTING](CONTRIBUTING.md) file for the detail.
 
 ## License
+
+All code in this repository is under the Apache Software Foundation License, 2.0. 
+Please check the [LICENSE](LICENSE) file for the detail.
