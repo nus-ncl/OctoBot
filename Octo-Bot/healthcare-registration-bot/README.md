@@ -1,4 +1,4 @@
-# Healthcare-registration-bot
+# Octo-Bot: Healthcare automatic registration bot
 
 ## Introduction
 This bot is specially developed for automating creation user accounts for development server of NUSMed website

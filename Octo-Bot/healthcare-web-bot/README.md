@@ -1,4 +1,4 @@
-# Healthcare-web-bot
+# Octobot: Healthcare web browsing activity bot
 
 ## Introduction
 This bot is specially developed for crawling the webpages and automating user actions of the development server for NUSMed website.
@@ -86,4 +86,4 @@ The bot will start to execute in daemon mode and start to run in the background 
 joelczk@OctoBot:~/OctoBot/Octo-Bot/<bot-name>$ docker run healthcare-web-bot -m daemon
 ```
 
-Detailed Documentations can be found at [DOCS](https://github.com/nus-ncl/OctoBot/blob/master/Octo-Bot/healthcare-web-bot/Docs/README.md)
+Detailed Documentations can be found at [DOCS](Docs/README.md)

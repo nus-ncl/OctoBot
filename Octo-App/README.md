@@ -18,7 +18,7 @@ ncl@orchestrator:~/$ git clone https://github.com/nus-ncl/OctoBot
 ncl@orchestrator:~/$ cd OctoBot/Octo-App
 ```
  
-### Run Octo-Play Program
+### Run Octo-App Program
   
 Call the program by using this command in order to get program prompt.
 Insert the **required** parameters to run specific job or get the Shell for interactive execution:

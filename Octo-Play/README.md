@@ -25,7 +25,7 @@ Call the program by using this command in order to get program prompt.
 Insert the **required** parameters:
 
 - **setName** - name of the generation task
-- **setReplicas** - how many client to generate the traffic
+- **setBotNumbers** - how many bot is required to generate the activity
 - **addWorker** - name of the worker with specific worker type (image) that required to execute job (command)
 - **writeFile** - save the generation task into file
 - **runFile** - run the file in order to start generation
@@ -40,27 +40,25 @@ Type "exit" to exit the program
 main.py:~$ help
 
 List of commands
-['currentConfig', 'getName', 'setName', 'getReplicas', 'setReplicas', 'getWorkers', 'addWorker', 'deleteWorker', 'openProxy', 'setPort', 'loadFile', 'writeFile', 'runFile', 'patchFile', 'stopFile', 'checkStatus', 'deletePod', 'getLogs', 'getLogsByCmd', 'exit']
+['currentConfig', 'getName', 'setName', 'getBotNumbers', 'setBotNumbers', 'getWorkers', 'addWorker', 'deleteWorker', 'openProxy', 'setPort', 'loadFile', 'writeFile', 'runFile', 'patchFile', 'stopFile', 'checkStatus', 'runJob', 'getShell', 'deletePod', 'getLogs', 'getLogsByCmd', 'exit']
 
 List of functions
 ['read_file']
-
 Type help <commandName> for help on syntax
 Example - help getName
 
 main.py:~$ setName test5
-main.py:~$ setReplicas 2
+main.py:~$ setBotNumbers 2
 main.py:~$ addWorker worker-1 busybox ping 8.8.8.8
 main.py:~$ writeFile test5.yaml
-main.py:~$ setPort 8001
 main.py:~$ runFile test5.yaml
 http://localhost:8001/apis/apps/v1/namespaces/default/deployments
 Success with status code 201
 ```
 
-### Check the traffic generation
+### Check the job execution in the bot
   
-Check the traffic generation by using the same program prompt.
+Check the job execution by using the same program prompt.
 Use these following **command** to get different output:
 
 ```console
@@ -84,7 +82,7 @@ Container Job	:	['ping', '8.8.8.8']
 
 ==================
 
-main.py:~$ getClients
+main.py:~$ getBotNumbers
 2
 
 main.py:~$ getWorkers

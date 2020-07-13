@@ -1,4 +1,4 @@
-# [OCTO-BOT] SynFlood-Attack-Bot
+# Octo-Bot: DDoS TCP-Syn Flood Attack Bot
 
 ## About SynFlood-Attack-Bot
 
