@@ -118,7 +118,7 @@ def getBloodPressure():
         None
     
     Returns:
-        Dictionary object of blood pressure readings
+        Dictionary object of blodd pressure readings
     '''
     bloodPressureData = data["blood pressure"]
     bloodPressureInfo = []

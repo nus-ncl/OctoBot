@@ -5,15 +5,23 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
-from testUtil.testDriver.testRole import isAdmin
-from testUtil.testScrapeAdmin.testAdmin import viewAccountPages
+from TestUtil.TestScrapeAdmin.admin import viewAccountPages
 
 paginationXpath =  "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[7]/td/table/tbody/tr/td["
 
-'''Functions to get the Therapist info
-Functions to progressively crawl therapist info
-'''
 def saveTherapistInformation(driver, therapistToken, directory):
+    
+    '''
+    Main Logic to obtain all the therapist information
+    
+    Arguments:
+        driver(obj): firefox webdriver instance in python  
+        therapistToken(str) : token for driver to get xpath for pagination for therapist role
+        directory(str) : directory for saving therapist information
+    
+    Returns:
+        None
+    '''
     print("Printing therapist information...")
     time.sleep(3)
     driver.find_element_by_xpath(therapistToken).click()
@@ -34,14 +42,35 @@ def saveTherapistInformation(driver, therapistToken, directory):
     webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
 def getTherapistInformationOnePage(driver, directory):
+
+    '''
+    Get all the therapist information in a single webpage
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python 
+        directory(str): Directory to store therapist information
+    
+    Returns:
+        None
+    '''
     number = 2
     while (number <= 6):
         therapistToken = "/html/body/form/div[4]/div[2]/div/div/table/tbody/tr[" + str(number) + "]/td[5]/a"
         saveTherapistInformation(driver, therapistToken, directory)
         number +=1
 
-def getAllTherapistInformation(driver):
-    driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
+def getAllTherapistInformation(driver, headerUrl):
+
+    '''
+    Get all the therapist information in a single webpage
+
+    Arguments:
+        driver(obj): firefox webdriver instance in python 
+    
+    Returns:
+        None
+    '''
+    driver.get(headerUrl + "Admin/Manage-Accounts/View")
     time.sleep(3)
     maxNumber = viewAccountPages(driver)
     number = 2
@@ -53,13 +82,11 @@ def getAllTherapistInformation(driver):
             getTherapistInformationOnePage(driver, directory)
             driver.find_element_by_xpath(Xpath).click()
             number += 1
-            time.sleep(3)
         except:
             if (number == maxNumber):
                 break
             number += 1
-            driver.get("https://10.10.0.112/Admin/Manage-Accounts/View")
-            time.sleep(10)
+            driver.get(headerUrl + "Admin/Manage-Accounts/View")
             Xpath = paginationXpath + token
             driver.find_element_by_xpath(Xpath).click()
     getTherapistInformationOnePage(driver, directory)
