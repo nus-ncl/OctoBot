@@ -51,7 +51,8 @@
       mount:
         name: "{{ item }}"
         fstype: swap
-        state: absent
+        state: absent 
+        src: none 
       with_items:
           - swap
           - none
@@ -69,7 +70,6 @@
       apt_repository:
         repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
         state: present
-        filename: kubernetes.list
 
     - name: Install Kubernetes binaries
       apt:
@@ -82,9 +82,11 @@
           - kubeadm
           - kubectl
     
-    - name: Get the host part of the IP 
-      shell: host {{ ansible_fqdn }} | awk '{print $4}' 
-      register: node_ip
+    #- name: Get the host part of the IP 
+      #shell: host {{ ansible_fqdn }} | awk '{print $4}' 
+      #register: node_ip
+    #  setup:
+    #    node_ip: "{{ ansible_eth1.ipv4.address }}"      
 
     - name: Creates Kubelet directory
       file:
@@ -93,32 +95,50 @@
 
     - name: Configure node ip
       lineinfile:
-        path: /etc/default/kubelet
-        line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip.stdout.split('.')[3] }}
+        name: /etc/default/kubelet
+        line: KUBELET_EXTRA_ARGS=--node-ip={{ ansible_eth1.ipv4.address }}
 
     - name: Restart kubelet
       service:
         name: kubelet
-        daemon_reload: yes
         state: restarted
 
-    - name: Initialize the Kubernetes cluster using kubeadm
-      command: kubeadm init --node-name k8s-master --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=All
+#    - name: Reset Cluster
+#      command: kubeadm reset -f
 
-    - name: Setup kubeconfig for running user
-      command: "{{ item }}"
-      with_items:
-        - mkdir -p /home/{{ ansible_user }}/.kube
-        - cp -i /etc/kubernetes/admin.conf /home/{{ ansible_user }}/.kube/config
-        - chown {{ ansible_user }}:{{ ansible_user }} /home/{{ ansible_user }}/.kube/config
-        
+#    - name: Remove previous Cluster config
+#      file:
+#        path: /home/{{ ansible_user }}/.kube 
+#        state: absent
+
+    - name: Initialize the Kubernetes cluster using kubeadm
+      command: kubeadm init --apiserver-advertise-address {{ ansible_eth1.ipv4.address }} --node-name k8s-master --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=All
+
+    - name: Create kubeconfig directory for running user
+      file:
+        path: /home/{{ ansible_user }}/.kube
+        state: directory
+        mode: '0755'
+
+    - name: Copy kubeconfig for running user
+      command: cp -i /etc/kubernetes/admin.conf /home/{{ ansible_user }}/.kube/config
+  
+    - name: Change ownership kubeconfig for running user
+      file:
+        path: /home/{{ ansible_user }}/.kube/config
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0644'
+      
     - name: Install calico pod network
       become: false
       command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
     - name: Generate join command
+      become: false
       command: kubeadm token create --print-join-command
       register: join_command
+      ignore_errors: True
 
     - name: Copy join command to local file
       local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"

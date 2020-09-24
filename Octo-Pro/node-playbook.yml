@@ -53,6 +53,7 @@
         name: "{{ item }}"
         fstype: swap
         state: absent
+        src: none
       with_items:
           - swap
           - none
@@ -70,7 +71,6 @@
       apt_repository:
         repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
         state: present
-        filename: kubernetes.list
 
     - name: Install Kubernetes binaries
       apt:
@@ -86,14 +86,20 @@
     - name: Restart kubelet
       service:
         name: kubelet
-        daemon_reload: yes
         state: restarted
 
-    - name: Copy the join command to server location
-      copy: src=join-command dest=/tmp/join-command.sh mode=077
+#    - name: Copy the join command to server location
+#      copy: src=/vagrant/join-command dest=/tmp/join-command.sh mode=077
+
+    - name: Change ownership of join cluster file
+      file:
+        path: /vagrant/join-command
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'
 
     - name: Join the node to cluster
-      command: sh /tmp/join-command.sh
+      command: sh /vagrant/join-command
 
   handlers:
     - name: docker status
