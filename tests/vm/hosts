@@ -1,5 +1,5 @@
 [master]
-octobot0	ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222 ansible_user=vagrant
+octobot0  ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222 ansible_user=vagrant
 
 [node]
 octobot1  ansible_ssh_host=127.0.0.1 ansible_ssh_port=2200 ansible_user=vagrant
