@@ -51,6 +51,7 @@ In order to start VirtualBox VMs installation and configuration, please use this
 command:
 
 ```console
+ncl@host:/mnt/OctoBot/tests/vm$ chmod 755 python-install.sh
 ncl@host:/mnt/OctoBot/tests/vm$ vagrant up
 ```
 
@@ -63,4 +64,15 @@ has been built successfully.
 ```console
 ncl@host:~/vm$ vagrant ssh octobot0
 vagrant@controller:~$ kubectl get nodes -o wide
+```
+
+### Troubleshooting
+
+If the Vagrant process is stopped/hang while creating VMs (due to timeout or 
+misconfiguration), you may force it to stop and destroy the problematic VMs 
+before you can start the `vagrant up` again.
+
+```console
+ncl@host:/mnt/OctoBot/tests/vm$ vagrant destroy <problematic_vm_name>
+ncl@host:/mnt/OctoBot/tests/vm$ vagrant up
 ```
