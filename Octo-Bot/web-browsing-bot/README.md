@@ -51,7 +51,7 @@ CONTAINER ID        IMAGE                     COMMAND                  CREATED  
 acfcdc3f568f        web-browsing-bot:latest   "python -u ./main.py…"   2 days ago          Exited (0) 2 days ago                        priceless_bhaskara
 ```
 
-### Push the Docker image into Docker Hub
+### Push the Docker Image into Docker Hub
 
 Tag and push the image with your Docker Hub repository's credential.
 
@@ -61,9 +61,9 @@ ncl@orchestrator:~/OctoBot/Octo-Bot/<bot_name>$ docker login --username=ariscahy
 ncl@orchestrator:~/OctoBot/Octo-Bot/<bot_name>$ docker push ariscahyadi/web-browsing-bot:latest
 ```
 
-### Run the public Docker image
+### Run the Public Docker Image
 
-Run locally the public Docker image.
+Run Docker container locally using the public Docker image.
 
 ```console
 ncl@orchestrator:~/OctoBot/Octo-Bot/<bot_name>$ docker run ariscahyadi/web-browsing-bot:latest <URL> 0
