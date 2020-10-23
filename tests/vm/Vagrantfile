@@ -1,0 +1,57 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+  config.vm.box_check_update = false
+  
+  #
+  # Create Octobot Controller 
+  #
+
+  config.vm.define "octobot0" do |node|
+    node.vm.hostname = "controller"
+    node.vm.box = "generic/ubuntu1804"
+    node.vm.network "private_network", ip: "172.16.1.100"
+    node.vm.provider :virtualbox do |vb|
+        vb.memory = 8192 
+        vb.cpus = 4
+		vb.customize ['modifyvm', :id, '--cableconnected1', 'on'] 
+    	vb.customize ['modifyvm', :id, '--cableconnected2', 'on']
+    end
+    node.vm.synced_folder ".", "/vagrant"
+    node.vm.provision "shell", path: "python-install.sh"
+    node.vm.provision "ansible" do |ansible|
+        ansible.playbook = "../../Octo-Pro/master-playbook.yml"
+        ansible.inventory_path = "hosts"
+    	ansible.verbose = 'v'
+	end
+  end
+  
+  # 
+  # Create Octobot Worker Node
+  #
+
+  MACHINE = ["", "worker-1","worker-2","worker-3","worker-4","worker-5","worker-6","worker-7","worker-8","worker-9","worker-10"]
+  N = 2 
+  (1..N).each do |i|
+    config.vm.define "octobot#{i}" do |node|
+      node.vm.hostname = MACHINE[i]
+      node.vm.box = "generic/ubuntu1804" 
+      node.vm.network "private_network", ip: "172.16.1.#{100+i}"
+      node.vm.provider :virtualbox do |vb|
+        vb.memory = 4092
+        vb.cpus = 2
+        vb.customize ['modifyvm', :id, '--cableconnected1', 'on']
+        vb.customize ['modifyvm', :id, '--cableconnected2', 'on']
+      end
+      node.vm.synced_folder ".", "/vagrant"
+      node.vm.provision "shell", path: "python-install.sh"
+      node.vm.provision "ansible" do |ansible|
+        ansible.playbook = "../../Octo-Pro/node-playbook.yml"
+        ansible.inventory_path = "hosts"
+        ansible.verbose = 'v'
+      end
+    end
+  end
+end
+
