@@ -391,7 +391,14 @@ def move_bot_to_node(params):
 
         if len(params) < 4:
             bot_config = params[0] + ".yaml"
-            push_pod_yaml_file(bot_config)
+            load_file(bot_config)
+            z['spec']['nodeName'] = str(params[1])
+
+            with io.open(bot_config, "w") as f:
+                yaml.dump(z, f, default_flow_style=False,
+                          explicit_start=True,
+                          allow_unicode=True, sort_keys=False)
+            f.close()     
         else:
             set_bot_node(params)
 
