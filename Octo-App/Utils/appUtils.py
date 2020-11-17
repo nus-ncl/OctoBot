@@ -19,6 +19,7 @@ file_path = os.path.dirname(os.path.realpath(__file__))
 with open(f"{file_path}/pod-template.yaml", "r") as stream:
     z = yaml.safe_load(stream)
 
+
 def load_file(filename):
     """<filename>
     Loads specified file/template into current configuration
@@ -30,6 +31,7 @@ def load_file(filename):
         z = yaml.safe_load(stream)
 
     print(f'Successfully loaded file \'{filename}\'')
+
 
 def set_bot_node(params):
     """<bot, node, image, command>
@@ -98,6 +100,7 @@ def set_bot_node(params):
         # wait for child process to terminate
         os.waitpid(pid, 0)
 
+
 def del_container(index):
     """<index>
     Deletes executor/container at index from configuration
@@ -110,6 +113,7 @@ def del_container(index):
     except Exception as e:
         raise e
 
+
 def open_proxy():
     """[port]
     Configures kubernetes proxy to listen on the specified port
@@ -119,9 +123,9 @@ def open_proxy():
     try:
         pid = os.fork()
     except Exception as e:
-        raise (e)
+        raise e
 
-    if (pid == 0):
+    if pid == 0:
         command = "kubectl proxy -p {}".format(K8S_PORT)
         params = command.split(" ")
 
@@ -160,11 +164,11 @@ def parse_status_json(dct):
         print("Node name: {}".format(node))
 
         for w in executors:
-            print("Executor name:{}".format(w["name"]))
-            print("Image name:{}".format(w["image"]))
-            print("Task name:{}\n".format(w["command"]))
+            print("Executor name: {}".format(w["name"]))
+            print("Image name: {}".format(w["image"]))
+            print("Task name: {}\n".format(w["command"]))
 
-        print("==================")
+        print("==================================")
 
 
 def parse_node_json(dct):
@@ -186,9 +190,9 @@ def check_status():
     try:
         pid = os.fork()
     except Exception as e:
-        raise (e)
+        raise e
 
-    if (pid == 0):
+    if pid == 0:
         url = "http://localhost:{}/".format(K8S_PORT) + \
               "api/v1/namespaces/default/pods"
         resp = requests.get(url)
@@ -226,24 +230,24 @@ def get_logs(params):
           "api/v1/namespaces/default/pods/" + \
           "{}/log".format(bot)
 
-    if (executor):
+    if executor:
         param = {'container': executor}
     else:
         param = None
 
     try:
-        if (param):
+        if param:
             resp = requests.get(url, params=param)
         else:
             resp = requests.get(url)
     except Exception as e:
-        raise(e)
+        raise e
 
-    if (resp.status_code == 204):
+    if resp.status_code == 204:
         return "No logs for bot: {}, executor :{}". \
             format(bot, executor[0])
 
-    elif (resp.status_code != 200):
+    elif resp.status_code != 200:
         raise Exception("Error code {} when querying api\n"
                         .format(resp.status_code) +
                         "Error message: {}"
@@ -259,14 +263,14 @@ def run_job(params):
     executor: Name of executor/container in the bot/pod
     command: Name of task/job command to be ran in the executor/container"""
 
-    Bot = params[0]
-    Executor = params[1]
-    Jobs = " ".join(params[2:])
+    bot = params[0]
+    executor = params[1]
+    jobs = " ".join(params[2:])
 
-    Command = "kubectl exec " + Bot + " " + Executor + " -- " + Jobs
+    command = "kubectl exec " + bot + " " + executor + " -- " + jobs
 
     try:
-        os.system(Command)
+        os.system(command)
     except Exception as e:
         raise e
 
@@ -277,10 +281,10 @@ def get_shell(bot):
 
     bot: Name of bot/pod"""
 
-    Command = "kubectl exec -it " + bot + " -- /bin/bash"
+    command = "kubectl exec -it " + bot + " -- /bin/bash"
 
     try:
-        os.system(Command)
+        os.system(command)
     except Exception as e:
         raise e
 
@@ -293,9 +297,9 @@ def get_nodes():
     try:
         pid = os.fork()
     except Exception as e:
-        raise (e)
+        raise e
 
-    if (pid == 0):
+    if pid == 0:
         url = "http://localhost:{}/".format(K8S_PORT) + \
               "api/v1/nodes"
         resp = requests.get(url)
