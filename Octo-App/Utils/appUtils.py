@@ -389,7 +389,7 @@ def move_bot_to_node(params):
             time.sleep(5)
             resp = requests.get(url)
 
-        if params < 4:
+        if len(params) < 4:
             bot_config = params[0] + ".yaml"
             push_pod_yaml_file(bot_config)
         else:
