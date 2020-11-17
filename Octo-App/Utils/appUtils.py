@@ -42,7 +42,7 @@ def set_bot_node(params):
     image: image name need to be download
     command: default command to keep the bot alive"""
 
-    if len(params) < 4:
+    if len(params) < 3:
         raise Exception("setBotNode requires minimum 3 parameters. "
                         "Please use 'help setBotNode' for the detail")
 
@@ -398,7 +398,8 @@ def move_bot_to_node(params):
                 yaml.dump(z, f, default_flow_style=False,
                           explicit_start=True,
                           allow_unicode=True, sort_keys=False)
-            f.close()     
+            f.close()
+            push_pod_yaml_file(bot_config)
         else:
             set_bot_node(params)
 
