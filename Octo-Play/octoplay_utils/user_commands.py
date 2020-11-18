@@ -213,7 +213,7 @@ def run_file(params):
 
     if pid == 0:  # run in child process
         # push it to server iteratively
-        for index in len(params):
+        for index in range(len(params)):
             utils.push_yaml_file(params[index])
         sys.exit(0)
     else:
