@@ -208,6 +208,10 @@ def run_file(params):
         print(e)
         raise e
 
+    # Split arguments
+    params = shlex.split(params)
+
+    # Merge multiple files from params
     if len(params) > 1:
         filename = 'run-' + str(datetime.now()) + '.yaml'
         with open(filename, 'w') as outfile:
