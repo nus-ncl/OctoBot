@@ -221,12 +221,11 @@ def run_file(params):
                 outfile.write("\n")
         outfile.close()
     else:
-        filename = params
+        filename = params[0]
 
     if pid == 0:  # run in child process
         # push it to server
         utils.push_yaml_file(filename)
-
         sys.exit(0)
     else:
         # wait for child process to terminate
