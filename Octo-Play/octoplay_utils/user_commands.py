@@ -211,21 +211,10 @@ def run_file(params):
     # Split arguments
     params = shlex.split(params)
 
-    # Merge multiple files from params
-    if len(params) > 1:
-        filename = 'run-' + str(datetime.now()) + '.yaml'
-        with open(filename, 'w') as outfile:
-            for index in len(params):
-                with open(params[index]) as infile:
-                    outfile.write(infile.read())
-                outfile.write("\n")
-        outfile.close()
-    else:
-        filename = params[0]
-
     if pid == 0:  # run in child process
-        # push it to server
-        utils.push_yaml_file(filename)
+        # push it to server iteratively
+        for index in len(params):
+            utils.push_yaml_file(params[index])
         sys.exit(0)
     else:
         # wait for child process to terminate
