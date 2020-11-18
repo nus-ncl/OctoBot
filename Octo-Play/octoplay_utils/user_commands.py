@@ -9,6 +9,7 @@ import shlex
 import requests
 import yaml
 from string import Template
+from datetime import datetime
 
 '''
 open template file to fill in values later
@@ -195,16 +196,28 @@ def write_file(filename):
     f.close()
 
 
-def run_file(filename):
-    """<filename>
+def run_file(params):
+    """
     Applies the specified file in kubernetes
+    params: Filename of the configuration file
+    """
 
-    filename: Filename of the configuration file"""
     try:
         pid = os.fork()
     except Exception as e:
         print(e)
         raise e
+
+    if len(params) > 1:
+        filename = 'run-' + str(datetime.now()) + '.yaml'
+        with open(filename, 'w') as outfile:
+            for file in params:
+                with open(file) as infile:
+                    outfile.write(infile.read())
+                outfile.write("\n")
+        outfile.close()
+    else:
+        filename = params
 
     if pid == 0:  # run in child process
         # push it to server
