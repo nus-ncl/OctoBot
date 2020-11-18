@@ -17,9 +17,9 @@ commands = {"currentConfig": user_commands.get_current_config,
             "setName": user_commands.set_name,
             "getBotNumbers": user_commands.get_bot_numbers,
             "setBotNumbers": user_commands.set_bot_numbers,
-            "getWorkers": user_commands.get_containers,
-            "addWorker": user_commands.add_container,
-            "deleteWorker": user_commands.del_container,
+            "getExecutors": user_commands.get_executors,
+            "addExecutor": user_commands.add_executor,
+            "deleteExecutor": user_commands.del_executor,
             "openProxy": user_commands.open_proxy,
             "setPort": user_commands.set_port,
             "loadFile": user_commands.load_file,
@@ -30,7 +30,7 @@ commands = {"currentConfig": user_commands.get_current_config,
             "checkStatus": user_commands.check_status,
             "runJob": user_commands.run_job,
             "getShell": user_commands.get_shell,
-            "deletePod": user_commands.delete_pod,
+            "deleteBot": user_commands.delete_bot,
             "getLogs": user_commands.get_logs,
             "getLogsByCmd": user_commands.get_logs_by_command,
             "exit": user_commands.exit
@@ -71,7 +71,8 @@ def help(command=None):
 
 
 def get_user_vars():
-    return {k: console.locals.get(k, None) for k in (set(console.locals) - set(initial_locals))}
+    return {k: console.locals.get(k, None)
+            for k in (set(console.locals) - set(initial_locals))}
 
 
 def parse(cmd, args):
@@ -82,7 +83,8 @@ def parse(cmd, args):
 
     # Run the function depending on whether how many args it wants
     try:
-        if args == '':  # If the function does not accept any parameters, then do not giv eit any
+        if args == '':  # If the function does not accept any parameters,
+            # then do not give it any
             output = cmd()
         else:
             output = cmd(args)
@@ -120,13 +122,16 @@ def check_connection():
 
 
 def read_function(prompt):
-    """This function is responsible for reading the input from the python interpreter"""
+    """This function is responsible for reading the input
+    from the python interpreter"""
+
     # Read line from input
     line = input(prompt)
 
     # Sanitize the input
     line = line.rstrip('\r\n')
-    orig_line = line  # Saves the original line so that 100% the line won't get modified
+    orig_line = line  # Saves the original line
+    # so that 100% the line won't get modified
 
     # Checks against any command that is user defined
     # Obtain the command
@@ -159,7 +164,8 @@ def interactive():
 
     # Configures completer
     comp = Completer(list(commands.keys()) + list(functions.keys()))
-    readline.set_completer_delims(" \n\t;\"'")  # we want to treat '/' as part of a word, so override the delimiters
+    readline.set_completer_delims(" \n\t;\"'")  # we want to treat '/'
+    # as part of a word, so override the delimiters
     readline.parse_and_bind("tab: complete")
     readline.set_completer(comp.complete)
 
@@ -170,5 +176,6 @@ def interactive():
     global console
     console = code.InteractiveConsole(locals=dict(globals(), **locals()))
     console.raw_input = read_function
-    console.push(f'from {__package__} import *')  # Import own module into the interactive console
+    console.push(f'from {__package__} import *')  # Import own module
+    # into the interactive console
     console.interact(banner=banner, exitmsg=exit_msg)

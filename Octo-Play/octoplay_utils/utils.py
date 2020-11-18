@@ -30,25 +30,28 @@ def push_yaml_file(filename):
 
 
 def parse_status_json(dct):
-    for pods in dct['items']:
+    for bots in dct['items']:
         # Get variables
-        name = pods["metadata"]["name"]
-        workers = pods["spec"]["containers"]
+        name = bots["metadata"]["name"]
+        workers = bots["spec"]["containers"]
 
         # Format status
-        is_terminating = pods['metadata'].get('deletionTimestamp', None) is not None
-        status = pods['status']['phase'] if not is_terminating else "Terminating"
+        is_terminating = bots['metadata']\
+            .get('deletionTimestamp', None) is not None
+        status = bots['status']['phase'] \
+            if not is_terminating else "Terminating"
 
-        # Calculate the number of containers in a pod that is ready
+        # Calculate the number of executors/containers
+        # in a bot/pod that is ready
         ready_count = 0
         total_count = 0
-        for s in pods['status']['containerStatuses']:
+        for s in bots['status']['containerStatuses']:
             for k in s['state']:
                 ready_count += 1 if k == 'running' else 0
             total_count += 1
 
         # Print output
-        print("Pod name\t:\t{}".format(name))
+        print("Bot name\t:\t{}".format(name))
         print("Status\t\t:\t{}".format(status))
         print("Ready\t\t:\t{}/{}".format(ready_count, total_count))
 
@@ -59,21 +62,22 @@ def parse_status_json(dct):
                 if len(c) > 50:
                     cmd[i] = c[:50] + '...'
 
-            print("Container Name\t:\t{}".format(w.get("name", None)))
-            print("Container Image\t:\t{}".format(w.get("image", None)))
-            print(f"Container Job\t:\t{cmd}\n")
+            print("Executor name\t:\t{}".format(w.get("name", None)))
+            print("Executor image\t:\t{}".format(w.get("image", None)))
+            print(f"Executor job\t:\t{cmd}\n")
 
         print("==================")
 
 
-def get_container_by_command(pod_name, command):
+def get_executor_by_command(bot_name, command):
     url = f"http://localhost:{K8S_PORT}/" \
-          f"api/v1/namespaces/default/pods/{pod_name}"
+          f"api/v1/namespaces/default/pods/{bot_name}"
 
     resp = requests.get(url)
     if resp.status_code != 200:
         # This means something went wrong.
-        raise Exception(f"Error with code {str(resp.status_code)}: {resp.json().get('message', '')}")
+        raise Exception(f"Error with code {str(resp.status_code)}: "
+                        f"{resp.json().get('message', '')}")
 
     else:
         print("Success with status code 200, "
@@ -81,13 +85,13 @@ def get_container_by_command(pod_name, command):
 
         dct = resp.json()
 
-        containers = dct["spec"]["containers"]
+        executors = dct["spec"]["containers"]
 
-        for c in containers:
-            container_command = c['command']
-            container_command = " ".join(container_command)
+        for c in executors:
+            executor_command = c['command']
+            executor_command = " ".join(executor_command)
 
-            if container_command == command:
+            if executor_command == command:
                 return c
 
-        raise Exception("Command not found in pod")
+        raise Exception("Command not found in the bot")

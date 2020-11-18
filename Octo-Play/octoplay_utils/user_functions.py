@@ -2,9 +2,12 @@
 
 
 def read_file(filename):
-    """Returns content of file provided
+    """
+    Returns content of file provided
+    :param filename: filename to read
+    :return: content of the file
+    """
 
-    filename: Filename to read"""
     with open(filename) as f:
         content = f.readlines()
         f.close()
