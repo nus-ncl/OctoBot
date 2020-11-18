@@ -215,8 +215,8 @@ def run_file(params):
     if len(params) > 1:
         filename = 'run-' + str(datetime.now()) + '.yaml'
         with open(filename, 'w') as outfile:
-            for file in params:
-                with open(file) as infile:
+            for index in len(params):
+                with open(params[index]) as infile:
                     outfile.write(infile.read())
                 outfile.write("\n")
         outfile.close()
