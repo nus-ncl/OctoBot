@@ -19,6 +19,7 @@ file_path = os.path.dirname(os.path.realpath(__file__))
 with open(f"{file_path}/pod-template.yaml", "r") as stream:
     z = yaml.safe_load(stream)
 
+
 def load_file(filename):
     """<filename>
     Loads specified file/template into current configuration
@@ -31,14 +32,19 @@ def load_file(filename):
 
     print(f'Successfully loaded file \'{filename}\'')
 
+
 def set_bot_node(params):
     """<bot, node, image, command>
     Writes and apply current configuration
 
-    bot: Affinity pod name
+    bot: Affinity pod/bot name
     node: worker node which bot will run
     image: image name need to be download
     command: default command to keep the bot alive"""
+
+    if len(params) < 3:
+        raise Exception("setBotNode requires minimum 3 parameters. "
+                        "Please use 'help setBotNode' for the detail")
 
     load_file("Utils/pod-template.yaml")
 
@@ -54,26 +60,26 @@ def set_bot_node(params):
     print(f'nodeName: {nodename}')
     print(f'image: {imagename}')
     print(f'command: {command}')
-    container = z['spec']['containers']
+    executor = z['spec']['containers']
 
-    # If there are no containers to be copied as a template,
+    # If there are no containers/executors to be copied as a template,
     # then create one on the spot now.
 
-    if len(container) > 0:
+    if len(executor) > 0:
         # Make a copy of the template
-        to_append = container[0].copy()
+        to_append = executor[0].copy()
     else:  # if there is no template to copy
         to_append = {}
 
     # Fill in the dictionary
     to_append['image'] = imagename
     to_append['command'] = shlex.split(command)
-    container.append(to_append)
+    executor.append(to_append)
 
     filename = botname + ".yaml"
 
     # Deletes all containers with image None
-    for i, c in enumerate(container):
+    for i, c in enumerate(executor):
         if (c.get('image', None)) is None:
             del_container(i)
 
@@ -98,9 +104,10 @@ def set_bot_node(params):
         # wait for child process to terminate
         os.waitpid(pid, 0)
 
+
 def del_container(index):
     """<index>
-    Deletes worker/container at index from configuration
+    Deletes executor/container at index from configuration
 
     index: Index of the container in the configuration"""
 
@@ -109,6 +116,7 @@ def del_container(index):
         del c[int(index)]
     except Exception as e:
         raise e
+
 
 def open_proxy():
     """[port]
@@ -119,9 +127,9 @@ def open_proxy():
     try:
         pid = os.fork()
     except Exception as e:
-        raise (e)
+        raise e
 
-    if (pid == 0):
+    if pid == 0:
         command = "kubectl proxy -p {}".format(K8S_PORT)
         params = command.split(" ")
 
@@ -145,28 +153,70 @@ def set_port(p):
 
 
 def parse_status_json(dct):
-
     """<dct>
-    Parse the YAML config/template file
+    Parse the YAML config/template file or JSON response
 
-    dct: content of the YAML file"""
+    dct: content of the YAML/JSON file"""
 
-    for pods in dct['items']:
+    for bots in dct['items']:
 
-        name = pods["metadata"]["name"]
-        workers = pods["spec"]["containers"]
-        print("Pod name: {}".format(name))
+        name = bots["metadata"]["name"]
+        executors = bots["spec"]["containers"]
+        node = bots["spec"]["nodeName"]
+        print("Bot name: {}".format(name))
+        print("Node name: {}".format(node))
 
-        for w in workers:
-            print("Worker Name:{}".format(w["name"]))
-            print("Worker Image:{}".format(w["image"]))
-            print("Worker Job:{}\n".format(w["command"]))
+        for w in executors:
+            print("Executor name: {}".format(w["name"]))
+            print("Image name: {}".format(w["image"]))
+            print("Task name: {}\n".format(w["command"]))
 
-        print("==================")
+        print("==================================")
+
+
+def parse_status_by_node(dct, nodename):
+    """<dct, nodename>
+    Parse the YAML config/template file or JSON response
+
+    dct: content of the YAML/JSON file
+    nodename: specific node name"""
+
+    print("List bots in the node: {}".format(nodename))
+    print("============================")
+    i = 1
+    for bots in dct['items']:
+        name = bots["metadata"]["name"]
+        node = bots["spec"]["nodeName"]
+        if node == nodename:
+            print("%d | %s" % (i, name))
+            i = i+1
+
+
+def parse_status_by_job(dct, job):
+    """<dct, job>
+    Parse the YAML config/template file or JSON response
+
+    dct: content of the YAML/JSON file
+    job: job/task name"""
+
+    print("List bots with this job: {}".format(job))
+    print("========================================")
+    i = 1
+
+    for bots in dct['items']:
+        name = bots["metadata"]["name"]
+        executors = bots["spec"]["containers"]
+
+        for w in executors:
+            task = w["command"]
+            if task == job:
+                print("%d | %s" % (i, name))
+                i = i+1
+
+    print("========================================")
 
 
 def parse_node_json(dct):
-
     """<dct>
     Get the Node name metadata from the YAML config/template file
 
@@ -184,9 +234,9 @@ def check_status():
     try:
         pid = os.fork()
     except Exception as e:
-        raise (e)
+        raise e
 
-    if (pid == 0):
+    if pid == 0:
         url = "http://localhost:{}/".format(K8S_PORT) + \
               "api/v1/namespaces/default/pods"
         resp = requests.get(url)
@@ -205,66 +255,126 @@ def check_status():
         os.waitpid(pid, 0)
 
 
-def get_logs(params):
-    """<bot, worker>
-    Get logs for bots or specific worker name
+def get_bot_by_node(nodename):
+    """
+    List of the running bots/pods based on node name
 
-    bot: Name of bot/pod
-    worker: Name of worker/container in the bot/pod"""
-
-    params = shlex.split(params)
-    pod = params[0]
+    nodename: sepcific node name to query"""
 
     try:
-        container = params[1]
+        pid = os.fork()
     except Exception as e:
-        container = False
+        raise e
+
+    if pid == 0:
+        url = "http://localhost:{}/".format(K8S_PORT) + \
+              "api/v1/namespaces/default/pods"
+        resp = requests.get(url)
+
+        if resp.status_code != 200:
+            # This means something went wrong.
+            raise Exception("Error with code " +
+                            str(resp.status_code))
+        else:
+            print("Success with status code 200, \
+                    parsing response...")
+
+            parse_status_by_node(resp.json(), nodename)
+
+    else:
+        os.waitpid(pid, 0)
+
+
+def get_bot_by_job(jobname):
+    """
+    List of the running bots/pods based on job/task name
+
+    jobname: specific job/task name to query"""
+
+    try:
+        pid = os.fork()
+    except Exception as e:
+        raise e
+
+    if pid == 0:
+        url = "http://localhost:{}/".format(K8S_PORT) + \
+              "api/v1/namespaces/default/pods"
+        resp = requests.get(url)
+
+        if resp.status_code != 200:
+            # This means something went wrong.
+            raise Exception("Error with code " +
+                            str(resp.status_code))
+        else:
+            print("Success with status code 200, \
+                    parsing response...")
+
+            parse_status_by_job(resp.json(), jobname)
+
+    else:
+        os.waitpid(pid, 0)
+
+
+def get_logs(params):
+    """<bot, worker>
+    Get logs for bots or specific executor name
+
+    bot: Name of bot/pod
+    worker: Name of executor/container in the bot/pod"""
+
+    params = shlex.split(params)
+    bot = params[0]
+
+    try:
+        executor = params[1]
+    except Exception as e:
+        executor = False
 
     url = "http://localhost:{}/".format(K8S_PORT) + \
           "api/v1/namespaces/default/pods/" + \
-          "{}/log".format(pod)
+          "{}/log".format(bot)
 
-    if (container):
-        param = {'container': container}
+    if executor:
+        param = {'container': executor}
     else:
         param = None
 
     try:
-        if (param):
-            resp = requests.get(url, params = param)
+        if param:
+            resp = requests.get(url, params=param)
         else:
             resp = requests.get(url)
     except Exception as e:
-        raise(e)
+        raise e
 
-    if (resp.status_code == 204):
-        return "No logs for bot: {}, worker :{}". \
-            format(pod, container[0])
+    if resp.status_code == 204:
+        return "No logs for bot: {}, executor :{}". \
+            format(bot, executor[0])
 
-    elif (resp.status_code != 200):
-        raise Exception("Error code {} when querying api\n" \
-                        .format(resp.status_code) + \
-                        "Error message: {}" \
+    elif resp.status_code != 200:
+        raise Exception("Error code {} when querying api\n"
+                        .format(resp.status_code) +
+                        "Error message: {}"
                         .format(resp.json()['message']))
     return resp.text
 
 
 def run_job(params):
-    """<bot> <worker> <command>
-    Runs the specified command on a container in a bot/pod
+    """<bot> <executor> <command>
+    Runs the specified task/job command on a executor/container in a bot/pod
 
     bot: Name of bot/pod
-    worker: Name of worker/container in the bot/pod
-    command: Name of command to run in the worker/container"""
+    executor: Name of executor/container in the bot/pod
+    command: Name of task/job command to be ran in the executor/container"""
 
-    Pod = params[0]
-    Worker = params[1]
-    Jobs = " ".join(params[2:])
+    bot = params[0]
+    executor = params[1]
+    jobs = " ".join(params[2:])
 
-    Command = "kubectl exec " + Pod + " " + Worker + " -- " + Jobs
+    command = "kubectl exec " + bot + " " + executor + " -- " + jobs
 
     try:
-        os.system(Command)
+        os.system(command)
     except Exception as e:
         raise e
 
@@ -275,26 +385,25 @@ def get_shell(bot):
 
     bot: Name of bot/pod"""
 
-    Pod = bot
-    Command = "kubectl exec -it " + Pod + " -- /bin/bash"
+    command = "kubectl exec -it " + bot + " -- /bin/bash"
 
     try:
-        os.system(Command)
+        os.system(command)
     except Exception as e:
         raise e
 
 
 def get_nodes():
     """
-    Gets all available nodes for bot/pod
+    Gets all available worker nodes for bot/pod
     """
 
     try:
         pid = os.fork()
     except Exception as e:
-        raise (e)
+        raise e
 
-    if (pid == 0):
+    if pid == 0:
         url = "http://localhost:{}/".format(K8S_PORT) + \
               "api/v1/nodes"
         resp = requests.get(url)
@@ -345,9 +454,8 @@ def delete_bot(bot):
 
     bot: Name of the bot/pod to delete"""
 
-    pod = bot
     url = "http://localhost:{}/".format(K8S_PORT) + \
-          "api/v1/namespaces/default/pods/{}".format(pod)
+          "api/v1/namespaces/default/pods/{}".format(bot)
 
     resp = requests.delete(url)
 
@@ -355,7 +463,7 @@ def delete_bot(bot):
         raise Exception(f"Error with code {str(resp.status_code)}: "
                         f"{resp.json().get('message', '')}")
     else:
-        print("Successfully deleted pod".format(pod))
+        print("Successfully deleted pod".format(bot))
 
 
 def move_bot_to_node(params):
@@ -377,11 +485,29 @@ def move_bot_to_node(params):
         resp = requests.get(url)
 
         while resp.status_code == 200:
-            print("Pod {} still terminating".format(params[0]))
+            print("Bot is {} still terminating".format(params[0]))
             time.sleep(5)
             resp = requests.get(url)
 
-        set_bot_node(params)
+        if len(params) < 4:
+            bot_config = params[0] + ".yaml"
+            load_file(bot_config)
+            z['spec']['nodeName'] = str(params[1])
+
+            with io.open(bot_config, "w") as f:
+                yaml.dump(z, f, default_flow_style=False,
+                          explicit_start=True,
+                          allow_unicode=True, sort_keys=False)
+            f.close()
+            push_pod_yaml_file(bot_config)
+        else:
+            set_bot_node(params)
 
     except Exception as e:
         raise e
+
+
+def exit():
+    """
+    Exits the program"""
+    sys.exit(0)

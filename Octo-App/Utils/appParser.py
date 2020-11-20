@@ -11,11 +11,13 @@ commands = {"setPort": set_port,
             "getShell": get_shell,
             "getLogs": get_logs,
             "getNodes": get_nodes,
+            "getBotNode": get_bot_by_node,
+            "getBotJob": get_bot_by_job,
             "loadFile": load_file,
             "setBotNode": set_bot_node,
             "moveBotNode": move_bot_to_node,
             "deleteBot": delete_bot,
-            "exit": sys.exit
+            "exit": exit
             }
 
 
@@ -42,15 +44,15 @@ def parse(x):
             raise Exception("Command {} not found".
                             format(splitted[0]))
 
-        if (len(args) == 0):
+        if len(args) == 0:
             return func()
-        elif (len(args) == 1):
+        elif len(args) == 1:
             return func(args[0])
         else:
             return func(args)
 
     except Exception as e:
-        raise (e)
+        raise e
 
 
 def print_syntax(command):
@@ -61,6 +63,8 @@ def print_syntax(command):
                 "getShell": "getShell <bot name>",
                 "getLogs": "getLogs <bot name> <worker name>",
                 "getNodes": "getNodes",
+                "getBotNode": "getBotNode <node name>",
+                "getBotJob": "getBotJob <job name>",
                 "setBotNode": "setBotNode <bot name> <node name> "
                               "<image name> <command>",
                 "moveBotNode": "moveBotNode <bot name> <new node name>",
@@ -78,7 +82,7 @@ def help(arg):
 
     global commands
 
-    if (arg is False):
+    if arg is False:
         print("List of Commands")
         print(list(commands.keys()))
         print("Type help <commandName> for help on syntax")
@@ -96,7 +100,7 @@ def interactive():
         print_prompt()
         x = input().strip()
 
-        if (not x):
+        if not x:
             continue
 
         splitted = x.split()
@@ -106,14 +110,14 @@ def interactive():
             break
 
         if command == "help":
-            if (len(splitted) > 1):
+            if len(splitted) > 1:
                 help(splitted[1])
             else:
                 help(False)
         else:
             try:
                 ret = parse(x)
-                if (ret is not None):
+                if ret is not None:
                     print(ret)
             except Exception as e:
                 print(e)
