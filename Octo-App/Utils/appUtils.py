@@ -175,6 +175,48 @@ def parse_status_json(dct):
         print("==================================")
 
 
+def parse_status_by_node(dct, nodename):
+    """<dct, nodename>
+    Parse the YAML config/template file
+
+    dct: content of the YAML file"""
+
+    print("List bots in the node: {}".format(nodename))
+    print("============================")
+    i = 1
+    for bots in dct['items']:
+        name = bots["metadata"]["name"]
+        node = bots["spec"]["nodeName"]
+        if node == nodename:
+            print("%d | %s" % (i, name))
+            i = i+1
+
+
+def parse_status_by_job(dct, job):
+    """<dct, job>
+    Parse the YAML config/template file
+
+    dct: content of the YAML file"""
+
+    print("List bots with this job: {}".format(job))
+    print("========================================")
+    i = 1
+
+    for bots in dct['items']:
+        name = bots["metadata"]["name"]
+        executors = bots["spec"]["containers"]
+
+        for w in executors:
+            print("Executor name: {}".format(w["name"]))
+            print("Image name: {}".format(w["image"]))
+            task = w["command"]
+            if task == job:
+                print("%d | %s" % (i, name))
+                i = i+1
+
+        print("========================================")
+
+
 def parse_node_json(dct):
 
     """<dct>
@@ -210,6 +252,62 @@ def check_status():
                     parsing response...")
 
             parse_status_json(resp.json())
+
+    else:
+        os.waitpid(pid, 0)
+
+
+def get_bot_by_node(nodename):
+    """
+    List of the running bots/pods based on node name"""
+
+    try:
+        pid = os.fork()
+    except Exception as e:
+        raise e
+
+    if pid == 0:
+        url = "http://localhost:{}/".format(K8S_PORT) + \
+              "api/v1/namespaces/default/pods"
+        resp = requests.get(url)
+
+        if resp.status_code != 200:
+            # This means something went wrong.
+            raise Exception("Error with code " +
+                            str(resp.status_code))
+        else:
+            print("Success with status code 200, \
+                    parsing response...")
+
+            parse_status_by_node(resp.json(), nodename)
+
+    else:
+        os.waitpid(pid, 0)
+
+
+def get_bot_by_job(jobname):
+    """
+    List of the running bots/pods based on job/task name"""
+
+    try:
+        pid = os.fork()
+    except Exception as e:
+        raise e
+
+    if pid == 0:
+        url = "http://localhost:{}/".format(K8S_PORT) + \
+              "api/v1/namespaces/default/pods"
+        resp = requests.get(url)
+
+        if resp.status_code != 200:
+            # This means something went wrong.
+            raise Exception("Error with code " +
+                            str(resp.status_code))
+        else:
+            print("Success with status code 200, \
+                    parsing response...")
+
+            parse_status_by_job(resp.json(), jobname)
 
     else:
         os.waitpid(pid, 0)
