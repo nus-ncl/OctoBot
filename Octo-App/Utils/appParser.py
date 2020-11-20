@@ -17,7 +17,7 @@ commands = {"setPort": set_port,
             "setBotNode": set_bot_node,
             "moveBotNode": move_bot_to_node,
             "deleteBot": delete_bot,
-            "exit": sys.exit
+            "exit": exit
             }
 
 

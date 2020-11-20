@@ -153,11 +153,10 @@ def set_port(p):
 
 
 def parse_status_json(dct):
-
     """<dct>
-    Parse the YAML config/template file
+    Parse the YAML config/template file or JSON response
 
-    dct: content of the YAML file"""
+    dct: content of the YAML/JSON file"""
 
     for bots in dct['items']:
 
@@ -177,9 +176,10 @@ def parse_status_json(dct):
 
 def parse_status_by_node(dct, nodename):
     """<dct, nodename>
-    Parse the YAML config/template file
+    Parse the YAML config/template file or JSON response
 
-    dct: content of the YAML file"""
+    dct: content of the YAML/JSON file
+    nodename: specific node name"""
 
     print("List bots in the node: {}".format(nodename))
     print("============================")
@@ -194,9 +194,10 @@ def parse_status_by_node(dct, nodename):
 
 def parse_status_by_job(dct, job):
     """<dct, job>
-    Parse the YAML config/template file
+    Parse the YAML config/template file or JSON response
 
-    dct: content of the YAML file"""
+    dct: content of the YAML/JSON file
+    job: job/task name"""
 
     print("List bots with this job: {}".format(job))
     print("========================================")
@@ -207,18 +208,15 @@ def parse_status_by_job(dct, job):
         executors = bots["spec"]["containers"]
 
         for w in executors:
-            print("Executor name: {}".format(w["name"]))
-            print("Image name: {}".format(w["image"]))
             task = w["command"]
             if task == job:
                 print("%d | %s" % (i, name))
                 i = i+1
 
-        print("========================================")
+    print("========================================")
 
 
 def parse_node_json(dct):
-
     """<dct>
     Get the Node name metadata from the YAML config/template file
 
@@ -259,7 +257,9 @@ def check_status():
 
 def get_bot_by_node(nodename):
     """
-    List of the running bots/pods based on node name"""
+    List of the running bots/pods based on node name
+
+    nodename: sepcific node name to query"""
 
     try:
         pid = os.fork()
@@ -287,7 +287,9 @@ def get_bot_by_node(nodename):
 
 def get_bot_by_job(jobname):
     """
-    List of the running bots/pods based on job/task name"""
+    List of the running bots/pods based on job/task name
+
+    jobname: specific job/task name to query"""
 
     try:
         pid = os.fork()
@@ -503,3 +505,9 @@ def move_bot_to_node(params):
 
     except Exception as e:
         raise e
+
+
+def exit():
+    """
+    Exits the program"""
+    sys.exit(0)
