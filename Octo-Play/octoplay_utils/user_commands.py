@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-from octoplay_utils import utils, parser
+from octoplay_utils import utils
+import parser
 import io
 import os
 import sys
@@ -19,21 +20,26 @@ with open(f"{file_path}/template.yaml", "r") as stream:
 
 
 def get_api_version():
-    """Returns API version in configuration"""
+    """
+    Returns API version in configuration
+    """
+
     return z['apiVersion']
 
 
 def get_name():
     """
-    Returns the deployment name in configuration"""
+    Returns the deployment name in configuration
+    """
     return z['metadata']['name']
 
 
 def set_name(name):
-    """<name>
+    """
     Sets the name of the deployment in configuration
-
-    name: Name of deployment"""
+    :param name: Name of deployment
+    :return: print name
+    """
 
     if type(name) != str and type(name) == list:
         name = name[0]
@@ -45,27 +51,31 @@ def set_name(name):
 
 def get_bot_numbers():
     """
-    Returns the number of bots in the configuration"""
+    Returns the number of bots in the configuration
+    """
     return z['spec']['replicas']
 
 
 def set_bot_numbers(number_of_bots):
-    """<number_of_replicas>
+    """
     Set the number of bots in the configuration
-
-    number_of_bots: Number of bots"""
+    :param number_of_bots: number of bots need to be created
+    :return: replica value for number of bots/pods
+    """
 
     z['spec']['replicas'] = int(number_of_bots)
     print(f"Bot Numbers: {z['spec']['replicas']}")
 
 
-def get_containers():
+def get_executors():
     """
-    List all the containers in the configuration"""
-    print(f"Containers\t")
-    containers = z['spec']['template']['spec']['containers']
+    List all the executors/containers in the configuration
+    """
 
-    for i, c in enumerate(containers):
+    print(f"Containers\t")
+    executors = z['spec']['template']['spec']['containers']
+
+    for i, c in enumerate(executors):
         command = c.get('command', '')
         if command:
             for count, com in enumerate(command):
@@ -79,9 +89,12 @@ def get_containers():
         print(f"  ImgPullPolicy\t:\t{c['imagePullPolicy']}")
 
 
-def add_container(arguments):
-    """<name> <image> <command...>
-    Adds a container to the configuration"""
+def add_executor(arguments):
+    """
+    Adds a executor/container to the configuration
+    :param arguments: <name> <image> <command...>
+    :return: executor/container spec added
+    """
 
     # Splits the argument properly
     arguments = arguments.split(" ")
@@ -91,13 +104,14 @@ def add_container(arguments):
     image = arguments[1]
     command = " ".join(arguments[2:])
 
-    # Obtain the existing container information
-    containers = z['spec']['template']['spec']['containers']
+    # Obtain the existing executor/container information
+    executors = z['spec']['template']['spec']['containers']
 
-    # If there are no containers to be copied as a template, then create one on the spot now.
-    if len(containers) > 0:
+    # If there are no executor/containers to be copied as a template,
+    # then create one on the spot now.
+    if len(executors) > 0:
         # Make a copy of the template
-        to_append = containers[0].copy()
+        to_append = executors[0].copy()
     else:  # if there is no template to copy
         to_append = {}
 
@@ -115,20 +129,21 @@ def add_container(arguments):
 
     to_append['imagePullPolicy'] = "IfNotPresent"
 
-    # Append the newly created container
-    containers.append(to_append)
+    # Append the newly created executor/container
+    executors.append(to_append)
 
-    # Deletes all containers with image None
-    for i, c in enumerate(containers):
+    # Deletes all executors/containers with image None
+    for i, c in enumerate(executors):
         if (c.get('image', None)) is None:
-            del_container(i)
+            del_executor(i)
 
 
-def del_container(index):
-    """<index>
-    Deletes container at index from configuration
-
-    index: Index of the container in the configuration"""
+def del_executor(index):
+    """
+    Deletes executor/container at index from configuration
+    :param  index: Index of the executor/container in the configuration"
+    :return: executor/container spec deleted
+    """
 
     c = z['spec']['template']['spec']['containers']
     try:
@@ -138,10 +153,12 @@ def del_container(index):
 
 
 def open_proxy(port=utils.K8S_PORT):
-    """[port]
+    """
     Configures kubernetes proxy to listen on the specified port
+    :param port: Port to kubernetes proxy to listen to
+    :return: success of failed
+    """
 
-    port: Port to kubernetes proxy to listen to"""
     # Duplicates the program
     try:
         pid = os.fork()
@@ -162,19 +179,22 @@ def open_proxy(port=utils.K8S_PORT):
         time.sleep(5)
 
 
-def set_port(p):
-    """<port>
+def set_port(port):
+    """
     Sets the port to communicate with the kubernetes proxy
-
-    port: Port to communicate with the kubernetes API"""
-    utils.K8S_PORT = int(p)
+    :param port: Port to communicate with the kubernetes API
+    :return: Kubernetes proxy port
+    """
+    utils.K8S_PORT = int(port)
 
 
 def load_file(filename):
-    """<filename>
+    """
     Loads specified file into current configuration
+    :param filename: configuration file
+    :return: stream from the file
+    """
 
-    filename: Filename of the configuration file"""
     global z
     with open(filename) as stream:
         z = yaml.safe_load(stream)
@@ -183,10 +203,11 @@ def load_file(filename):
 
 
 def write_file(filename):
-    """<filename>
+    """
     Writes current configuration to the specified configuration file
-
-    filename: Filename of the configuration file"""
+    :param filename: configuration file
+    :return: new file created
+    """
 
     with io.open(filename, "w") as f:
         yaml.dump(z, f, default_flow_style=False,
@@ -195,21 +216,26 @@ def write_file(filename):
     f.close()
 
 
-def run_file(filename):
-    """<filename>
-    Applies the specified file in kubernetes
+def run_file(params):
+    """
+    Applies the specified file in Kubernetes
+    :param params: multiple configuration files
+    :return:
+    """
 
-    filename: Filename of the configuration file"""
     try:
         pid = os.fork()
     except Exception as e:
         print(e)
         raise e
 
-    if pid == 0:  # run in child process
-        # push it to server
-        utils.push_yaml_file(filename)
+    # Split arguments
+    params = shlex.split(params)
 
+    if pid == 0:  # run in child process
+        # push it to server iteratively
+        for index in range(len(params)):
+            utils.push_yaml_file(params[index])
         sys.exit(0)
     else:
         # wait for child process to terminate
@@ -217,11 +243,12 @@ def run_file(filename):
 
 
 def patch_file(filename):
-    """<filename>
-    Patches the deployment using the given filename
-
-    filename: Filename of the configuration file
     """
+    Patches the deployment using the given filename
+    :param filename: configuration file
+    :return: success or failed
+    """
+
     # Obtain information from file
     with open(filename) as stream:
         deployment_content = yaml.safe_load(stream)
@@ -235,24 +262,28 @@ def patch_file(filename):
 
     # Check status code
     if resp.status_code != 200:
-        raise Exception(f"Error code {resp.status_code}: {resp.json().get('message', '')}")
+        raise Exception(f"Error code {resp.status_code}: "
+                        f"{resp.json().get('message', '')}")
     else:
         print(f'Successfully patched deployment \'{deployment_name}\'')
 
 
-# Deletes deployment (Function name is like this because it fulfills the pep8 naming convention
-def stop_file(arg):
-    """<filename/deployment_name>
-    Deletes the deployment specified in the file / filename
+# Deletes deployment (Function name is like this
+# because it fulfills the pep8 naming convention
+def stop_file(filename):
+    """
+    Deletes the deployment specified in the filename
+    :param filename: deployment file
+    :return: success or failed
+    """
 
-    arg: Filename or name of the deployment to stop"""
     # Decide whether the argument is a filename or deployment_name
     try:
-        with open(arg, 'r') as f:
+        with open(filename, 'r') as f:
             deployment_content = yaml.safe_load(f)
         deployment_name = deployment_content['metadata']['name']
     except FileNotFoundError as e:
-        deployment_name = arg
+        deployment_name = filename
     except Exception as e:
         raise Exception("An error occurred obtaining deployment name")
 
@@ -275,7 +306,9 @@ def stop_file(arg):
 
 def check_status():
     """
-    Checks status of the running pods"""
+    Checks status of the running bots
+    :return: success or failed
+    """
 
     try:
         pid = os.fork()
@@ -307,72 +340,78 @@ def check_status():
 
 
 def get_logs_by_command(args):
-    """<pod_name> <command>
-    Finds the logs for a container based on command
-
-    pod_name: Name of the pod
-    command: Command of the container"""
+    """
+    Finds the logs for a executor/container based on command
+    :param args: <bot_name> <command>
+        bot_name: name of the bot/pod
+        command: command of the executor/container
+    :return: log entries from executor/container in the bot/pod
+    """
 
     # Split arguments
     args = shlex.split(args)
 
     # Get variables
-    pod = args[0]
+    bot = args[0]
     command = " ".join(args[1:])
 
-    # Get container name by command
-    container = utils.get_container_by_command(pod, command)
-    container_name = container["name"]
+    # Get executor/container name by command
+    executor = utils.get_executor_by_command(bot, command)
+    executor_name = executor["name"]
 
-    # Obtain the logs for that container name
-    return get_logs(f"{pod} {container_name}")
+    # Obtain the logs for that executor/container name
+    return get_logs(f"{bot} {executor_name}")
 
 
-def delete_pod(pod_name):
-    """<pod_name>
-    Deletes pod using the specified name
-
-    pod_name: Name of the pod to delete"""
+def delete_bot(bot_name):
+    """
+    Deletes bot/pod using the specified name
+    :param bot_name: name of the bot/pod to delete
+    :return:
+    """
 
     url = "http://localhost:{}/".format(utils.K8S_PORT) + \
-          "api/v1/namespaces/default/pods/{}".format(pod_name)
+          "api/v1/namespaces/default/pods/{}".format(bot_name)
 
     resp = requests.delete(url)
 
     if resp.status_code not in (200, 202):
         raise Exception(f"Error with code {str(resp.status_code)}: {resp.json().get('message', '')}")
     else:
-        print("Successfully deleted pod".format(pod_name))
+        print("Successfully deleted pod".format(bot_name))
 
 
 def get_logs(args):
-    """<pod> [container]
-    Get logs for containers
-
-    pod: Name of pod
-    container: Name of container in the pod"""
+    """
+    Get logs for executors/containers
+    :param args: <bot> <executor>
+        bot: name of bot/pod
+        executor: name of executor in the pod
+    :return: success or failed response
+    """
 
     # Split the string based on <space>
     args = shlex.split(args)
 
     # Get the variables from the arguments
-    pod = args[0]
-    container = " ".join(args[1:]).strip()  # This is just for precautionary measure, args[1] should ideally be enuf
-    container = container if container != '' else None
+    bot = args[0]
+    executor = " ".join(args[1:]).strip()  # This is just for precautionary
+    # measure, args[1] should ideally be enuf
+    executor = executor if executor != '' else None
 
     url = "http://localhost:{}/".format(utils.K8S_PORT) + \
           "api/v1/namespaces/default/pods/" + \
-          "{}/log".format(pod)
+          "{}/log".format(bot)
 
-    # Figure out whether there is a container or not
-    param = {'container': container} if container is not None else None
+    # Figure out whether there is a executor/container or not
+    param = {'container': executor} if executor is not None else None
 
     # Queries the API
     resp = requests.get(url, params=param)
 
     if resp.status_code == 204:
-        return "No logs for pod: {}, container :{}". \
-            format(pod, container[0])
+        return "No logs for bot: {}, executor :{}". \
+            format(bot, executor[0])
 
     elif resp.status_code != 200:
         raise Exception("Error code {} when querying api\n"
@@ -384,22 +423,25 @@ def get_logs(args):
 
 
 def run_job(params):
-    """<pod> <container> <command>
-    Runs the specified command on a container in a pod
+    """
+    Runs the specified command on a executor in a bot
+    :param params: <bot> <executor> <command>
+        bot: name of bot/pod
+        executor: name of executor/container in the bot/pod
+        command: name of command to run in the executor/container
+    :return: failed or success response
+    """
 
-    pod: Name of pod
-    container: Name of container in the pod
-    command: Name of command to run in the container"""
     # Make param a list
     params = params.split(' ')
 
     # Extract variables out
-    pod = params[0]
+    bot = params[0]
     worker = params[1]
     job = " ".join(params[2:])   # Makes job back into a string
 
     # Get kubectl command
-    command = f"{utils.KUBECTL_CMD} exec {pod} {worker} -- {job}"
+    command = f"{utils.KUBECTL_CMD} exec {bot} {worker} -- {job}"
 
     # Run the command
     try:
@@ -408,13 +450,14 @@ def run_job(params):
         raise e
 
 
-def get_shell(param):
-    """<pod_name>
-    Gets shell for the specified pod
+def get_shell(bot_name):
+    """
+    Get shell for the specified bot/pod
+    :param bot_name: name of the bot
+    :return: success or failed result
+    """
 
-    pod_name: Name of pod"""
-    pod = param
-    command = f"{utils.KUBECTL_CMD} exec -it {pod} -- /bin/bash"
+    command = f"{utils.KUBECTL_CMD} exec -it {bot_name} -- /bin/bash"
 
     try:
         os.system(command)
@@ -424,15 +467,19 @@ def get_shell(param):
 
 def get_current_config():
     """
-    Gets current configuration"""
+    Gets current configuration
+    :return: configuration stream
+    """
 
     print(f"API Version\t:\t{z['apiVersion']}")
     print(f"Name\t\t:\t{z['metadata']['name']}")
     print(f"Bot Numbers\t:\t{z['spec']['replicas']}")
-    get_containers()
+    get_executors()
 
 
 def exit():
     """
-    Exits the program"""
+    Exit the program
+    :return: system exit
+    """
     sys.exit(0)
