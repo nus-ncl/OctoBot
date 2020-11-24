@@ -8,12 +8,7 @@
         state: present
         update_cache: yes
 
-    - name: Restart kubelet
-      service:
-        name: nfs-kernel-server
-        state: restarted
-
-    - name: Create shared directory
+    - name: Create NFS shared directory
       file:
         path: /mnt/sharedfolder
         state: directory
@@ -24,7 +19,12 @@
     - name: Writing shared folder in the export file
       lineinfile:
         path: /etc/exports
-        line: '/mnt/sharedfolder 172.16.1.0/24(rw,sync,no_subtree_check)'
+        line: "/mnt/sharedfolder *(rw,sync,no_subtree_check)"
+
+    - name: Restart NFS server daemon
+      service:
+        name: nfs-kernel-server
+        state: restarted
 
     - name: Install pv-claim YAML file
       become: false
@@ -48,12 +48,12 @@
         path: /mnt/sharedfolder_client
         state: directory
 
--  name: Mount NFS directory
-     mount:
-       fstype: nfs
-       opts: defaults
-       dump: 0
-       passno: 0
-       state: mounted
-       src: 172.16.1.100:/sharedfolder
-       path: /mnt/sharedfolder_client
+    - name: Mount NFS directory
+      mount:
+        fstype: nfs
+        opts: defaults
+        dump: 0
+        passno: 0
+        state: mounted
+        src: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}:/mnt/sharedfolder"
+        path: /mnt/sharedfolder_client
