@@ -55,5 +55,5 @@
         dump: 0
         passno: 0
         state: mounted
-        src: "{{ hostvars[groups['master'][0]]]['ansible_default_ipv4']['address'] }}:/mnt/sharedfolder"
+        src: "{{ hostvars[groups['master'][0]]['ansible_default_ipv4']['address'] }}:/mnt/sharedfolder"
         path: /mnt/sharedfolder_client
