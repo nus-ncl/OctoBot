@@ -1,0 +1,59 @@
+---
+- hosts: master
+  become: true
+  tasks:
+    - name: Install NFS server package
+      apt:
+        name: nfs-server
+        state: present
+        update_cache: yes
+
+    - name: Create NFS shared directory
+      file:
+        path: /mnt/sharedfolder
+        state: directory
+        owner: nobody
+        group: nogroup
+        mode: '0777'
+
+    - name: Writing shared folder in the export file
+      lineinfile:
+        path: /etc/exports
+        line: "/mnt/sharedfolder *(rw,sync,no_subtree_check)"
+
+    - name: Restart NFS server daemon
+      service:
+        name: nfs-kernel-server
+        state: restarted
+
+    - name: Install pv-claim YAML file
+      become: false
+      command: kubectl apply -f template/pv-claim.yaml
+
+    - name: Install pv-volume YAML file
+      become: false
+      command: kubectl apply -f template/pv-volume.yaml
+
+- hosts: node
+  become: true
+  tasks:
+    - name: Install NFS client package
+      apt:
+        name: nfs-common
+        state: present
+        update_cache: yes
+
+    - name: Create mount directory
+      file:
+        path: /mnt/sharedfolder_client
+        state: directory
+
+    - name: Mount NFS directory
+      mount:
+        fstype: nfs
+        opts: defaults
+        dump: 0
+        passno: 0
+        state: mounted
+        src: "{{ hostvars[groups['master'][0]]['ansible_default_ipv4']['address'] }}:/mnt/sharedfolder"
+        path: /mnt/sharedfolder_client
