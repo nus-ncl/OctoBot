@@ -393,33 +393,33 @@ def get_shell(bot):
         raise e
 
 
-def get_nodes():
+def get_node_api():
     """
     Gets all available worker nodes for bot/pod
     """
 
-    try:
-        pid = os.fork()
-    except Exception as e:
-        raise e
+    url = "http://localhost:{}/".format(K8S_PORT) + \
+        "api/v1/nodes"
+    resp = requests.get(url)
 
-    if pid == 0:
-        url = "http://localhost:{}/".format(K8S_PORT) + \
-              "api/v1/nodes"
-        resp = requests.get(url)
-
-        if resp.status_code != 200:
-            # This means something went wrong.
-            raise Exception("Error with code " +
-                            str(resp.status_code))
-        else:
-            print("Success with status code 200, \
-                    parsing response...")
-
-            parse_node_json(resp.json())
-
+    if resp.status_code != 200:
+        # This means something went wrong.
+        raise Exception("Error with code " +
+                        str(resp.status_code))
     else:
-        os.waitpid(pid, 0)
+        print("Success with status code 200, \
+                parsing response...")
+
+        return resp.json()
+
+
+def get_nodes():
+    """
+    Gets all available worker nodes for bot/pod
+    :return: list of the worker nodes
+    """
+
+    return parse_node_json(get_node_api())
 
 
 def push_pod_yaml_file(filename):
