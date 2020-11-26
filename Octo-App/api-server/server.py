@@ -17,7 +17,15 @@ def home():
 # A route to return all of worker nodes.
 @app.route('/api/v1/nodes', methods=['GET'])
 def api_all():
-    return jsonify(get_node_api())
+    nodes = {}
+    nodes['nodes'] = []
+    response = get_node_api()
+    for node in response['items']:
+        name = node["metadata"]["name"]
+        nodes['nodes'].append({
+            'nodename': name
+        })
+    return jsonify(nodes)
 
 
 app.run()
