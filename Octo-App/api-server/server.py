@@ -34,19 +34,20 @@ def api_bots():
     bots['bots'] = []
     response = get_bot_api()
 
-    for bots in response['items']:
-        name = bots["metadata"]["name"]
-        executors = bots["spec"]["containers"]
+    for bot in response['items']:
+        name = bot["metadata"]["name"]
+        executors = bot["spec"]["containers"]
         for executor in executors:
             executor_name = executor["name"]
             executor_image = executor["image"]
             executor_task = executor["command"]
-        node = bots["spec"]["nodeName"]
+        node = bot["spec"]["nodeName"]
         bots['bots'].append({
             'name': name,
             'executor': executor_name,
             'image': executor_image,
-            'task': executor_task
+            'task': executor_task,
+            'node': node
         })
 
     return jsonify(bots)
@@ -63,9 +64,9 @@ def api_bot_node():
     response = get_bot_api()
     i = 1
 
-    for bots in response['items']:
-        name = bots["metadata"]["name"]
-        node = bots["spec"]["nodeName"]
+    for bot in response['items']:
+        name = bot["metadata"]["name"]
+        node = bot["spec"]["nodeName"]
         if node == nodename:
             bots['bots'].append({
                 'id': i,
