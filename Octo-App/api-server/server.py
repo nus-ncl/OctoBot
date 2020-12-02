@@ -1,5 +1,6 @@
 import flask
-from flask import request, jsonify
+from flask import request, jsonify, Flask
+import json
 import sys
 sys.path.append('../Utils')
 from appUtils import *
@@ -53,7 +54,7 @@ def api_bots():
     return jsonify(bots)
 
 # A route to return all of bots in specified node
-@app.route('/api/v1/bots', methods=['GET'])
+@app.route('/api/v1/bot', methods=['GET'])
 def api_bot_node():
     if 'nodeName' in request.args:
          nodename = str(request.args['nodeName'])
@@ -75,6 +76,18 @@ def api_bot_node():
             i = i+1
 
     return jsonify(bots)
+
+
+# A route to push job/task to specific bot/pod
+@app.route('/api/v1/bot/run', methods=['POST'])
+def api_run_task():
+    data = json.loads(request.data)
+    params = data.get("bot", None) + " " + data.get("executor", None) + " "\
+        + data.get("task", None)
+    if params is None:
+        return jsonify({"message": "task detail not found"})
+    else:
+        return jsonify({"message": run_job(params)})
 
 
 app.run()
