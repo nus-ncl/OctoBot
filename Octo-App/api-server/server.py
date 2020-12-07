@@ -82,8 +82,8 @@ def api_bot_node():
 @app.route('/api/v1/bot/run', methods=['POST'])
 def api_run_task():
     data = json.loads(request.data)
-    params = data.get("bot", None) + " " + data.get("executor", None) + " "\
-        + data.get("task", None)
+    params = data["bot"] + " " + data["executor"] + " " + data["task"]
+    params = str(params).split(" ")
     if params is None:
         return jsonify({"message": "task detail not found"})
     else:

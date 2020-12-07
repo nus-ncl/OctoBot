@@ -348,12 +348,12 @@ def run_job(params):
     executor: Name of executor/container in the bot/pod
     command: Name of task/job command to be ran in the executor/container"""
 
-    params = shlex.split(params)
     bot = params[0]
     executor = params[1]
     jobs = " ".join(params[2:])
 
-    command = "kubectl exec " + bot + " " + executor + " -- " + jobs
+    command = "kubectl exec -i -t " + bot + " --container " \
+              + executor + " -- " + jobs
 
     try:
         os.system(command)
@@ -363,7 +363,6 @@ def run_job(params):
         raise e
         message = "Task can't be executed"
 
-    print(message)
     return message
 
 
