@@ -90,4 +90,4 @@ def api_run_task():
         return jsonify({"message": run_job(params)})
 
 
-app.run()
+app.run(host="0.0.0.0", port="8081", threaded=True)
