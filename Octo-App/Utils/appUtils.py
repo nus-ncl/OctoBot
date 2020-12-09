@@ -227,9 +227,29 @@ def parse_node_json(dct):
         print("Node name: {}".format(name))
 
 
+def get_bot_api():
+    """
+    Get status of the running bots/pods from REST API
+    :return: JSON output from bots/pods list"""
+
+    url = "http://localhost:{}/".format(K8S_PORT) + \
+          "api/v1/namespaces/default/pods"
+    resp = requests.get(url)
+
+    if resp.status_code != 200:
+        # This means something went wrong.
+        raise Exception("Error with code " +
+                        str(resp.status_code))
+    else:
+        print("Success with status code 200, \
+                parsing response...")
+        return resp.json()
+
+
 def check_status():
     """
-    Checks status of the running bots/pods"""
+    Checks status of the running bots/pods
+    :return: list of the bots/pods"""
 
     try:
         pid = os.fork()
@@ -237,20 +257,7 @@ def check_status():
         raise e
 
     if pid == 0:
-        url = "http://localhost:{}/".format(K8S_PORT) + \
-              "api/v1/namespaces/default/pods"
-        resp = requests.get(url)
-
-        if resp.status_code != 200:
-            # This means something went wrong.
-            raise Exception("Error with code " +
-                            str(resp.status_code))
-        else:
-            print("Success with status code 200, \
-                    parsing response...")
-
-            parse_status_json(resp.json())
-
+        parse_status_json(get_bot_api())
     else:
         os.waitpid(pid, 0)
 
@@ -267,20 +274,7 @@ def get_bot_by_node(nodename):
         raise e
 
     if pid == 0:
-        url = "http://localhost:{}/".format(K8S_PORT) + \
-              "api/v1/namespaces/default/pods"
-        resp = requests.get(url)
-
-        if resp.status_code != 200:
-            # This means something went wrong.
-            raise Exception("Error with code " +
-                            str(resp.status_code))
-        else:
-            print("Success with status code 200, \
-                    parsing response...")
-
-            parse_status_by_node(resp.json(), nodename)
-
+        parse_status_by_node(get_bot_api(), nodename)
     else:
         os.waitpid(pid, 0)
 
@@ -297,20 +291,7 @@ def get_bot_by_job(jobname):
         raise e
 
     if pid == 0:
-        url = "http://localhost:{}/".format(K8S_PORT) + \
-              "api/v1/namespaces/default/pods"
-        resp = requests.get(url)
-
-        if resp.status_code != 200:
-            # This means something went wrong.
-            raise Exception("Error with code " +
-                            str(resp.status_code))
-        else:
-            print("Success with status code 200, \
-                    parsing response...")
-
-            parse_status_by_job(resp.json(), jobname)
-
+        parse_status_by_job(get_bot_api(), jobname)
     else:
         os.waitpid(pid, 0)
 
@@ -371,12 +352,18 @@ def run_job(params):
     executor = params[1]
     jobs = " ".join(params[2:])
 
-    command = "kubectl exec " + bot + " " + executor + " -- " + jobs
+    command = "kubectl exec -i -t " + bot + " --container " \
+              + executor + " -- " + jobs
 
     try:
         os.system(command)
+        message = "Task " + jobs + " is successfully run by " + executor \
+                  + " in bot " + bot
     except Exception as e:
         raise e
+        message = "Task can't be executed"
+
+    return message
 
 
 def get_shell(bot):
@@ -393,9 +380,30 @@ def get_shell(bot):
         raise e
 
 
+def get_node_api():
+    """
+    Gets all available worker nodes for bot/pod
+    """
+
+    url = "http://localhost:{}/".format(K8S_PORT) + \
+        "api/v1/nodes"
+    resp = requests.get(url)
+
+    if resp.status_code != 200:
+        # This means something went wrong.
+        raise Exception("Error with code " +
+                        str(resp.status_code))
+    else:
+        print("Success with status code 200, \
+                parsing response...")
+
+        return resp.json()
+
+
 def get_nodes():
     """
     Gets all available worker nodes for bot/pod
+    :return: list of the worker nodes
     """
 
     try:
@@ -404,20 +412,7 @@ def get_nodes():
         raise e
 
     if pid == 0:
-        url = "http://localhost:{}/".format(K8S_PORT) + \
-              "api/v1/nodes"
-        resp = requests.get(url)
-
-        if resp.status_code != 200:
-            # This means something went wrong.
-            raise Exception("Error with code " +
-                            str(resp.status_code))
-        else:
-            print("Success with status code 200, \
-                    parsing response...")
-
-            parse_node_json(resp.json())
-
+        parse_node_json(get_node_api())
     else:
         os.waitpid(pid, 0)
 
