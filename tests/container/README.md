@@ -12,9 +12,10 @@ This Kind installation is tested with this following environment:
 - Docker Engine 5:20.10.0~3-0~ubuntu-bionic
 - Kind 0.9.0
 - Kubernetes 1.9.1
+- kubectl 1.9.1
 
 
-### Installation
+### Installation and Configuration
 
 #### Install Docker Engine from Repository 
  
@@ -24,7 +25,7 @@ configure the repository, install Docker Engine and assign user to run Docker.
  
 ```console
 sudo apt-get remove docker docker-engine
-sudo apt-get install
+sudo apt-get update
 sudo apt-get install apt-transport-https ca-certificates \
     curl gnupg-agent software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -36,7 +37,7 @@ sudo usermod -aG docker $USER
 The original installation procedure can be found 
 [here](https://docs.docker.com/engine/install/ubuntu/)
 
-### Install Kind Binary from the Repository 
+#### Install Kind Binary from the Repository 
 
 Stable binaries are also available on the releases page. Stable releases are 
 generally recommended for CI usage in particular. To install, download the 
@@ -51,7 +52,7 @@ mv ./kind /some-dir-in-your-PATH/kind
 The detail installation step can be found 
 [here](https://kind.sigs.k8s.io/docs/user/quick-start/#installation)
  
-### Create the cluster  
+#### Create cluster  
  
 Creating a Kubernetes cluster in Kind is as simple as single command below.
 
@@ -75,7 +76,7 @@ $ kind create cluster
 The detail how to create cluster can be found 
 [here](https://kind.sigs.k8s.io/docs/user/quick-start/#creating-a-cluster)
 
-### Install _kubectl_ from the Source Code 
+#### Install _kubectl_ from the Source Code 
 
 The Kubernetes command-line tool, _kubectl_, allows you to run commands against 
 Kubernetes clusters. You can use _kubectl_ to deploy applications, inspect and 
@@ -89,14 +90,14 @@ Kubernetes version as mentioned in the Kind installation.
 curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.19.1/bin/linux/amd64/kubectl
 chmod +x ./kubectl 
 sudo mv kubectl /usr/bin/
-kubectl cluster-info --context kind-octobot
+kubectl cluster-info
 ```
 
 ### Verification
 
 Check Docker installation
 ```console
-sudo docker run hello-world
+docker run hello-world
 ```
 
 Check cluster installation
