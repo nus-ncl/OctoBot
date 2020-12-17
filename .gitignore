@@ -6,3 +6,4 @@
 # Build cache
 *.pyc
 __pycache__/
+/.idea/
