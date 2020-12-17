@@ -24,18 +24,23 @@ It consists of removing old version of Docker, install prerequisite packages,
 configure the repository, install Docker Engine and assign user to run Docker.
  
 ```console
-sudo apt-get remove docker docker-engine
 sudo apt-get update
-sudo apt-get install apt-transport-https ca-certificates \
+sudo apt-get -y autoremove docker docker-engine docker.io containerd runc
+sudo apt-get -y install apt-transport-https ca-certificates \
     curl gnupg-agent software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) stable"
 sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt-get -y install docker-ce docker-ce-cli containerd.io
 sudo usermod -aG docker $USER
 ```
 
 The original installation procedure can be found 
-[here](https://docs.docker.com/engine/install/ubuntu/)
+[here](https://docs.docker.com/engine/install/ubuntu/
+
+*Note*: You may need to logout and login again before go to the next step!
 
 #### Install Kind Binary from the Repository 
 
@@ -46,7 +51,7 @@ binary for your platform from “Assets” and place this into your $PATH.
 ```console
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.9.0/kind-linux-amd64
 chmod +x ./kind
-mv ./kind /some-dir-in-your-PATH/kind
+sudo mv ./kind /usr/bin/kind
 ```
 
 The detail installation step can be found 
@@ -54,11 +59,14 @@ The detail installation step can be found
  
 #### Create cluster  
  
-Creating a Kubernetes cluster in Kind is as simple as single command below.
+Creating a Kubernetes cluster in Kind is as simple as single command below:
 
 ```console
-$ kind create cluster 
-  Creating cluster "kind" ...
+kind create cluster
+```
+The output will be something like this:
+```console
+Creating cluster "kind" ...
   ✓ Ensuring node image (kindest/node:v1.19.1) 🖼 
   ✓ Preparing nodes 📦  
   ✓ Writing configuration 📜 
@@ -70,7 +78,7 @@ $ kind create cluster
  
   kubectl cluster-info --context kind-kind
  
-  Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
+  Not sure what to do next? 😅 Check out https://kind.sigs.k8s.io/docs/user/quick-start/
 ```
 
 The detail how to create cluster can be found 
@@ -102,7 +110,7 @@ docker run hello-world
 
 Check cluster installation
 ```console
-kind get cluster
+kind get clusters
 ```
 
 Check the Kubectl tools
@@ -117,3 +125,6 @@ kubectl get pods
 ```
 
 If everything are good, congratulation! You can continue to use our OctoBot.
+Please start with *Octo-Play* guide 
+[here](https://github.com/nus-ncl/OctoBot/tree/master/Octo-Play) or *Octo-App*
+[here](https://github.com/nus-ncl/OctoBot/tree/master/Octo-App).
