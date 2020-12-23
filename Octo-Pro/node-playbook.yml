@@ -14,20 +14,24 @@
           - curl
           - gnupg-agent
           - software-properties-common
+      tags: install
 
     - name: Add an apt signing key for Docker
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
+      tags: install
 
     - name: Get the latest stable version
       shell: lsb_release -cs
       register: stable_version
+      tags: install
 
     - name: Add apt repository for stable version
       apt_repository:
         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ stable_version.stdout_lines[0] }} stable
         state: present
+      tags: install
 
     - name: Install docker and its dependecies
       apt:
@@ -42,11 +46,13 @@
           - containerd.io
       notify:
         - docker status
+      tags: install
 
     - name: Add current "{{ ansible_user }}" to docker group
       user:
         name: "{{ ansible_user }}"
         group: docker
+      tags: install
 
     - name: Remove swapfile from /etc/fstab
       mount:
@@ -57,20 +63,24 @@
       with_items:
           - swap
           - none
+      tags: install
 
     - name: Disable swap
       command: swapoff -a
       when: ansible_swaptotal_mb > 0
+      tags: install
 
     - name: Add an apt signing key for Kubernetes
       apt_key:
         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
         state: present
+      tags: install
 
     - name: Adding apt repository for Kubernetes
       apt_repository:
         repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
         state: present
+      tags: install
 
     - name: Install Kubernetes binaries
       apt:
@@ -82,24 +92,30 @@
           - kubelet
           - kubeadm
           - kubectl
+      tags: install
 
     - name: Restart kubelet
       service:
         name: kubelet
         state: restarted
+      tags: install
 
-#    - name: Copy the join command to server location
-#      copy: src=/vagrant/join-command dest=/tmp/join-command.sh mode=077
+    - name: Reset Kubernetes component
+      shell: "kubeadm reset --force"
+      ignore_errors: True
+      tags: ['install','configure']
 
     - name: Change ownership of join cluster file
       file:
-        path: /vagrant/join-command
+        path: join-command
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
         mode: '0755'
+      tags: ['install','configure']
 
     - name: Join the node to cluster
-      command: sh /vagrant/join-command
+      command: sh join-command
+      tags: ['install','configure']
 
   handlers:
     - name: docker status
