@@ -128,7 +128,7 @@
       tags: ['install','configure']
 
     - name: Copy kubeconfig for running user
-      command: cp -i /etc/kubernetes/admin.conf /home/{{ ansible_user }}/.kube/config
+      command: cp -fr /etc/kubernetes/admin.conf /home/{{ ansible_user }}/.kube/config
       tags: ['install','configure']
   
     - name: Change ownership kubeconfig for running user

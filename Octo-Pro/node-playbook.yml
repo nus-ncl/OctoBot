@@ -105,16 +105,8 @@
       ignore_errors: True
       tags: ['install','configure']
 
-    - name: Change ownership of join cluster file
-      file:
-        path: join-command
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
-        mode: '0755'
-      tags: ['install','configure']
-
     - name: Join the node to cluster
-      command: sh join-command
+      script: ./join-command
       tags: ['install','configure']
 
   handlers:
