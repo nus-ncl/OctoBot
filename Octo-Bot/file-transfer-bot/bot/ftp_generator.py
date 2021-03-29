@@ -6,7 +6,7 @@ import ftplib
 
 def scheduleUpload(args):
     jobs = []
-    for i in range(1, args.t[0] + 1):
+    for i in range(1, args.t + 1):
         params = {
             'server': args.s[0],
             'username': args.u[0],
@@ -26,7 +26,7 @@ def scheduleUpload(args):
 
 def scheduleDownload(args):
     jobs = []
-    for i in range(1, args.t[0] + 1):
+    for i in range(1, args.t + 1):
         params = {
             'server': args.s[0],
             'username': args.u[0],
