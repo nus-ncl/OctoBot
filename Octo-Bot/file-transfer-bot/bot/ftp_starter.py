@@ -14,7 +14,7 @@ def main():
     parser.add_argument("-p", help="ftp password", required=True,
                         nargs='+', default=None)
     parser.add_argument("-t", help="specify your worker", type=int,
-                        required=False, nargs='+', default=1)
+                        required=False, nargs='+', default=['1'])
     parser.add_argument("-f",
                         help="specify your function(upload/download)",
                         required=False, nargs='+', default=['download'])
