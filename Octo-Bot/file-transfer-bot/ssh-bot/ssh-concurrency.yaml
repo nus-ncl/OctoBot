@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssh-concurrency
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: linux
+  template:
+    metadata:
+      labels:
+        app: linux
+    spec:
+      containers:
+      - name: ssh
+        image: hkwany/ssh-bot:latest
+        env:
+          - name: REMOTE_SERVER
+            value: "localhost" 
+          - name: REMOTE_PORT
+            value: "22"   
+          - name: REMOTE_USERNAME
+            value: "centos"   
+          - name: REMOTE_USERpasswd
+            value: "passwd"   
+          - name: SSHD_USERNAME
+            value: "centos"  
+          - name: SSHD_SERVER
+            value: "1.2.3.4"
+          - name: CONCURRENCY
+            value: "0"
+          - name: UPLOAD
+            value: "0"
+          - name: DOWNLOAD
+            value: "0"
+        command: []
+        imagePullPolicy: IfNotPresent
+      nodeSelector:
+        kubernetes.io/os: linux
