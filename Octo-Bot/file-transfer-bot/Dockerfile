@@ -1,4 +1,3 @@
-#FROM debian:buster-slim
 FROM python:3
 
 ADD ./bot /
@@ -9,9 +8,7 @@ RUN set -e -x \
     && apt-get -y upgrade \
     && apt-get -y --no-install-recommends install \
         curl ca-certificates \
-# generate 900M dummy file
-    # && dd if=/dev/zero of=/tmp/large_file bs=1024 count=921600 \
-    # && dd if=/dev/zero bs=1024 count=921600 of=/tmp/large_file \
+
 # install scapy
     && apt-get -y --no-install-recommends install \
        python3-scapy python3-cryptography libwireshark-data \
