@@ -18,7 +18,7 @@ Build and Run Docker image
 ```console
 $ cd OctoBot/Octo-Bot/file-transfer-bot
 $ docker build . -t file-transfer-bot:latest
-$ docker run file-transfer-bot:latest --server <server_ip> --username <ftp_user> --password <ftp_password> --worker 1 --function download
+$ docker run file-transfer-bot:latest -s <server_ip> -u <ftp_user> -p <ftp_password>
 ```
 
 Check the running container:
@@ -35,10 +35,10 @@ b72b0bf9e8c7        file-transfer-bot:latest       "python3 ftp_start..."   Abou
 Here is the help page for the complete usage of the bot program:
 ```console
 $ docker run file-transfer-bot:latest
-  usage: ftp_starter.py [-h] --server SERVER [SERVER ...] --username USERNAME
-                        [USERNAME ...] --password PASSWORD [PASSWORD ...]
-                        --worker WORKER [WORKER ...] --function FUNCTION
+  usage: ftp_starter.py [-h] -s SERVER [SERVER ...] -u USERNAME
+                        [USERNAME ...] --p PASSWORD [PASSWORD ...]
+                        -t THREAD [THREAD ...] -f FUNCTION
                         [FUNCTION ...]
-                        [--upload_file UPLOAD_FILE [UPLOAD_FILE ...]]
-                        [--download_file DOWNLOAD_FILE [DOWNLOAD_FILE ...]]
+                        [-uf UPLOAD_FILE [UPLOAD_FILE ...]]
+                        [-df DOWNLOAD_FILE [DOWNLOAD_FILE ...]]
 ```

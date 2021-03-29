@@ -49,7 +49,6 @@ def doUpload(params):
     ftp_server = params['server']
     username = params['username']
     password = params['password']
-    fileSavedAs = "large_file"
     suffix = str(time.time())
     ftpCommand = "STOR %s" % filename.split('/')[-1] + '_' + suffix
 
@@ -69,8 +68,7 @@ def doDownload(params):
     ftp_server = params['server']
     username = params['username']
     password = params['password']
-    fileSavedAs = "large_file"
-    ftpCommand = "RETR %s" % filename;
+    ftpCommand = "RETR %s" % filename
 
     session = ftplib.FTP(ftp_server, user=username, passwd=password)
     print("Download from:")
