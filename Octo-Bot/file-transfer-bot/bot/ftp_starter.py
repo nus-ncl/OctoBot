@@ -27,9 +27,9 @@ def main():
 
     args = parser.parse_args()
 
-    if args.function[0] == 'upload':
+    if args.f[0] == 'upload':
         scheduleUpload(args)
-    elif args.function[0] == 'download':
+    elif args.f[0] == 'download':
         scheduleDownload(args)
     else:
         parser.print_help()

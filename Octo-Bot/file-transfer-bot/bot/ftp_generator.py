@@ -6,12 +6,12 @@ import ftplib
 
 def scheduleUpload(args):
     jobs = []
-    for i in range(1, args.worker[0] + 1):
+    for i in range(1, args.t[0] + 1):
         params = {
-            'server': args.server[0],
-            'username': args.username[0],
-            'password': args.password[0],
-            'upload_file': args.upload_file[0]
+            'server': args.s[0],
+            'username': args.u[0],
+            'password': args.p[0],
+            'upload_file': args.uf[0]
         }
 
         jobs.append(Thread(target=doUpload(params),
@@ -26,12 +26,12 @@ def scheduleUpload(args):
 
 def scheduleDownload(args):
     jobs = []
-    for i in range(1, args.worker[0] + 1):
+    for i in range(1, args.t[0] + 1):
         params = {
-            'server': args.server[0],
-            'username': args.username[0],
-            'password': args.password[0],
-            'download_file': args.download_file[0]
+            'server': args.s[0],
+            'username': args.u[0],
+            'password': args.p[0],
+            'download_file': args.df[0]
         }
 
         jobs.append(Thread(target=doDownload(params),
