@@ -9,26 +9,24 @@ from ftp_generator import scheduleUpload
 def main():
     # Prepare arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("-s", help="remote ftp server", required=True,
-                        nargs='+', default=None)
-    parser.add_argument("-u", help="ftp username", required=True,
-                        nargs='+', default=None)
-    parser.add_argument("-p", help="ftp password", required=True,
-                        nargs='+', default=None)
-    parser.add_argument("-d", help="maximum sleep time between download "
-                                   "(default 1)", type=int,
-                        required=False, nargs='+', default=1)
-    parser.add_argument("-t", help="number of thread (default 1)", type=int,
-                        required=False, nargs='+', default=1)
-    parser.add_argument("-f",
+    parser.add_argument("-s", metavar = 'server', help="remote ftp server", required=True,
+                          default=None)
+    parser.add_argument("-u", metavar = 'username', help="ftp username", required=True,
+                          default=None)
+    parser.add_argument("-p", metavar = 'password', help="ftp password", required=True,
+                          default=None)
+    parser.add_argument("-d", metavar='delay', help="maximum sleep time between download (default 1)", type=int, required=False,
+                            default=1)
+    parser.add_argument("-t", metavar = 'thread', help="number of thread (default 1)", type=int,required=False,
+                            default=1)
+    parser.add_argument("-f", metavar = 'function',required=False,
                         help="download function(upload/download)",
-                        required=False, nargs='+', default=['download'])
-    parser.add_argument("-uf",
-                        help="file to be uploaded", required=False,
-                        nargs='+', default=['/large_file'])
-    parser.add_argument("-df",
-                        help="file to be downloaded",
-                        required=False, nargs='+', default=['large_file'])
+                            default=['download'])
+    parser.add_argument("-uf", metavar = 'uploaded_file',
+                        help="file to be uploaded",  required=False,
+                          default=['/large_file'])
+    parser.add_argument("-df", metavar = 'downloaded_file',required=False,
+                        help="file to be downloaded",default=['large_file'])
 
     args = parser.parse_args()
 
