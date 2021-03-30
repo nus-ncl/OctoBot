@@ -35,10 +35,7 @@ b72b0bf9e8c7        file-transfer-bot:latest       "python3 ftp_start..."   Abou
 Here is the help page for the complete usage of the bot program:
 ```console
 $ docker run file-transfer-bot:latest
-  usage: ftp_starter.py [-h] -s SERVER [SERVER ...] -u USERNAME
-                        [USERNAME ...] --p PASSWORD [PASSWORD ...]
-                        -t THREAD [THREAD ...] -f FUNCTION
-                        [FUNCTION ...]
-                        [-uf UPLOAD_FILE [UPLOAD_FILE ...]]
-                        [-df DOWNLOAD_FILE [DOWNLOAD_FILE ...]]
+  usage: ftp_starter.py [-h] -s SERVER -u USERNAME --p PASSWORD 
+                        [-s TIME (Second)] [-t THREAD -f FUNCTION]
+                        [-uf UPLOAD_FILE] [-df DOWNLOAD_FILE]
 ```
