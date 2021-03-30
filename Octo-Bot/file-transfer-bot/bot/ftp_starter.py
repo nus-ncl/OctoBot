@@ -15,7 +15,7 @@ def main():
                         nargs='+', default=None)
     parser.add_argument("-p", help="ftp password", required=True,
                         nargs='+', default=None)
-    parser.add_argument("-s", help="maximum sleep time between download "
+    parser.add_argument("-d", help="maximum sleep time between download "
                                    "(default 1)", type=int,
                         required=False, nargs='+', default=1)
     parser.add_argument("-t", help="number of thread (default 1)", type=int,
