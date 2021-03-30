@@ -9,17 +9,17 @@ from ftp_generator import scheduleUpload
 def main():
     # Prepare arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("-s", metavar = 'server', help="remote ftp server", required=True,
+    parser.add_argument("-s", metavar='server', help="remote ftp server", required=True, nargs='+',
                           default=None)
-    parser.add_argument("-u", metavar = 'username', help="ftp username", required=True,
+    parser.add_argument("-u", metavar = 'username', help="ftp username", required=True, nargs='+',
                           default=None)
-    parser.add_argument("-p", metavar = 'password', help="ftp password", required=True,
+    parser.add_argument("-p", metavar = 'password', help="ftp password", required=True, nargs='+',
                           default=None)
     parser.add_argument("-d", metavar='delay', help="maximum sleep time between download (default 1)", type=int, required=False,
                             default=1)
     parser.add_argument("-t", metavar = 'thread', help="number of thread (default 1)", type=int,required=False,
                             default=1)
-    parser.add_argument("-f", metavar = 'function',required=False,
+    parser.add_argument("-f", metavar = 'function',required=False, nargs='+',
                         help="download function(upload/download)",
                             default=['download'])
     parser.add_argument("-uf", metavar = 'uploaded_file',
