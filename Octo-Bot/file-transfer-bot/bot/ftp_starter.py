@@ -1,6 +1,6 @@
 import argparse
-from numpy import random
-from time import sleep
+import random
+import time
 
 from ftp_generator import scheduleDownload
 from ftp_generator import scheduleUpload
@@ -35,11 +35,11 @@ def main():
     if args.f[0] == 'upload':
         while True:
             scheduleUpload(args)
-            sleep(random.uniform(0, args.s))
+            time.sleep(random.uniform(0, args.d))
     elif args.f[0] == 'download':
         while True:
             scheduleDownload(args)
-            sleep(random.uniform(0, args.s))
+            time.sleep(random.uniform(0, args.d))
     else:
         parser.print_help()
 

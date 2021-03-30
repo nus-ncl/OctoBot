@@ -36,6 +36,6 @@ Here is the help page for the complete usage of the bot program:
 ```console
 $ docker run file-transfer-bot:latest
   usage: ftp_starter.py [-h] -s SERVER -u USERNAME --p PASSWORD 
-                        [-s TIME (Second)] [-t THREAD -f FUNCTION]
+                        [-d TIME (Second)] [-t THREAD -f FUNCTION]
                         [-uf UPLOAD_FILE] [-df DOWNLOAD_FILE]
 ```
