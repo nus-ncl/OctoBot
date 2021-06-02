@@ -4,5 +4,5 @@ certifi==2020.4.5.1
 prettytable==0.7.2
 selenium==3.141.0
 soupsieve==2.0.1
-urllib3==1.25.9
+urllib3==1.26.5
 wincertstore==0.2
