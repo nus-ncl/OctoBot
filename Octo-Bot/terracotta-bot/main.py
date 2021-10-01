@@ -45,13 +45,15 @@ def register(driver, username, password, name, email):
 
     time.sleep(3)
 
-# def login(driver, username, password):
-#     # input username, password into respective fields and click login button
-#     username_box = driver.find_element_by_id('username')
-#     username_box.send_keys(username)
+def login(driver, username, password):
+    # input username, password into respective fields and click login button
+    username_box = driver.find_element_by_id('username')
+    username_box.send_keys(username)
 
-#     password_box = driver.find_element_by_id('password')
-#     password_box.send_keys(password)
+    password_box = driver.find_element_by_id('password')
+    password_box.send_keys(password)
+    
+    driver.find_element_by_name('login').click()
 
 def changePassword(driver, oldPassword, newPassword):
     # input old password and new password and click change password button
@@ -62,19 +64,18 @@ def changePassword(driver, oldPassword, newPassword):
     newPassword_box.send_keys(newPassword)
 
     driver.find_element_by_name('change').click()
-    time.sleep(3)
+    
     # check that "Password Updated!" text is displayed
+    
     # try:
-    #     element = WebDriverWait(driver, 10).until(
-    #         EC.presence_of_element_located((By.xpath, "//*[text()='Password Updated!']"))
-    #     )
+    #     passwordChange = driver.find_element_by_link_text("Password Updated!")
     #     print("Password changed")
-    # except:
-    #     driver.quit()
+    # except NoSuchElementException:
     #     print("Error changing password")
 
-# def logout(driver):
-#     # click on logout button
+def logout(driver):
+    # click on logout button
+    loginButton = driver.find_element_by_link_text("LOGOUT").click()
 
 url = "http://localhost:8080/"
 username = "test-1"
@@ -87,10 +88,15 @@ print("Starting up bot")
 driver = getDriver()
 
 driver.get(url)
+# loginButton = driver.find_element_by_link_text("LOGIN").click()
+# time.sleep(3)
 register(driver, username, oldPassword, name, email)
 changePassword(driver, oldPassword, newPassword)
-# logout(driver)
-# login(driver, username, password)
+time.sleep(3)
+logout(driver)
+time.sleep(3)
+login(driver, username, newPassword)
+time.sleep(3)
 
 driver.quit()
 
