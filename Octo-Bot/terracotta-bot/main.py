@@ -1,10 +1,34 @@
 import time
+import random
+import numpy as np
 
 from selenium import webdriver
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
+
+workflowList = [];
+
+
+def slow_type(pageElem, pageInput):
+    for letter in pageInput:
+        time.sleep(float(random.uniform(.05, .3)))
+        pageElem.send_keys(letter)
+
+def go_to_element(element, driver):
+    window_height = driver.execute_script("return window.innerHeight")
+    start_dom_top = driver.execute_script("return document.documentElement.scrollTop")
+    element_location = element.location['y']
+    desired_dom_top = element_location - window_height/2 #Center It!
+    to_go = desired_dom_top - start_dom_top
+    cur_dom_top = start_dom_top
+    while np.abs(cur_dom_top - desired_dom_top) > 70:
+        scroll = np.random.uniform(2,69) * np.sign(to_go)
+        driver.execute_script("window.scrollBy(0, {})".format(scroll))
+        cur_dom_top = driver.execute_script("return document.documentElement.scrollTop")
+        time.sleep(np.abs(np.random.normal(0.0472, 0.003)))
 
 def getDriver():
 
@@ -30,40 +54,50 @@ def getDriver():
 def register(driver, username, password, name, email):
     # input username, password, name, email into respective fields and click register button
     username_box = driver.find_element_by_id('registerUsername')
-    username_box.send_keys(username)
+    go_to_element(username_box, driver)
+    # username_box.send_keys(username)
+    slow_type(username_box, username)
 
     password_box = driver.find_element_by_id('registerPassword')
-    password_box.send_keys(password)
+    slow_type(password_box, password)
 
     name_box = driver.find_element_by_id('registerName')
-    name_box.send_keys(name)
+    slow_type(name_box, name)
 
     email_box = driver.find_element_by_id('registerEmail')
-    email_box.send_keys(email)
+    slow_type(email_box, email)
 
-    driver.find_element_by_name('register').click()
+    register_button = driver.find_element_by_name('register')
+    register_button.click()
 
     time.sleep(3)
 
 def login(driver, username, password):
     # input username, password into respective fields and click login button
     username_box = driver.find_element_by_id('username')
-    username_box.send_keys(username)
+    # username_box.send_keys(username)
+    go_to_element(username_box, driver)
+    slow_type(username_box, username)
 
     password_box = driver.find_element_by_id('password')
-    password_box.send_keys(password)
+    slow_type(password_box, password)
     
-    driver.find_element_by_name('login').click()
+
+    login_button = driver.find_element_by_name('login')
+    go_to_element(login_button, driver)
+    login_button.click()
 
 def changePassword(driver, oldPassword, newPassword):
     # input old password and new password and click change password button
     oldPassword_box = driver.find_element_by_id('changePassword')
-    oldPassword_box.send_keys(newPassword)
+    go_to_element(oldPassword_box, driver)
+    slow_type(oldPassword_box, newPassword)
 
     newPassword_box = driver.find_element_by_id('verifyPassword')
-    newPassword_box.send_keys(newPassword)
+    slow_type(newPassword_box, newPassword)
 
-    driver.find_element_by_name('change').click()
+    change_password_button = driver.find_element_by_name('change')
+    change_password_button.click()
     
     # check that "Password Updated!" text is displayed
     
@@ -88,8 +122,15 @@ print("Starting up bot")
 driver = getDriver()
 
 driver.get(url)
-# loginButton = driver.find_element_by_link_text("LOGIN").click()
-# time.sleep(3)
+
+
+# run through all workflow functions
+for i in range(len(workflowList)):
+    workflowList[i](driver)
+    time.sleep(2)
+
+loginButton = driver.find_element_by_link_text("LOGIN").click()
+time.sleep(3)
 register(driver, username, oldPassword, name, email)
 changePassword(driver, oldPassword, newPassword)
 time.sleep(3)
