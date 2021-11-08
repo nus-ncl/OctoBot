@@ -1,4 +1,5 @@
 import time
+import os
 
 from Actions import (register, resting_mouse, changePassword, logout, login)
 
@@ -17,10 +18,11 @@ DISPLAY_VISIBLE = 1
 DISPLAY_WIDTH = 2400
 DISPLAY_HEIGHT = 1000
 
-
+print(os.environ['DISPLAY'])
 # start display 
 display = Display(visible=DISPLAY_VISIBLE, size=(DISPLAY_WIDTH, DISPLAY_HEIGHT))
 display.start()
+print(os.environ['DISPLAY'])
 
 def getDriver():
 
@@ -35,10 +37,10 @@ def getDriver():
     profile = webdriver.FirefoxProfile()
     profile.accept_untrusted_certs = True
     firefox_options = webdriver.FirefoxOptions()
-    # firefox_options.add_argument("--headless")
-    # firefox_options.add_argument("--no-sandbox")
-    # firefox_options.add_argument("--disable-dev-shm-usage")
-    # firefox_options.add_argument("--disable-gpu")
+    firefox_options.add_argument("--headless")
+    firefox_options.add_argument("--no-sandbox")
+    firefox_options.add_argument("--disable-dev-shm-usage")
+    firefox_options.add_argument("--disable-gpu")
     driver = webdriver.Firefox(firefox_options = firefox_options,firefox_profile = profile)
     # driver.get(url)
     return driver
@@ -64,11 +66,22 @@ for i in range(len(workflowList)):
     workflowList[i](driver)
     time.sleep(2)
 
-
+print("start register")
 register(driver, username, oldPassword, name, email)
+print("end register")
+
+print("start change password")
 changePassword(driver, oldPassword, newPassword)
+print("end change password")
+
+print("start logout")
 logout(driver)
+print("end logout")
+
+print("start logout")
 login(driver, username, newPassword)
+print("end logout")
+
 driver.quit()
 
 display.stop()

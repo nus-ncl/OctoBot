@@ -2,8 +2,8 @@ FROM ubuntu:20.04
 
 RUN apt-get update && apt-get install python3 python3-pip wget curl unzip -yf
 # Install Chrome
-RUN apt-get update -y
-RUN apt-get install -y dbus-x11
+# RUN apt-get update -y
+# RUN apt-get install -y dbus-x11
 
 RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-linux64.tar.gz
 RUN sh -c 'tar -x geckodriver -zf geckodriver-v0.23.0-linux64.tar.gz -O > /usr/bin/geckodriver'
