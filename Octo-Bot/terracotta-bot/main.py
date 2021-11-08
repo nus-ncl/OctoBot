@@ -9,8 +9,18 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
+from pyvirtualdisplay import Display 
+
 workflowList = [];
 
+DISPLAY_VISIBLE = 1
+DISPLAY_WIDTH = 2400
+DISPLAY_HEIGHT = 1000
+
+
+# start display 
+display = Display(visible=DISPLAY_VISIBLE, size=(DISPLAY_WIDTH, DISPLAY_HEIGHT))
+display.start()
 
 def getDriver():
 
@@ -47,6 +57,7 @@ driver.get(url)
 
 #maximise browser window
 driver.maximize_window()
+# driver.set_window_size(2300, 900)
 
 # run through all workflow functions
 for i in range(len(workflowList)):
@@ -60,4 +71,5 @@ logout(driver)
 login(driver, username, newPassword)
 driver.quit()
 
+display.stop()
 print("Shutting down bot")
