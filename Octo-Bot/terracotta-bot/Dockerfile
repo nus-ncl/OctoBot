@@ -1,6 +1,6 @@
-FROM ubuntu:bionic
+FROM ubuntu:20.04
 
-RUN apt-get update && apt-get install python3 tesseract-ocr python3-pip curl unzip -yf
+RUN apt-get update && apt-get install python3 python3-pip wget curl unzip -yf
 # Install Chrome
 RUN apt-get update -y
 RUN apt-get install -y dbus-x11
@@ -22,14 +22,13 @@ RUN export DISPLAY=:99
 RUN pip3 install virtualenv
 
 
-#COPY files from local directory into container
-COPY /main.py /
-COPY /Actions.py /
-
-ADD . /
-
+RUN mkdir /app
+COPY requirements.txt /app
+WORKDIR /app
 RUN virtualenv .venv
 RUN /bin/bash -c "source .venv/bin/activate"
 RUN pip3 install -r requirements.txt
+RUN BEZIER_NO_EXTENSION=True pip3 install bezier
 RUN apt-get install -y scrot
+COPY . /app
 ENTRYPOINT [ "python3", "main.py" ]
