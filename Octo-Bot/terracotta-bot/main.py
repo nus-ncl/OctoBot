@@ -1,7 +1,6 @@
 import time
 import os
 
-from Actions import (register, resting_mouse, changePassword, logout, login)
 
 from selenium import webdriver
 
@@ -18,7 +17,7 @@ DISPLAY_VISIBLE = 1
 DISPLAY_WIDTH = 2400
 DISPLAY_HEIGHT = 1000
 
-print(os.environ['DISPLAY'])
+# print(os.environ['DISPLAY'])
 # start display 
 display = Display(visible=DISPLAY_VISIBLE, size=(DISPLAY_WIDTH, DISPLAY_HEIGHT))
 display.start()
@@ -54,6 +53,9 @@ newPassword = "NewPassword@1"
 
 print("Starting up bot")  
 driver = getDriver()
+
+from Actions import (register, resting_mouse, changePassword, logout, login)
+
 
 driver.get(url)
 

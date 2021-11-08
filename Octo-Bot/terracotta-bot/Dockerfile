@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:bionic
 
 RUN apt-get update && apt-get install python3 python3-pip wget curl unzip -yf
 # Install Chrome
@@ -28,7 +28,7 @@ WORKDIR /app
 RUN virtualenv .venv
 RUN /bin/bash -c "source .venv/bin/activate"
 RUN pip3 install -r requirements.txt
-RUN BEZIER_NO_EXTENSION=True pip3 install bezier
+RUN BEZIER_NO_EXTENSION=True pip3 install bezier===2020.2.3
 RUN apt-get install -y scrot
 COPY . /app
 ENTRYPOINT [ "python3", "main.py" ]
