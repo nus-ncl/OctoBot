@@ -13,13 +13,13 @@ from pyvirtualdisplay import Display
 
 workflowList = [];
 
-DISPLAY_VISIBLE = 1
+DISPLAY_VISIBLE = 0
 DISPLAY_WIDTH = 2400
 DISPLAY_HEIGHT = 1000
 
 # print(os.environ['DISPLAY'])
 # start display 
-display = Display(visible=DISPLAY_VISIBLE, size=(DISPLAY_WIDTH, DISPLAY_HEIGHT))
+display = Display(visible=DISPLAY_VISIBLE, size=(DISPLAY_WIDTH, DISPLAY_HEIGHT), backend="xvfb", use_xauth=True)
 display.start()
 print(os.environ['DISPLAY'])
 
@@ -44,7 +44,8 @@ def getDriver():
     # driver.get(url)
     return driver
 
-url = "http://localhost:8080/"
+url = "http://127.0.0.1:8080/"
+
 username = "test-1"
 oldPassword = "Oldpassword@1"
 name = "Test 1"
