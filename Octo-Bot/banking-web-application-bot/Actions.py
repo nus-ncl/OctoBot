@@ -1,8 +1,13 @@
 import time
+import os
 import random
 import numpy as np
 import pyautogui
 import bezier
+import Xlib.display
+
+pyautogui._pyautogui_x11._display = Xlib.display.Display(os.environ['DISPLAY'])
+print("pyautogui can connect")
 
 def slow_type(element, pageInput):
     for letter in pageInput:

@@ -1,6 +1,6 @@
 import time
+import os
 
-from Actions import (register, resting_mouse, changePassword, logout, login)
 
 from selenium import webdriver
 
@@ -9,8 +9,19 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
+from pyvirtualdisplay import Display 
+
 workflowList = [];
 
+DISPLAY_VISIBLE = 0
+DISPLAY_WIDTH = 2400
+DISPLAY_HEIGHT = 1000
+
+# print(os.environ['DISPLAY'])
+# start display 
+display = Display(visible=DISPLAY_VISIBLE, size=(DISPLAY_WIDTH, DISPLAY_HEIGHT), backend="xvfb", use_xauth=True)
+display.start()
+print(os.environ['DISPLAY'])
 
 def getDriver():
 
@@ -25,15 +36,16 @@ def getDriver():
     profile = webdriver.FirefoxProfile()
     profile.accept_untrusted_certs = True
     firefox_options = webdriver.FirefoxOptions()
-    # firefox_options.add_argument("--headless")
-    # firefox_options.add_argument("--no-sandbox")
-    # firefox_options.add_argument("--disable-dev-shm-usage")
-    # firefox_options.add_argument("--disable-gpu")
+    firefox_options.add_argument("--headless")
+    firefox_options.add_argument("--no-sandbox")
+    firefox_options.add_argument("--disable-dev-shm-usage")
+    firefox_options.add_argument("--disable-gpu")
     driver = webdriver.Firefox(firefox_options = firefox_options,firefox_profile = profile)
     # driver.get(url)
     return driver
 
-url = "http://localhost:8080/"
+url = "http://127.0.0.1:8080/"
+
 username = "test-1"
 oldPassword = "Oldpassword@1"
 name = "Test 1"
@@ -43,21 +55,37 @@ newPassword = "NewPassword@1"
 print("Starting up bot")  
 driver = getDriver()
 
+from Actions import (register, resting_mouse, changePassword, logout, login)
+
+
 driver.get(url)
 
 #maximise browser window
 driver.maximize_window()
+# driver.set_window_size(2300, 900)
 
 # run through all workflow functions
 for i in range(len(workflowList)):
     workflowList[i](driver)
     time.sleep(2)
 
-
+print("start register")
 register(driver, username, oldPassword, name, email)
+print("end register")
+
+print("start change password")
 changePassword(driver, oldPassword, newPassword)
+print("end change password")
+
+print("start logout")
 logout(driver)
+print("end logout")
+
+print("start logout")
 login(driver, username, newPassword)
+print("end logout")
+
 driver.quit()
 
+display.stop()
 print("Shutting down bot")
