@@ -1,5 +1,34 @@
 # Terracotta Bot
 
+## Banking Application Setup
+Terracotta Bank: https://github.com/terracotta-bank/terracotta-bank.git
+
+### Prerequisites
+Ensure that the following is installed:
+1. Java 8
+
+### Setup and Run
+```console
+git clone https://github.com/terracotta-bank/terracotta-bank.git
+cd terracotta-bank/terracotta-bank-servlet
+./gradlew bootRun
+python3 main.py
+```
+
+
+## Docker Setup
+
+Build
+```console
+docker build -t terracotta-bot .
+```
+
+Run
+```console
+docker run --network="host" terracotta-bot:latest
+```
+
+## VM Setup
 
 ## Install Bot Dependencies
 Installing git
@@ -31,23 +60,6 @@ pip install selenium==3.141.0 --upgrade cryptography
 pip install numpy
 pip install pyautogui
 pip install bezier
-```
-
-git clone https://github.com/terracotta-bank/terracotta-bank.git
-cd OctoBot/Octo-Bot/terracotta-bot
-
-## Terracotta Bank Application
-
-### Prerequisites
-Ensure that the following is installed:
-1. Java 8
-
-### Setup and Run
-```console
-git clone https://github.com/terracotta-bank/terracotta-bank.git
-cd terracotta-bank/terracotta-bank-servlet
-./gradlew bootRun
-python3 main.py
 ```
 
 ## Running the Bot
