@@ -1,5 +1,6 @@
 import time
 import os
+import argparse
 
 
 from selenium import webdriver
@@ -11,19 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from pyvirtualdisplay import Display 
 
-workflowList = [];
-
-DISPLAY_VISIBLE = 0
-DISPLAY_WIDTH = 2400
-DISPLAY_HEIGHT = 1000
-
-# print(os.environ['DISPLAY'])
-# start display 
-display = Display(visible=DISPLAY_VISIBLE, size=(DISPLAY_WIDTH, DISPLAY_HEIGHT), backend="xvfb", use_xauth=True)
-display.start()
-print(os.environ['DISPLAY'])
-
-def getDriver():
+def getDriver(showDisplay):
 
     '''
     Main logic behind creating a driver object to use FireFox web browser
@@ -36,10 +25,11 @@ def getDriver():
     profile = webdriver.FirefoxProfile()
     profile.accept_untrusted_certs = True
     firefox_options = webdriver.FirefoxOptions()
-    firefox_options.add_argument("--headless")
-    firefox_options.add_argument("--no-sandbox")
-    firefox_options.add_argument("--disable-dev-shm-usage")
-    firefox_options.add_argument("--disable-gpu")
+    if (showDisplay != 1):
+        firefox_options.add_argument("--headless")
+        firefox_options.add_argument("--no-sandbox")
+        firefox_options.add_argument("--disable-dev-shm-usage")
+        firefox_options.add_argument("--disable-gpu")
     driver = webdriver.Firefox(firefox_options = firefox_options,firefox_profile = profile)
     # driver.get(url)
     return driver
@@ -52,40 +42,61 @@ name = "Test 1"
 email = "test1@test.com"
 newPassword = "NewPassword@1"
 
-print("Starting up bot")  
-driver = getDriver()
-
-from Actions import (register, resting_mouse, changePassword, logout, login)
 
 
-driver.get(url)
+if __name__== "__main__":
+    parser = argparse.ArgumentParser(description = \
+        "Arguments for program")
 
-#maximise browser window
-driver.maximize_window()
-# driver.set_window_size(2300, 900)
+    parser.add_argument('-d', metavar = 'display', type=int, \
+        help='Time to sleep between crawling of website links', default = 0)
+    args = parser.parse_args()
 
-# run through all workflow functions
-for i in range(len(workflowList)):
-    workflowList[i](driver)
-    time.sleep(2)
+    showDisplay = args.d
+    print(showDisplay)
 
-print("start register")
-register(driver, username, oldPassword, name, email)
-print("end register")
+    if (showDisplay != 1):
 
-print("start change password")
-changePassword(driver, oldPassword, newPassword)
-print("end change password")
+        DISPLAY_VISIBLE = 0
+        DISPLAY_WIDTH = 2400
+        DISPLAY_HEIGHT = 1000
+        # print(os.environ['DISPLAY'])
+        # start display 
+        display = Display(visible=DISPLAY_VISIBLE, size=(DISPLAY_WIDTH, DISPLAY_HEIGHT), backend="xvfb", use_xauth=True)
+        display.start()
+        print(os.environ['DISPLAY'])
 
-print("start logout")
-logout(driver)
-print("end logout")
+    print("Starting up bot")  
+    driver = getDriver(showDisplay)
 
-print("start logout")
-login(driver, username, newPassword)
-print("end logout")
+    from Actions import (register, resting_mouse, changePassword, logout, login)
 
-driver.quit()
 
-display.stop()
-print("Shutting down bot")
+    driver.get(url)
+
+    #maximise browser window
+    driver.maximize_window()
+    # driver.set_window_size(2300, 900)
+
+    print("start register")
+    register(driver, username, oldPassword, name, email)
+    print("end register")
+
+    print("start change password")
+    changePassword(driver, oldPassword, newPassword)
+    print("end change password")
+
+    print("start logout")
+    logout(driver)
+    print("end logout")
+
+    print("start logout")
+    login(driver, username, newPassword)
+    print("end logout")
+
+    driver.quit()
+
+    if (showDisplay != 1):
+        display.stop()
+
+    print("Shutting down bot")
