@@ -25,7 +25,6 @@ def slow_type(element, pageInput):
         time.sleep(float(random.uniform(.05, .3)))
         element.send_keys(letter)
 
-# bezier curve movement to element
 def move_cursor_to_element(element, driver): ##move mouse to middle of element
     
     '''
