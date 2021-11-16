@@ -1,70 +1,93 @@
-# Terracotta Bot
+# Web-based Banking Application Bot
+The bot is specially built for Terracotta web-based banking application.
 
-## Banking Application Setup
-Terracotta Bank: https://github.com/terracotta-bank/terracotta-bank.git
+## Terracotta Banking Application Setup
+Detailed information about Terracotta Bank can be found here https://github.com/terracotta-bank/terracotta-bank.git
 
 ### Prerequisites
 Ensure that the following is installed:
-1. Java 8
 
-### Setup and Run
-```console
+1. Git
+2. Java 8
+
+### Download and Run
+```
 git clone https://github.com/terracotta-bank/terracotta-bank.git
 cd terracotta-bank/terracotta-bank-servlet
 ./gradlew bootRun
-python3 main.py
 ```
 
+## Run Terracotta Web Application Bot with Docker
+It is recommended to run the bot using Docker container.
 
-## Docker Setup
+### Prerequisites
+Ensure that the following is installed:
 
+1. Git
+2. Docker ([How to install](https://docs.docker.com/install/))
+
+### Installation
 Build
-```console
+
+```
+git clone https://github.com/nus-ncl/OctoBot.git
+cd OctoBot/Octo-Bot/banking-web-application-bot
 docker build -t terracotta-bot .
 ```
 
 Run
-```console
+
+```
 docker run --network="host" terracotta-bot:latest
 ```
 
-## VM Setup
+## Run Terracotta Web Application Bot Natively
+If there is a problem to build and run the Bot through Docker, the Bot also can be run natively (without Docker)
 
-## Install Bot Dependencies
+### Install Python and its dependencies
 Installing git
-```console
+
+```
 sudo apt update && sudo apt install git
 ```
 
 Installing pip
-```console
+
+```
 sudo apt install python3-pip
 ```
 
-Installing other dependencies
-```console
+Installing Python dependencies
+
+```
 sudo apt-get install python3-tk python3-dev
 ```
+
+### Install Selenium Web Driver
 Install Web driver
+
 ```
 wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-linux64.tar.gz
-sudo sh -c 'tar -x geckodriver -zf geckodriver-v0.23.0-linux64.tar.gz -O > /usr/bin/geckodriver'
+sudo sh -c 'tar -x geckodriver -zf geckodriver-v0.23.0-linux64.tar.gz -O /usr/bin/geckodriver'
 sudo chmod +x /usr/bin/geckodriver
 rm geckodriver-v0.23.0-linux64.tar.gz
-
 ```
 
-Installing Python packages
-```console
+Installing Python packages (Selenium, Numpy, ...)
+
+```
 pip install selenium==3.141.0 --upgrade cryptography
 pip install numpy
 pip install pyautogui
 pip install bezier
 ```
 
-## Running the Bot
+### Running the Bot
 View all the options
-```console
-cd OctoBot/Octo-Bot/terracotta-bot
+
+```
+git clone https://github.com/nus-ncl/OctoBot.git
+cd OctoBot/Octo-Bot/banking-web-application-bot
 python3 main.py
 ```
+
