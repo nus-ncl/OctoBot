@@ -41,6 +41,29 @@ Run
 docker run --network="host" terracotta-bot:latest
 ```
 
+View All Options
+```
+docker run --network="host" terracotta-bot:latest -h
+usage: main.py [-h] [-url url of application] [-user username]
+               [-orgPass password] [-newPass new password]
+               [-name name of user] [-email email of user] [-d display]
+
+Arguments for program
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -url url of application
+                        Target Website URL
+  -user username        Username to be used
+  -orgPass password     Password to be used
+  -newPass new password
+                        New password to be changed to
+  -name name of user    Name to be used
+  -email email of user  Email to be used
+  -d display            Time to sleep between crawling of website links
+
+```
+
 ## Run Terracotta Web Application Bot Natively
 If there is a problem to build and run the Bot through Docker, the Bot also can be run natively (without Docker)
 
@@ -88,6 +111,6 @@ View all the options
 ```
 git clone https://github.com/nus-ncl/OctoBot.git
 cd OctoBot/Octo-Bot/banking-web-application-bot
-python3 main.py
+python3 main.py -d 1
 ```
 
