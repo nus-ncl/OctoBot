@@ -34,8 +34,6 @@ def getDriver(showDisplay):
     # driver.get(url)
     return driver
 
-url = "http://127.0.0.1:8080/"
-
 username = "test-1"
 oldPassword = "Oldpassword@1"
 name = "Test 1"
@@ -48,11 +46,15 @@ if __name__== "__main__":
     parser = argparse.ArgumentParser(description = \
         "Arguments for program")
 
+    parser.add_argument('-url', type=str, \
+                    help='Target Website URL', default = 'http://127.0.0.1:8080/')
     parser.add_argument('-d', metavar = 'display', type=int, \
         help='Time to sleep between crawling of website links', default = 0)
+    
     args = parser.parse_args()
 
     showDisplay = args.d
+    url = args.url
     print(showDisplay)
 
     if (showDisplay != 1):
