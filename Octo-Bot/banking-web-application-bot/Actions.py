@@ -10,12 +10,35 @@ pyautogui._pyautogui_x11._display = Xlib.display.Display(os.environ['DISPLAY'])
 print("pyautogui can connect")
 
 def slow_type(element, pageInput):
+
+    '''
+    Main Logic behind typing input string by character with random interval
+    
+    Arguments:
+        element(obj) : Input box to be typed into
+        pageInput(str) : Input string to be typed
+    
+    Returns:
+        None
+    '''
     for letter in pageInput:
         time.sleep(float(random.uniform(.05, .3)))
         element.send_keys(letter)
 
 # bezier curve movement to element
 def move_cursor_to_element(element, driver): ##move mouse to middle of element
+    
+    '''
+    Main Logic behind moving cursor to element in a bezier curve
+    
+    Arguments:
+        element(obj) : Target element which cursor is to be moved to
+        driver(obj): Firefox webdriver instance in python 
+    
+    Returns:
+        None
+    '''
+
     # need to check scroll to subtract from element location as offset
     scrollX = driver.execute_script('return window.pageXOffset;')
     scrollY = driver.execute_script('return window.pageYOffset;')
@@ -66,6 +89,17 @@ def move_cursor_to_element(element, driver): ##move mouse to middle of element
         pyautogui.sleep(np.abs(np.random.normal(0.0472, 0.003)))
 
 def go_to_element(element, driver):
+
+    '''
+    Main Logic behind scrolling element into view with random scroll movements
+    
+    Arguments:
+        element(obj) : Target element which has to be scrolled into view
+        driver(obj): Firefox webdriver instance in python 
+    
+    Returns:
+        None
+    '''
     window_height = driver.execute_script("return window.innerHeight")
     start_dom_top = driver.execute_script("return document.documentElement.scrollTop")
     element_location = element.location['y']
@@ -78,8 +112,17 @@ def go_to_element(element, driver):
         cur_dom_top = driver.execute_script("return document.documentElement.scrollTop")
         time.sleep(np.abs(np.random.normal(0.015, 0.003)))
 
-def resting_mouse(driver): #move mouse to right of screen
+def resting_mouse(): #move mouse to right of screen
 
+    '''
+    Main Logic behind moving cursor to random bottom-right location
+    
+    Arguments:
+        None
+    
+    Returns:
+        None
+    '''
     start = pyautogui.position()
 
     # make ending position based on screen size
@@ -87,7 +130,6 @@ def resting_mouse(driver): #move mouse to right of screen
     screen_width, screen_height = pyautogui.size()
 
     end = random.randint(int(screen_width*0.75), int(screen_width*0.95)), random.randint(int(screen_height*0.6),int(screen_height*0.9))
-    # end = driver.execute_script("return window.innerWidth")
 
     x2 = (start[0] + end[0])/2 #midpoint x
     y2 = (start[1] + end[1]) / 2 ##midpoint y
@@ -123,7 +165,21 @@ def resting_mouse(driver): #move mouse to right of screen
 
 
 def register(driver, username, password, name, email):
-    resting_mouse(driver)
+
+    '''
+    Main Logic behind registering a user account
+    
+    Arguments:
+        driver(obj): Firefox webdriver instance in python 
+        username(str) : username for account creation 
+        password(str) : password for account creation 
+        name(str) : name for account creation 
+        email(str) : email for account creation 
+    
+    Returns:
+        None
+    '''
+    resting_mouse()
     # input username, password, name, email into respective fields and click register button
     username_box = driver.find_element_by_id('registerUsername')
     go_to_element(username_box, driver)
@@ -152,7 +208,19 @@ def register(driver, username, password, name, email):
     time.sleep(2)
 
 def login(driver, username, password):
-    resting_mouse(driver)
+
+    '''
+    Main Logic behind registering a user account
+    
+    Arguments:
+        driver(obj): Firefox webdriver instance in python 
+        username(str) : username of existing account 
+        password(str) : password of existing account 
+    
+    Returns:
+        None
+    '''
+    resting_mouse()
     # input username, password into respective fields and click login button
     username_box = driver.find_element_by_id('username')
     # username_box.send_keys(username)
@@ -171,8 +239,19 @@ def login(driver, username, password):
     login_button.click()
     time.sleep(2)
 
-def changePassword(driver, oldPassword, newPassword):
-    resting_mouse(driver)
+def changePassword(driver, newPassword):
+
+    '''
+    Main Logic behind registering a user account
+    
+    Arguments:
+        driver(obj): Firefox webdriver instance in python 
+        newPassword(str) : new password to be changed to 
+    
+    Returns:
+        None
+    '''
+    resting_mouse()
     # input old password and new password and click change password button
     oldPassword_box = driver.find_element_by_id('changePassword')
     go_to_element(oldPassword_box, driver)
@@ -197,7 +276,17 @@ def changePassword(driver, oldPassword, newPassword):
     #     print("Error changing password")
 
 def logout(driver):
-    resting_mouse(driver)
+
+    '''
+    Main Logic behind logging user out of a logged-in session
+    
+    Arguments:
+        driver(obj): Firefox webdriver instance in python 
+        
+    Returns:
+        None
+    '''
+    resting_mouse()
     # click on logout button
     logout_button = driver.find_element_by_link_text("LOGOUT")
     go_to_element(logout_button, driver)

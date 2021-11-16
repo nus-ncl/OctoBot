@@ -71,7 +71,7 @@ if __name__== "__main__":
     print("Starting up bot")  
     driver = getDriver(showDisplay)
 
-    from Actions import (register, resting_mouse, changePassword, logout, login)
+    from Actions import (register, changePassword, logout, login)
 
 
     driver.get(url)
@@ -85,7 +85,7 @@ if __name__== "__main__":
     print("end register")
 
     print("start change password")
-    changePassword(driver, oldPassword, newPassword)
+    changePassword(driver, newPassword)
     print("end change password")
 
     print("start logout")
