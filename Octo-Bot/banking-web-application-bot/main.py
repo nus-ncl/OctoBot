@@ -44,13 +44,13 @@ if __name__== "__main__":
         help='Target Website URL', default = 'http://127.0.0.1:8080/')
 
     parser.add_argument('-user', metavar = 'username', type=str, \
-        help='Username to be used', default = 'test-1"')
+        help='Username to be used', default = 'test-1')
 
     parser.add_argument('-orgPass', metavar = 'password', type=str, \
         help='Password to be used', default = 'Oldpassword@1')
 
     parser.add_argument('-newPass', metavar = 'new password', type=str, \
-        help='New password to be changed to', default = 'NewPassword@1')
+        help='New password to be changed to', default = 'Password@1')
 
     parser.add_argument('-name', metavar = 'name of user', type=str, \
         help='Name to be used', default = 'Test 1')
@@ -85,7 +85,10 @@ if __name__== "__main__":
     print("Starting up bot")  
     driver = getDriver(showDisplay)
 
-    from Actions import (register, changePassword, logout, login)
+    usernameB = "test-2"
+    passwordB = "Password@2"
+
+    from Actions import (register, changePassword, logout, login, depositFromAToB, transferFromAToB)
 
 
     driver.get(url)
@@ -94,21 +97,25 @@ if __name__== "__main__":
     driver.maximize_window()
     # driver.set_window_size(2300, 900)
 
-    print("start register")
-    register(driver, username, oldPassword, name, email)
-    print("end register")
+    # print("start register")
+    # register(driver, username, oldPassword, name, email)
+    # print("end register")
 
-    print("start change password")
-    changePassword(driver, newPassword)
-    print("end change password")
+    # print("start change password")
+    # changePassword(driver, newPassword)
+    # print("end change password")
 
-    print("start logout")
-    logout(driver)
-    print("end logout")
+    # print("start logout")
+    # logout(driver)
+    # print("end logout")
 
-    print("start logout")
-    login(driver, username, newPassword)
-    print("end logout")
+    # print("start logout")
+    # login(driver, username, newPassword)
+    # print("end logout")
+
+    # depositFromAToB(driver, username, newPassword, usernameB, passwordB, 100.0)
+
+    transferFromAToB(driver, username, newPassword, usernameB, passwordB, 100.0)
 
     driver.quit()
 

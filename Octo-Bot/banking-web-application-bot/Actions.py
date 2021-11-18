@@ -5,6 +5,7 @@ import numpy as np
 import pyautogui
 import bezier
 import Xlib.display
+from random import randint
 
 pyautogui._pyautogui_x11._display = Xlib.display.Display(os.environ['DISPLAY'])
 print("pyautogui can connect")
@@ -280,15 +281,123 @@ def logout(driver):
     Main Logic behind logging user out of a logged-in session
     
     Arguments:
-        driver(obj): Firefox webdriver instance in python 
         
     Returns:
         None
     '''
+    print("before resting mouse")
     resting_mouse()
     # click on logout button
+    print("after resting; finding logout")
     logout_button = driver.find_element_by_link_text("LOGOUT")
-    go_to_element(logout_button, driver)
+    print("found logout")
+    print("after go to element")
     move_cursor_to_element(logout_button, driver)
     logout_button.click()
     time.sleep(2)
+
+
+def getAccountNumber(driver):
+    return driver.find_element_by_css_selector('[id^=accountNumber]').text
+
+def getAccountBalance(driver):
+    return driver.find_element_by_css_selector('[id^=accountBalance]').text
+
+def verifyUpdatedBalance(oldBalance, amount):
+    newBalance = getAccountBalance
+    print((oldBalance + amount == newBalance))
+
+def deposit(driver, accountNumber, amount):
+    accountNumber_box = driver.find_element_by_id('depositAccountNumber')
+    go_to_element(accountNumber_box, driver)
+    move_cursor_to_element(accountNumber_box, driver)
+    slow_type(accountNumber_box, accountNumber)
+
+    checkNumber_box = driver.find_element_by_id('depositCheckNumber')
+    go_to_element(checkNumber_box, driver)
+    move_cursor_to_element(checkNumber_box, driver)
+    slow_type(checkNumber_box, str(randint(10000000, 99999999)))
+
+    amount_box = driver.find_element_by_id('depositAmount')
+    go_to_element(amount_box, driver)
+    move_cursor_to_element(amount_box, driver)
+    slow_type(amount_box, str(amount))
+
+    deposit_button = driver.find_element_by_name('deposit')
+    go_to_element(deposit_button, driver)
+    move_cursor_to_element(deposit_button, driver)
+    deposit_button.click()
+
+def transfer(driver, accountNumber, amount):
+    accountNumber_box = driver.find_element_by_id('toAccountNumber')
+    go_to_element(accountNumber_box, driver)
+    move_cursor_to_element(accountNumber_box, driver)
+    slow_type(accountNumber_box, accountNumber)
+
+    amount_box = driver.find_element_by_id('transferAmount')
+    go_to_element(amount_box, driver)
+    move_cursor_to_element(amount_box, driver)
+    slow_type(amount_box, str(amount))
+
+    deposit_button = driver.find_element_by_name('transfer')
+    go_to_element(deposit_button, driver)
+    move_cursor_to_element(deposit_button, driver)
+    deposit_button.click()
+
+
+
+def depositFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount):
+
+    '''
+    Main Logic behind workflow to deposit funds into account
+    
+    Arguments:
+        driver(obj): Firefox webdriver instance in python
+        username(str) : username of account for funds  
+        password(str) : password of account to deposit money into 
+        amount(str) : amount to be deposited into account 
+        
+    Returns:
+        None
+    '''
+    login(driver, usernameB, passwordB)
+    accountNumberB = getAccountNumber(driver)
+    accountBalanceB = getAccountBalance(driver)
+    print("NumberB: " + accountNumberB)
+    print("BalanceB: " + accountBalanceB)
+    print("Before logout")
+    logout(driver)
+    print("after logout")
+    login(driver, usernameA, passwordA)
+    deposit(driver, accountNumberB, amount)
+    logout(driver)
+    login(driver, usernameB, passwordB)
+    # verifyUpdatedBalance(accountBalanceB, amount)
+
+def transferFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount):
+
+    '''
+    Main Logic behind workflow to deposit funds into account
+    
+    Arguments:
+        driver(obj): Firefox webdriver instance in python
+        username(str) : username of account for funds  
+        password(str) : password of account to deposit money into 
+        amount(str) : amount to be deposited into account 
+        
+    Returns:
+        None
+    '''
+    login(driver, usernameB, passwordB)
+    accountNumberB = getAccountNumber(driver)
+    accountBalanceB = getAccountBalance(driver)
+    print("NumberB: " + accountNumberB)
+    print("BalanceB: " + accountBalanceB)
+    print("Before logout")
+    logout(driver)
+    print("after logout")
+    login(driver, usernameA, passwordA)
+    transfer(driver, accountNumberB, amount)
+    logout(driver)
+    login(driver, usernameB, passwordB)
+    # verifyUpdatedBalance(accountBalanceB, amount)
