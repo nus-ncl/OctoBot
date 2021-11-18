@@ -43,19 +43,22 @@ if __name__== "__main__":
     parser.add_argument('-url', metavar = 'url of application', type=str, \
         help='Target Website URL', default = 'http://127.0.0.1:8080/')
 
-    parser.add_argument('-user', metavar = 'username', type=str, \
+    parser.add_argument('-wf', metavar = 'workflow to use', type=str, \
+        help='Workflow for this bot', default = 'create')
+
+    parser.add_argument('-u', metavar = 'username', type=str, \
         help='Username to be used', default = 'test-1')
 
     parser.add_argument('-orgPass', metavar = 'password', type=str, \
         help='Password to be used', default = 'Oldpassword@1')
 
-    parser.add_argument('-newPass', metavar = 'new password', type=str, \
+    parser.add_argument('-p', metavar = 'new password', type=str, \
         help='New password to be changed to', default = 'Password@1')
 
-    parser.add_argument('-name', metavar = 'name of user', type=str, \
+    parser.add_argument('-n', metavar = 'name of user', type=str, \
         help='Name to be used', default = 'Test 1')
 
-    parser.add_argument('-email', metavar = 'email of user', type=str, \
+    parser.add_argument('-e', metavar = 'email of user', type=str, \
         help='Email to be used', default = 'test1@test.com')
 
     parser.add_argument('-d', metavar = 'display', type=int, \
@@ -63,13 +66,14 @@ if __name__== "__main__":
     
     args = parser.parse_args()
 
+    workflow = args.wf
     showDisplay = args.d
     url = args.url
-    username = args.user
+    username = args.u
     oldPassword = args.orgPass
-    name = args.name
-    email = args.email
-    newPassword = args.newPass
+    name = args.n
+    email = args.e
+    password = args.p
 
     if (showDisplay != 1):
 
@@ -88,7 +92,10 @@ if __name__== "__main__":
     usernameB = "test-2"
     passwordB = "Password@2"
 
-    from Actions import (register, changePassword, logout, login, depositFromAToB, transferFromAToB)
+    usernameParent = "test-3"
+    passwordParent = "Password@3"
+
+    from Actions import (register, changePassword, logout, login, depositFromAToB, transferFromAToB, depositTransferParentToAToB)
 
 
     driver.get(url)
@@ -97,25 +104,31 @@ if __name__== "__main__":
     driver.maximize_window()
     # driver.set_window_size(2300, 900)
 
-    # print("start register")
-    # register(driver, username, oldPassword, name, email)
-    # print("end register")
+    if workflow == 'create':
+        register(driver, username, password, name, email)
+    elif workflow == 'password':
+        print("start register")
+        register(driver, username, oldPassword, name, email)
+        print("end register")
 
-    # print("start change password")
-    # changePassword(driver, newPassword)
-    # print("end change password")
+        print("start change password")
+        changePassword(driver, password)
+        print("end change password")
 
-    # print("start logout")
-    # logout(driver)
-    # print("end logout")
+        print("start logout")
+        logout(driver)
+        print("end logout")
 
-    # print("start logout")
-    # login(driver, username, newPassword)
-    # print("end logout")
+        print("start logout")
+        login(driver, username, newPassword)
+        print("end logout")
+    elif workflow == 'deposit':
+        depositFromAToB(driver, username, newPassword, usernameB, passwordB, 100.0)
+    elif workflow == 'transfer':
+        transferFromAToB(driver, username, newPassword, usernameB, passwordB, 100.0)
+    elif workflow == 'parentSub':
+        depositTransferParentToAToB(driver, usernameParent, passwordParent, username, password, usernameB, passwordB, 100.0, 100.0)
 
-    # depositFromAToB(driver, username, newPassword, usernameB, passwordB, 100.0)
-
-    transferFromAToB(driver, username, newPassword, usernameB, passwordB, 100.0)
 
     driver.quit()
 

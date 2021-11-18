@@ -372,7 +372,7 @@ def depositFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount):
     deposit(driver, accountNumberB, amount)
     logout(driver)
     login(driver, usernameB, passwordB)
-    # verifyUpdatedBalance(accountBalanceB, amount)
+    logout(driver)
 
 def transferFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount):
 
@@ -400,4 +400,39 @@ def transferFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount)
     transfer(driver, accountNumberB, amount)
     logout(driver)
     login(driver, usernameB, passwordB)
-    # verifyUpdatedBalance(accountBalanceB, amount)
+    logout(driver)
+
+def depositTransferParentToAToB(driver, usernameParent, passwordParent, usernameA, passwordA, usernameB, passwordB, amountDeposit, amountTransfer):
+
+    '''
+    Main Logic behind workflow to deposit funds from Parent to A and transfer from A to B
+    
+    Arguments:
+        driver(obj): Firefox webdriver instance in python
+        username(str) : username of account for funds  
+        password(str) : password of account to deposit money into 
+        amount(str) : amount to be deposited into account 
+        
+    Returns:
+        None
+    '''
+    login(driver, usernameA, passwordA)
+    accountNumberA = getAccountNumber(driver)
+    accountBalanceA = getAccountBalance(driver)
+    logout(driver)
+    login(driver, usernameParent, passwordParent)
+    deposit(driver, accountNumberA, amountDeposit)
+    logout(driver)
+    login(driver, usernameA, passwordA)
+    logout(driver)
+
+    login(driver, usernameB, passwordB)
+    accountNumberB = getAccountNumber(driver)
+    accountBalanceB = getAccountBalance(driver)
+    logout(driver)
+    login(driver, usernameA, passwordA)
+    transfer(driver, accountNumberB, amountTransfer)
+    logout(driver)
+    login(driver, usernameB, passwordB)
+    logout(driver)
+
