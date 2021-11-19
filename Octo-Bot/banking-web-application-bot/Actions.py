@@ -360,18 +360,30 @@ def depositFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount):
     Returns:
         None
     '''
+    print("login")
     login(driver, usernameB, passwordB)
+
     accountNumberB = getAccountNumber(driver)
     accountBalanceB = getAccountBalance(driver)
     print("NumberB: " + accountNumberB)
     print("BalanceB: " + accountBalanceB)
-    print("Before logout")
+
+    print("logout")
     logout(driver)
-    print("after logout")
+
+    print("login")
     login(driver, usernameA, passwordA)
+
+    print("deposit")
     deposit(driver, accountNumberB, amount)
+
+    print("logout")
     logout(driver)
+
+    print("login")
     login(driver, usernameB, passwordB)
+
+    print("logout")
     logout(driver)
 
 def transferFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount):
@@ -388,18 +400,31 @@ def transferFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount)
     Returns:
         None
     '''
+
+    print("login B")
     login(driver, usernameB, passwordB)
+
     accountNumberB = getAccountNumber(driver)
     accountBalanceB = getAccountBalance(driver)
     print("NumberB: " + accountNumberB)
     print("BalanceB: " + accountBalanceB)
-    print("Before logout")
+
+    print("logout B")
     logout(driver)
-    print("after logout")
+
+    print("login A")
     login(driver, usernameA, passwordA)
+
+    print("transfer A to B")
     transfer(driver, accountNumberB, amount)
+
+    print("logout A")
     logout(driver)
+
+    print("login B")
     login(driver, usernameB, passwordB)
+
+    print("logout B")
     logout(driver)
 
 def depositTransferParentToAToB(driver, usernameParent, passwordParent, usernameA, passwordA, usernameB, passwordB, amountDeposit, amountTransfer):
@@ -416,23 +441,57 @@ def depositTransferParentToAToB(driver, usernameParent, passwordParent, username
     Returns:
         None
     '''
+
+    print("login A")
     login(driver, usernameA, passwordA)
+
     accountNumberA = getAccountNumber(driver)
     accountBalanceA = getAccountBalance(driver)
-    logout(driver)
-    login(driver, usernameParent, passwordParent)
-    deposit(driver, accountNumberA, amountDeposit)
-    logout(driver)
-    login(driver, usernameA, passwordA)
+    print("NumberA: " + accountNumberA)
+    print("BalanceA: " + accountBalanceA)
+
+    print("logout A")
     logout(driver)
 
+    print("login parent")
+    login(driver, usernameParent, passwordParent)
+
+    print("deposit parent to A")
+    deposit(driver, accountNumberA, amountDeposit)
+
+    print("logout parent")
+    logout(driver)
+
+    print("login A")
+    login(driver, usernameA, passwordA)
+
+    print("logout A")
+    logout(driver)
+
+    print("login B")
     login(driver, usernameB, passwordB)
+
     accountNumberB = getAccountNumber(driver)
     accountBalanceB = getAccountBalance(driver)
+    print("NumberB: " + accountNumberB)
+    print("BalanceB: " + accountBalanceB)
+
+
+    print("logout B")
     logout(driver)
+
+    print("login A")
     login(driver, usernameA, passwordA)
+
+    print("transfer A to B")
     transfer(driver, accountNumberB, amountTransfer)
+
+    print("logout A")
     logout(driver)
+
+    print("login B")
     login(driver, usernameB, passwordB)
+
+    print("logout B")
     logout(driver)
 

@@ -61,6 +61,18 @@ if __name__== "__main__":
     parser.add_argument('-e', metavar = 'email of user', type=str, \
         help='Email to be used', default = 'test1@test.com')
 
+    parser.add_argument('-u2', metavar = 'username of B', type=str, \
+        help='Username to be used', default = 'test-2')
+    
+    parser.add_argument('-p2', metavar = 'password of B', type=str, \
+        help='New password to be changed to', default = 'Password@2')
+
+    parser.add_argument('-u3', metavar = 'username of Parent', type=str, \
+        help='Username to be used', default = 'test-3')
+
+    parser.add_argument('-p3', metavar = 'password of Parent', type=str, \
+        help='New password to be changed to', default = 'Password@3')
+
     parser.add_argument('-d', metavar = 'display', type=int, \
         help='Time to sleep between crawling of website links', default = 0)
     
@@ -74,6 +86,12 @@ if __name__== "__main__":
     name = args.n
     email = args.e
     password = args.p
+
+    usernameB = args.u2
+    passwordB = args.p2
+
+    usernameParent = args.u3
+    passwordParent = args.p3
 
     if (showDisplay != 1):
 
@@ -89,11 +107,7 @@ if __name__== "__main__":
     print("Starting up bot")  
     driver = getDriver(showDisplay)
 
-    usernameB = "test-2"
-    passwordB = "Password@2"
 
-    usernameParent = "test-3"
-    passwordParent = "Password@3"
 
     from Actions import (register, changePassword, logout, login, depositFromAToB, transferFromAToB, depositTransferParentToAToB)
 
@@ -107,25 +121,21 @@ if __name__== "__main__":
     if workflow == 'create':
         register(driver, username, password, name, email)
     elif workflow == 'password':
-        print("start register")
+        print("register")
         register(driver, username, oldPassword, name, email)
-        print("end register")
 
-        print("start change password")
+        print("change password")
         changePassword(driver, password)
-        print("end change password")
 
-        print("start logout")
+        print("logout")
         logout(driver)
-        print("end logout")
 
-        print("start logout")
-        login(driver, username, newPassword)
-        print("end logout")
+        print("login")
+        login(driver, username, password)
     elif workflow == 'deposit':
-        depositFromAToB(driver, username, newPassword, usernameB, passwordB, 100.0)
+        depositFromAToB(driver, username, password, usernameB, passwordB, 100.0)
     elif workflow == 'transfer':
-        transferFromAToB(driver, username, newPassword, usernameB, passwordB, 100.0)
+        transferFromAToB(driver, username, password, usernameB, passwordB, 100.0)
     elif workflow == 'parentSub':
         depositTransferParentToAToB(driver, usernameParent, passwordParent, username, password, usernameB, passwordB, 100.0, 100.0)
 
