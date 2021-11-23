@@ -1,0 +1,44 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build the Docker image for file-transfer-bot
+        run: |
+          cd Octo-Bot/file-transfer-bot/
+          docker build . --file Dockerfile --tag file-transfer-bot:$(date +%s)
+      - name: Build the Docker image for healthcare-registration-bot
+        run: |
+          cd Octo-Bot/healthcare-registration-bot/
+          docker build . --file Dockerfile --tag healthcare-registration-bot:$(date +%s)
+      - name: Build the Docker image for healthcare-web-bot
+        run: |
+          cd Octo-Bot/healthcare-web-bot/
+          docker build . --file Dockerfile --tag healthcare-web-bot:$(date +%s)
+      - name: Build the Docker image for javascript-web-bot
+        run: |
+          cd Octo-Bot/javascript-web-bot/
+          docker build . --file Dockerfile --tag javascript-web-bot:$(date +%s)
+      - name: Build the Docker image for packet-generator-bot
+        run: |
+          cd Octo-Bot/packet-generator-bot/
+          docker build . --file Dockerfile --tag packet-generator-bot:$(date +%s)
+      - name: Build the Docker image for synflood-attack-bot
+        run: |
+          cd Octo-Bot/synflood-attack-bot/
+          docker build . --file Dockerfile --tag synflood-attack-bot:$(date +%s)
+      - name: Build the Docker image for web-browsing-bot
+        run: |
+          cd Octo-Bot/web-browsing-bot/
+          docker build . --file Dockerfile --tag web-browsing-bot:$(date +%s)
