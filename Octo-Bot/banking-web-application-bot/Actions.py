@@ -171,10 +171,6 @@ def reading_delay(driver):
     
     Arguments:
         driver(obj): Firefox webdriver instance in python 
-        username(str) : username for account creation 
-        password(str) : password for account creation 
-        name(str) : name for account creation 
-        email(str) : email for account creation 
     
     Returns:
         None
