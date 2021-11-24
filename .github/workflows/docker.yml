@@ -42,3 +42,7 @@ jobs:
         run: |
           cd Octo-Bot/web-browsing-bot/
           docker build . --file Dockerfile --tag web-browsing-bot:$(date +%s)
+      - name: Build the Docker image for banking-web-application-bot
+        run: |
+          cd Octo-Bot/banking-web-application-bot/
+          docker build . --file Dockerfile --tag banking-web-application-bot:$(date +%s)
