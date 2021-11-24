@@ -164,6 +164,34 @@ def resting_mouse(): #move mouse to right of screen
 
 
 
+def reading_delay(driver):
+
+    '''
+    Main Logic behind adding delay based on number of words on a page
+    
+    Arguments:
+        driver(obj): Firefox webdriver instance in python 
+        username(str) : username for account creation 
+        password(str) : password for account creation 
+        name(str) : name for account creation 
+        email(str) : email for account creation 
+    
+    Returns:
+        None
+    '''
+    num_words = 0
+    list_strings = driver.find_element_by_xpath("/html/body").text # extract all text on page
+    for string in list_strings:
+        num_words += 1 + string.count(' ') # 1 initial and 1 for each add space
+    
+    # Reading rate from How many words do we read per minute? A review and meta-analysis of reading rate by Marc Brysbaert
+    reading_rate = np.abs(np.random.normal(238, 51.2))
+    delay = (reading_rate*60)/num_words
+    print("Delay by: " + str(delay) + "s")
+    time.sleep(delay)
+
+
+
 def register(driver, username, password, name, email):
 
     '''

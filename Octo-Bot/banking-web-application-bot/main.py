@@ -109,7 +109,7 @@ if __name__== "__main__":
 
 
 
-    from Actions import (register, changePassword, logout, login, depositFromAToB, transferFromAToB, depositTransferParentToAToB)
+    from Actions import (reading_delay, register, changePassword, logout, login, depositFromAToB, transferFromAToB, depositTransferParentToAToB)
 
 
     driver.get(url)
@@ -118,6 +118,7 @@ if __name__== "__main__":
     driver.maximize_window()
     # driver.set_window_size(2300, 900)
 
+    reading_delay(driver) # add delay for initial page reading 
     if workflow == 'create':
         register(driver, username, password, name, email)
     elif workflow == 'password':
@@ -138,7 +139,6 @@ if __name__== "__main__":
         transferFromAToB(driver, username, password, usernameB, passwordB, 100.0)
     elif workflow == 'parentSub':
         depositTransferParentToAToB(driver, usernameParent, passwordParent, username, password, usernameB, passwordB, 100.0, 100.0)
-
 
     driver.quit()
 
