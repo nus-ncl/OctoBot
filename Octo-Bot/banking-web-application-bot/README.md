@@ -48,7 +48,7 @@ usage: main.py [-h] [-url url of application] [-wf workflow to use]
                [-u username] [-orgPass password] [-p new password]
                [-n name of user] [-e email of user] [-u2 username of B]
                [-p2 password of B] [-u3 username of Parent]
-               [-p3 password of Parent] [-d display]
+               [-p3 password of Parent] [-d display] [-a amount] [-l amount]
 
 Arguments for program
 
@@ -69,6 +69,9 @@ optional arguments:
   -p3 password of Parent
                         New password to be changed to
   -d display            Time to sleep between crawling of website links
+  -a amount             Amount to deposit or transfer
+  -l loop             Loop workflow
+
 
 
 ```

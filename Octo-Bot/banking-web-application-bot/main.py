@@ -80,7 +80,7 @@ if __name__== "__main__":
     parser.add_argument('-a', metavar = 'amount', type=float, \
         help='Amount to deposit or transfer', default = round(np.abs(np.random.normal(100.0, 25.0)), 2))
     
-    parser.add_argument('-l', metavar = 'amount', type=int, \
+    parser.add_argument('-l', metavar = 'loop', type=int, \
         help='Loop workflow', default = 0)
     
     args = parser.parse_args()
