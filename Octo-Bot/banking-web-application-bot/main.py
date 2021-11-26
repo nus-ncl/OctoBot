@@ -80,6 +80,9 @@ if __name__== "__main__":
     parser.add_argument('-a', metavar = 'amount', type=float, \
         help='Amount to deposit or transfer', default = round(np.abs(np.random.normal(100.0, 25.0)), 2))
     
+    parser.add_argument('-l', metavar = 'amount', type=int, \
+        help='Loop workflow', default = 0)
+    
     args = parser.parse_args()
 
     workflow = args.wf
@@ -91,6 +94,7 @@ if __name__== "__main__":
     email = args.e
     password = args.p
     amount = args.a
+    loop = args.l
 
     usernameB = args.u2
     passwordB = args.p2
@@ -139,11 +143,23 @@ if __name__== "__main__":
         print("login")
         login(driver, username, password)
     elif workflow == 'deposit':
-        depositFromAToB(driver, username, password, usernameB, passwordB, amount)
+        while True:
+            depositFromAToB(driver, username, password, usernameB, passwordB, amount)
+            if loop != 1:
+                break
+            amount = round(np.abs(np.random.normal(100.0, 25.0)), 2)
     elif workflow == 'transfer':
-        transferFromAToB(driver, username, password, usernameB, passwordB, amount)
+        while True:
+            transferFromAToB(driver, username, password, usernameB, passwordB, amount)
+            if loop != 1:
+                break
+            amount = round(np.abs(np.random.normal(100.0, 25.0)), 2)
     elif workflow == 'parentSub':
-        depositTransferParentToAToB(driver, usernameParent, passwordParent, username, password, usernameB, passwordB, amount, amount)
+        while True:
+            depositTransferParentToAToB(driver, usernameParent, passwordParent, username, password, usernameB, passwordB, amount, amount)
+            if loop != 1:
+                break
+            amount = round(np.abs(np.random.normal(100.0, 25.0)), 2)
 
     driver.quit()
 
