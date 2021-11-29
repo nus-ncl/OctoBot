@@ -18,7 +18,7 @@ ncl@orchestrator:~/$ git clone https://github.com/nus-ncl/OctoBot
 ncl@orchestrator:~/$ cd OctoBot/Octo-App
 ```
  
-### Run Octo-App Program
+### Run Basic Octo-App Program
   
 Call the program by using this command in order to get program prompt.
 Insert the **required** parameters to run specific job or get the Shell for interactive execution:
@@ -49,3 +49,43 @@ ping 8.8.8.8 (8.8.8.8): 56 data bytes
 3 packets transmitted, 3 packets received, 0% packet loss
 round-trip mon/avg/max = 3.178/4.014/5.052 ms
 ```
+
+### (Optional) Octo-App Run "Moveable" or Dynamic Bot
+
+This feature may required additional installation of NFS sharing in Octo-Pro 
+component as shown [here](../Octo-Pro/README.md).
+
+In order to run bot and move from one node to another node, please follow these
+steps.
+
+First, create bot in specific node with this following format `setBotNode 
+<botname> <nodename> <image/worker type> <job/task>`
+```console
+setBotNode dynamic-bot-1 octobot-wk-1 nusncl1/healthcare-web-bot:latest python -u ./main.py -r patient
+botname : dynamic-bot-1
+nodename: octobot-wk-1
+http://localhost:12321/api/v1/namespaces/default/pods
+bot successfully in designated node
+```
+
+Second, move bot into specific node and may also change the task with this 
+following format `setBotNode <moveBotNode> <nodename> <image/worker type> 
+<job/task>`
+
+```console
+moveBotNode dynamic-bot-1 octobot-wk-2 nusncl1/healthcare-web-bot:latest python -u ./main.py -r patient
+Successfully deleted bot
+dynamic-bot-1 still terminating
+....
+....
+botname : dynamic-bot-1
+nodename: octobot-wk-2
+http://localhost:12321/api/v1/namespaces/default/pods
+bot successfully in designated node
+```
+
+### (Optional) Octo-App API Server
+
+If there is requirement to allow access this Octo-App from third-party users or 
+application, API server can be used. The detail how to enable and run API server
+please check the detail documentation [here](api-server/README.md)

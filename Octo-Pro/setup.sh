@@ -1,4 +1,12 @@
 #!/bin/sh
+# Script to Install OctoBot Provisioning component.
+# Author : Aris C. Risdianto
+# Update : November 2021
+#
+# Usage:
+# ./setup.sh
+#
+# Select between "c", "w", "a", "v" or "e"
 
 sudo apt-get update
 sudo apt-get install ansible -y
@@ -11,6 +19,6 @@ while true; do
         [Aa]* ) echo "Installing Controller and Worker Nodes"; ansible-playbook -i hosts master-playbook.yml; ansible-playbook -i hosts node-playbook.yml; exit;;
         [Vv]* ) echo "Installing NFS and Configuring Shared Volumes"; ansible-playbook -i hosts volume-support-playbook.yaml; exit;;
         [Ee]* ) exit;;
-        * ) echo "Please select (c), (w), (a) or (v) ?";;
+        * ) echo "Please select (c), (w), (a), (v) or (e)?";;
     esac
 done

@@ -34,6 +34,8 @@ Contributors:
 - Lai Yong Rong (Singapore Polytechnic)
 - Joel Chang Zhi Kai (NUS)
 - Ang Chin Guan, Melvin (NUS)
+- Huang Kang (NUS)
+- Akhil Vuputuri (NUS)
 
 ## Contribution
 

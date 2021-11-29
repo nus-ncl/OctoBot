@@ -31,7 +31,7 @@ ncl@orchestrator:~/OctoBot/Octo-Pro$ ./setup.sh
 ```
 For example to install the nodes, please type "w" and it will give this following output:
 ```console 
-Please select your installation target? [Controller (c), Worker(w), All (a) or Exit (e)] w
+Please select your installation target? [Controller (c), Worker(w), All (a), Volume(v), or Exit (e)] w
 
 Installing Worker Nodes
 
@@ -99,5 +99,58 @@ NAME          STATUS   ROLES    AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-
 k8s-master    Ready    master   47h   v1.16.0   10.0.0.209   <none>        Ubuntu 18.04.2 LTS   4.15.0-54-generic   docker://18.9.0
 worker-3      Ready    <none>   47h   v1.16.0   10.0.0.210   <none>        Ubuntu 18.04.2 LTS   4.15.0-64-generic   docker://18.9.0
 worker-node   Ready    <none>   47h   v1.16.0   10.0.0.215   <none>        Ubuntu 18.04.2 LTS   4.15.0-54-generic   docker://18.9.0
+...
+```
 
+### (Optional) Re-configure Broken Node or Failed Provisioning
+If one of the node have some problem, use `config.sh` script with this following
+to reconfigure the node without to do full installation:
+
+```console
+ubuntu@octobot-o:~/OctoBot/Octo-Pro$ ./config.sh
+```
+
+Then, select role that need to be configured to continue:
+
+```console
+....
+Please select your installation target? [Controller (c), Worker(w), All (a), Volume(v), or Exit (e)]
+....
+```
+
+### (Optional) Installing Persistent Volume
+
+If there is requirement to provide a "special" bot that can move between worker 
+machines without losing the bot's data, so persistent volume sharing need to be 
+configured. Currently, NFS file sharing is used to support dynamic bot 
+deployment with persistent log files.
+
+In order to install this feature use this this command:
+
+```console
+ubuntu@octobot-o:~/OctoBot/Octo-Pro$ ./setup.sh
+....
+```
+
+Then, select "v" or "V" to continue:
+
+```console
+....
+Please select your installation target? [Controller (c), Worker(w), All (a), Volume(v), or Exit (e)] v
+Installing NFS and Configuring Shared Volumes
+....
+TASK [Mount NFS directory] *********************************************************************************************
+changed: [redacted]
+changed: [redacted]
+
+PLAY RECAP *************************************************************************************************************
+redacted                : ok=7    changed=3    unreachable=0    failed=0   
+redacted                : ok=4    changed=1    unreachable=0    failed=0   
+redacted                : ok=4    changed=1    unreachable=0    failed=0   
+```
+
+Use this command to verify:
+
+```console
+ubuntu@octobot-o:~/OctoBot/Octo-Pro$ kubectl describe pv task-pv-volume
 ```
