@@ -26,7 +26,7 @@ Insert the **required** parameters:
 
 - **setName** - name of the generation task
 - **setBotNumbers** - how many bot is required to generate the activity
-- **addWorker** - name of the worker with specific worker type (image) that required to execute job (command)
+- **addExecutor** - name of the executor with specific working type (image) that required to execute job (command)
 - **writeFile** - save the generation task into file
 - **runFile** - run the file in order to start generation
 - (Optional) **setPort** - in case if you listening different API port for OctoBot system
@@ -40,7 +40,7 @@ Type "exit" to exit the program
 main.py:~$ help
 
 List of commands
-['currentConfig', 'getName', 'setName', 'getBotNumbers', 'setBotNumbers', 'getWorkers', 'addWorker', 'deleteWorker', 'openProxy', 'setPort', 'loadFile', 'writeFile', 'runFile', 'patchFile', 'stopFile', 'checkStatus', 'runJob', 'getShell', 'deletePod', 'getLogs', 'getLogsByCmd', 'exit']
+['currentConfig', 'getName', 'setName', 'getBotNumbers', 'setBotNumbers', 'getExecutors', 'addExecutor', 'deleteExecutor', 'openProxy', 'setPort', 'loadFile', 'writeFile', 'runFile', 'patchFile', 'stopFile', 'checkStatus', 'runJob', 'getShell', 'deletePod', 'getLogs', 'getLogsByCmd', 'exit']
 
 List of functions
 ['read_file']
@@ -49,7 +49,7 @@ Example - help getName
 
 main.py:~$ setName test5
 main.py:~$ setBotNumbers 2
-main.py:~$ addWorker worker-1 busybox ping 8.8.8.8
+main.py:~$ addExecutor worker-1 busybox ping 8.8.8.8
 main.py:~$ writeFile test5.yaml
 main.py:~$ runFile test5.yaml
 http://localhost:8001/apis/apps/v1/namespaces/default/deployments
@@ -65,31 +65,45 @@ Use these following **command** to get different output:
 main.py:~$ checkStatus
 Success with status code 200,                     parsing response...
 
-Pod name    	:	test5-747b5c97cb-9827d
+Bot name    	:	test5-747b5c97cb-9827d
 Status	    	:	Running
 Ready           :	1/1
-Container Name	:	worker-1
-Container Image	:	busybox
-Container Job	:	['ping', '8.8.8.8']
+Executor Name	:	worker-1
+Executor Image	:	busybox
+Executor Job	:	['ping', '8.8.8.8']
 
 ==================
-Pod name    	:	test5-747b5c97cb-cndl2
+Bot name    	:	test5-747b5c97cb-cndl2
 Status	    	:	Running
 Ready	    	:	1/1
-Container Name	:	worker-1
-Container Image	:	busybox
-Container Job	:	['ping', '8.8.8.8']
+Executor Name	:	worker-1
+Executor Image	:	busybox
+Executor Job	:	['ping', '8.8.8.8']
 
 ==================
 
 main.py:~$ getBotNumbers
 2
 
-main.py:~$ getWorkers
+main.py:~$ getExecutors
 Containers	
 - Index         :	0
   Name	    	:	worker-1
   Image	    	:	busybox
   Command   	:	ping 8.8.8.8
   ImgPullPolicy	:	IfNotPresent
+```
+
+### (Optional) Run Multiple Generation File
+
+If there is lot of generation files that has been executed before, it can be 
+re-executed together without required to fill the information one-by-one again.
+
+Please use this command to run the file in batch:
+
+```console
+main.py:~$ runFile test5.yaml test6.yaml test7.yaml 
+http://localhost:12321/apis/apps/v1/namespaces/default/deployments Success with status code 201
+http://localhost:12321/apis/apps/v1/namespaces/default/deployments Success with status code 201
+http://localhost:12321/apis/apps/v1/namespaces/default/deployments Success with status code 201
 ```

@@ -17,6 +17,10 @@ CLI (command-line interface) or API (application programming interface).
 5. [Operation or Integration Guide for Operator and Third-party application](Octo-App/README.md)
 6. [Demo and Use Cases](Docs/Examples.md)
 
+## Publications
+
+1. [OctoBot: Human Activity Orchestration System for Cybersecurity Experiment and Exercise](https://ieeexplore.ieee.org/abstract/document/9458202)
+2. [OctoBot: An Open-Source Orchestration System for a Wide Range Network Activity Generation](https://ieeexplore.ieee.org/abstract/document/9484537)
 
 ## Credits
 
@@ -29,11 +33,13 @@ Project Leader: Aris Cahyadi Risdianto - ariscr@ncl.sg
 Principal Investigator (PI) : Prof. Ee-Chien Chang - changec@comp.nus.edu.sg
  
 Contributors:
-- Aris Cahyadi Risdianto (NCL/NUS)
-- DeZhang Lee (NUS)
-- Lai Yong Rong (Singapore Polytechnic)
-- Joel Chang Zhi Kai (NUS)
-- Ang Chin Guan, Melvin (NUS)
+- Aris Cahyadi Risdianto (NCL/NUS) - [ariscahyadi](https://github.com/ariscahyadi)
+- DeZhang Lee (NUS) - [dezhanglee](https://github.com/dezhanglee)
+- Lai Yong Rong (Singapore Polytechnic) - [WhyAre](https://github.com/WhyAre)
+- Joel Chang Zhi Kai (NUS) - [joelczk](https://github.com/joelczk)
+- Ang Chin Guan, Melvin (NUS) - [krusagiz](https://github.com/krusagiz)
+- Huang Kang (NUS) - [hkwany](https://github.com/hkwany)
+- Akhil Vuputuri (NUS) - [akhilvuputuri](https://github.com/akhilvuputuri)
 
 ## Contribution
 
