@@ -351,6 +351,7 @@ def deposit(driver, accountNumber, amount):
     go_to_element(deposit_button, driver)
     move_cursor_to_element(deposit_button, driver)
     deposit_button.click()
+    print("Deposited " + str(amount) + " intoto account number " + str(accountNumber))
 
 def transfer(driver, accountNumber, amount):
     accountNumber_box = driver.find_element_by_id('toAccountNumber')
@@ -367,6 +368,7 @@ def transfer(driver, accountNumber, amount):
     go_to_element(deposit_button, driver)
     move_cursor_to_element(deposit_button, driver)
     deposit_button.click()
+    print("Transferred " + str(amount) + " to account number " + str(accountNumber))
 
 
 
