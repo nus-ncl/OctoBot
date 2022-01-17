@@ -7,4 +7,5 @@ pillow==8.3.2
 selenium==3.141.0
 pyautogui==0.9.50
 numpy
+pandas
 keyboard

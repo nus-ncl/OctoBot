@@ -2,6 +2,7 @@ import time
 import os
 import random
 import numpy as np
+import pandas as pd
 import pyautogui
 import bezier
 import Xlib.display
@@ -10,7 +11,37 @@ from random import randint
 pyautogui._pyautogui_x11._display = Xlib.display.Display(os.environ['DISPLAY'])
 print("pyautogui can connect")
 
-def slow_type(element, pageInput):
+def password_keystroke_session(df):
+  subject = df.sample()['subject'].values[0]
+  is_subject = df['subject'] == subject
+  df_filtered = df[is_subject]
+  return df_filtered
+
+def password_keystroke_interval(df):
+  delay = float(df.sample()['averageT'].values[0])
+  # print(delay)
+  return delay
+
+# picks random row from df and returns the session id for that
+def typing_keystroke_session(df):
+  session_id = df.sample()['session_id'].values[0]
+  is_session_id = df['session_id'] == session_id
+  df_filtered = df[is_session_id]
+  return df_filtered
+
+# 
+def typing_keystroke_interval(df):
+  delay = float(df.sample()['interval'].values[0]/1000.0)
+  # print(delay)
+  return delay
+
+df_password = pd.read_csv('DSL-StrongPasswordData-processed.csv')
+df_typing = pd.read_csv('activity_keyboard_processed.csv')
+
+df_password_session = password_keystroke_session(df_password)
+df_typing_session = typing_keystroke_session(df_typing)
+
+def slow_type(element, pageInput, isPassword=False):
 
     '''
     Main Logic behind typing input string by character with random interval
@@ -23,7 +54,10 @@ def slow_type(element, pageInput):
         None
     '''
     for letter in pageInput:
-        time.sleep(float(random.uniform(.05, .3)))
+        if isPassword:
+            time.sleep(password_keystroke_interval(df_password_session))
+        else:
+            time.sleep(typing_keystroke_interval(df_typing_session))
         element.send_keys(letter)
 
 def move_cursor_to_element(element, driver): ##move mouse to middle of element
@@ -215,7 +249,7 @@ def register(driver, username, password, name, email):
 
     password_box = driver.find_element_by_id('registerPassword')
     move_cursor_to_element(password_box, driver)
-    slow_type(password_box, password)
+    slow_type(password_box, password, True)
 
     name_box = driver.find_element_by_id('registerName')
     move_cursor_to_element(name_box, driver)
@@ -254,7 +288,7 @@ def login(driver, username, password):
 
     password_box = driver.find_element_by_id('password')
     move_cursor_to_element(password_box, driver)
-    slow_type(password_box, password)
+    slow_type(password_box, password, True)
     
 
     login_button = driver.find_element_by_name('login')
@@ -280,11 +314,11 @@ def changePassword(driver, newPassword):
     oldPassword_box = driver.find_element_by_id('changePassword')
     go_to_element(oldPassword_box, driver)
     move_cursor_to_element(oldPassword_box, driver)
-    slow_type(oldPassword_box, newPassword)
+    slow_type(oldPassword_box, newPassword, True)
 
     newPassword_box = driver.find_element_by_id('verifyPassword')
     move_cursor_to_element(newPassword_box, driver)
-    slow_type(newPassword_box, newPassword)
+    slow_type(newPassword_box, newPassword, True)
 
     change_password_button = driver.find_element_by_name('change')
     move_cursor_to_element(change_password_button, driver)
