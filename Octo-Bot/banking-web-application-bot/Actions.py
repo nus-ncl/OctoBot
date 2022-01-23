@@ -11,6 +11,10 @@ from random import randint
 pyautogui._pyautogui_x11._display = Xlib.display.Display(os.environ['DISPLAY'])
 print("pyautogui can connect")
 
+# returns a random reading rate (wpm)
+def reading_rate(df):
+  return df.sample()['Reading rate (wpm)'].values[0]
+
 def password_keystroke_session(df):
   subject = df.sample()['subject'].values[0]
   is_subject = df['subject'] == subject
@@ -34,6 +38,10 @@ def typing_keystroke_interval(df):
   delay = float(df.sample()['interval'].values[0]/1000.0)
   # print(delay)
   return delay
+
+df_reading = pd.read_csv('reading_processed.csv')
+reading_rate = reading_rate(df_reading)
+print("Reading rate:" + str(reading_rate))
 
 df_password = pd.read_csv('DSL-StrongPasswordData-processed.csv')
 df_typing = pd.read_csv('activity_keyboard_processed.csv')
@@ -214,8 +222,8 @@ def reading_delay(driver):
     for string in list_strings:
         num_words += 1 + string.count(' ') # 1 initial and 1 for each add space
     
-    # Reading rate from How many words do we read per minute? A review and meta-analysis of reading rate by Marc Brysbaert
-    reading_rate = np.abs(np.random.normal(238, 51.2))
+    # # Reading rate from How many words do we read per minute? A review and meta-analysis of reading rate by Marc Brysbaert
+    # reading_rate = np.abs(np.random.normal(238, 51.2))
     delay = (reading_rate*60)/num_words
     print("Delay by: " + str(delay) + "s")
     time.sleep(delay)
