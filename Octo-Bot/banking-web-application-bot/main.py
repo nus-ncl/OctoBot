@@ -119,7 +119,7 @@ if __name__== "__main__":
 
 
 
-    from Actions import (reading_delay, register, changePassword, logout, login, depositFromAToB, transferFromAToB, depositTransferParentToAToB)
+    from Actions import (reading_delay, register, changePassword, logout, login, depositFromAToB, transferFromAToB, depositTransferParentToAToB, closeReader)
 
 
     driver.get(url)
@@ -163,7 +163,8 @@ if __name__== "__main__":
             amount = round(np.abs(np.random.normal(100.0, 25.0)), 2)
 
     driver.quit()
-
+    closeReader()
+    
     if (showDisplay != 1):
         display.stop()
 

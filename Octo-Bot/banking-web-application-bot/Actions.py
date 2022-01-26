@@ -11,6 +11,11 @@ from random import randint
 pyautogui._pyautogui_x11._display = Xlib.display.Display(os.environ['DISPLAY'])
 print("pyautogui can connect")
 
+file_time = time.time()
+file_name = "log_" + str(file_time) + ".txt"
+f = open(file_name, "w")
+
+
 # returns a random reading rate (wpm)
 def reading_rate(df):
   return df.sample()['Reading rate (wpm)'].values[0]
@@ -292,12 +297,25 @@ def login(driver, username, password):
     # username_box.send_keys(username)
     go_to_element(username_box, driver)
     move_cursor_to_element(username_box, driver)
+
+    username_start_t = time.time()
     slow_type(username_box, username)
+    username_end_t = time.time()
+    username_duration = username_end_t - username_start_t
+    # f.write("Username Start Time:" + str(username_start_t) + "\n")
+    # f.write("Username End Time:" + str(username_end_t) + "\n")
+    f.write("Username Duration:" + str(username_duration) + "\n")
 
     password_box = driver.find_element_by_id('password')
     move_cursor_to_element(password_box, driver)
+
+    password_start_t = time.time()
     slow_type(password_box, password, True)
-    
+    password_end_t = time.time()
+    password_duration = password_end_t - password_start_t
+    # f.write("Password Start Time:" + str(password_start_t) + "\n")
+    # f.write("Password End Time:" + str(password_end_t) + "\n")
+    f.write("Password Duration:" + str(password_duration) + "\n")
 
     login_button = driver.find_element_by_name('login')
     go_to_element(login_button, driver)
@@ -563,3 +581,5 @@ def depositTransferParentToAToB(driver, usernameParent, passwordParent, username
     print("logout B")
     logout(driver)
 
+def closeReader():
+    f.close()
