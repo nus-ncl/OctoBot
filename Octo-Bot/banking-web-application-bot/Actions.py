@@ -1,6 +1,7 @@
 import time
 import os
 import random
+import datetime
 import numpy as np
 import pandas as pd
 import pyautogui
@@ -15,6 +16,10 @@ file_time = time.time()
 file_name = "log_" + str(file_time) + ".txt"
 f = open(file_name, "w")
 
+
+# return a 0 or 1 based on input probability
+def decision(probability):
+    return random.random() < probability
 
 # returns a random reading rate (wpm)
 def reading_rate(df):
@@ -43,6 +48,18 @@ def typing_keystroke_interval(df):
   delay = float(df.sample()['interval'].values[0]/1000.0)
   # print(delay)
   return delay
+
+def isFirstVisit():
+    df = pd.read_csv('daily-website-visitors.csv')
+    day_now = (datetime.datetime.today().weekday()+2)%7
+    is_day = np.where((df['Day.Of.Week'] == day_now))
+    df_filtered = df.loc[is_day]
+    random_row = df_filtered.sample()
+    first_time = float((random_row['First.Time.Visits'].values[0]).replace(",", ''))
+    total = float((random_row['Unique.Visits'].values[0]).replace(",", ''))
+    probability_first_visit = first_time/total
+    print("Probability: " + str(probability_first_visit))
+    return decision(probability_first_visit)
 
 df_reading = pd.read_csv('reading_processed.csv')
 reading_rate = reading_rate(df_reading)
@@ -222,16 +239,25 @@ def reading_delay(driver):
     Returns:
         None
     '''
+    reading_start_t = time.time()
     num_words = 0
     list_strings = driver.find_element_by_xpath("/html/body").text # extract all text on page
-    for string in list_strings:
-        num_words += 1 + string.count(' ') # 1 initial and 1 for each add space
+    num_words += 1 + list_strings.count(' ') # 1 initial and 1 for each add space
     
     # # Reading rate from How many words do we read per minute? A review and meta-analysis of reading rate by Marc Brysbaert
     # reading_rate = np.abs(np.random.normal(238, 51.2))
-    delay = (reading_rate*60)/num_words
+    delay = (num_words / reading_rate) * 60
+    print("Num of words: " + str(num_words))
     print("Delay by: " + str(delay) + "s")
     time.sleep(delay)
+    reading_end_t = time.time()
+    reading_time = reading_end_t - reading_start_t
+
+    f.write("Reading Rate:" + str(reading_rate) + "\n")
+    print("Reading Rate:" + str(reading_rate) + "\n")
+    f.write("Reading Time:" + str(reading_time) + "\n")
+    print("Reading Time:" + str(reading_time) + "\n")
+
 
 
 
@@ -305,6 +331,8 @@ def login(driver, username, password):
     # f.write("Username Start Time:" + str(username_start_t) + "\n")
     # f.write("Username End Time:" + str(username_end_t) + "\n")
     f.write("Username Duration:" + str(username_duration) + "\n")
+    print("Username Duration:" + str(username_duration) + "\n")
+
 
     password_box = driver.find_element_by_id('password')
     move_cursor_to_element(password_box, driver)
@@ -316,6 +344,8 @@ def login(driver, username, password):
     # f.write("Password Start Time:" + str(password_start_t) + "\n")
     # f.write("Password End Time:" + str(password_end_t) + "\n")
     f.write("Password Duration:" + str(password_duration) + "\n")
+    print("Password Duration:" + str(password_duration) + "\n")
+
 
     login_button = driver.find_element_by_name('login')
     go_to_element(login_button, driver)

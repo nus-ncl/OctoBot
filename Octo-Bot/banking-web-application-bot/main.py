@@ -119,7 +119,7 @@ if __name__== "__main__":
 
 
 
-    from Actions import (reading_delay, register, changePassword, logout, login, depositFromAToB, transferFromAToB, depositTransferParentToAToB, closeReader)
+    from Actions import (reading_delay, register, changePassword, logout, login, depositFromAToB, transferFromAToB, depositTransferParentToAToB, isFirstVisit, closeReader)
 
 
     driver.get(url)
@@ -128,7 +128,10 @@ if __name__== "__main__":
     driver.maximize_window()
     # driver.set_window_size(2300, 900)
 
-    reading_delay(driver) # add delay for initial page reading 
+    if isFirstVisit() == 1:
+        print("Is first visit")
+        reading_delay(driver) # add delay for initial page reading 
+
     if workflow == 'create':
         register(driver, username, password, name, email)
     elif workflow == 'password':
