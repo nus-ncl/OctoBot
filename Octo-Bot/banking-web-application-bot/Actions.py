@@ -14,8 +14,6 @@ print("pyautogui can connect")
 
 bot_run_id = time.time()
 
-file_time = time.time()
-file_name = "log_" + str(file_time) + ".txt"
 f = open(file_name, "w")
 
 
@@ -89,7 +87,7 @@ def slow_type(element, pageInput, isPassword=False):
         if isPassword:
             delay = password_keystroke_interval(df_password_session)
             with open('password_keystroke_durations.csv','a') as fd:
-                myCsvRow = str(bot_run_id) + "," + str(password_keystroke_interval(df_password_session))
+                myCsvRow = str(bot_run_id) + "," + str(password_keystroke_interval(df_password_session)) + "\n"
                 fd.write(myCsvRow)
             time.sleep(delay)
         else:
