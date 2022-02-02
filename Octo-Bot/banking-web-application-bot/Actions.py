@@ -12,6 +12,8 @@ from random import randint
 pyautogui._pyautogui_x11._display = Xlib.display.Display(os.environ['DISPLAY'])
 print("pyautogui can connect")
 
+bot_run_id = time.time()
+
 file_time = time.time()
 file_name = "log_" + str(file_time) + ".txt"
 f = open(file_name, "w")
@@ -51,7 +53,7 @@ def typing_keystroke_interval(df):
 
 def isFirstVisit():
     df = pd.read_csv('daily-website-visitors.csv')
-    day_now = (datetime.datetime.today().weekday()+2)%7
+    day_now = (datetime.datetime.today().weekday()+2)%8
     is_day = np.where((df['Day.Of.Week'] == day_now))
     df_filtered = df.loc[is_day]
     random_row = df_filtered.sample()
@@ -85,7 +87,11 @@ def slow_type(element, pageInput, isPassword=False):
     '''
     for letter in pageInput:
         if isPassword:
-            time.sleep(password_keystroke_interval(df_password_session))
+            delay = password_keystroke_interval(df_password_session)
+            with open('password_keystroke_durations.csv','a') as fd:
+                myCsvRow = str(bot_run_id) + "," + str(password_keystroke_interval(df_password_session))
+                fd.write(myCsvRow)
+            time.sleep(delay)
         else:
             time.sleep(typing_keystroke_interval(df_typing_session))
         element.send_keys(letter)
