@@ -8,13 +8,14 @@ import pyautogui
 import bezier
 import Xlib.display
 from random import randint
+from scipy.stats import burr, nbinom, norm, alpha
 
 pyautogui._pyautogui_x11._display = Xlib.display.Display(os.environ['DISPLAY'])
 print("pyautogui can connect")
 
 bot_run_id = time.time()
 
-f = open(file_name, "w")
+# f = open(file_name, "w")
 
 
 # return a 0 or 1 based on input probability
@@ -22,54 +23,38 @@ def decision(probability):
     return random.random() < probability
 
 # returns a random reading rate (wpm)
-def reading_rate(df):
-  return df.sample()['Reading rate (wpm)'].values[0]
+def reading_rate():
+  rate = norm.rvs(237.77494517552086, 51.556265763722024)
+  with open('reading_rates.csv','a') as fd:
+        myCsvRow = str(rate) + "\n"
+        fd.write(myCsvRow)
+  return rate
 
-def password_keystroke_session(df):
-  subject = df.sample()['subject'].values[0]
-  is_subject = df['subject'] == subject
-  df_filtered = df[is_subject]
-  return df_filtered
 
-def password_keystroke_interval(df):
-  delay = float(df.sample()['averageT'].values[0])
+def password_keystroke_interval():
+  delay = burr.rvs(4.289777387693453, 47.7910905923293, -0.060201085383768366, 0.1046643273221228)
   # print(delay)
   return delay
 
-# picks random row from df and returns the session id for that
-def typing_keystroke_session(df):
-  session_id = df.sample()['session_id'].values[0]
-  is_session_id = df['session_id'] == session_id
-  df_filtered = df[is_session_id]
-  return df_filtered
-
 # 
-def typing_keystroke_interval(df):
-  delay = float(df.sample()['interval'].values[0]/1000.0)
-  # print(delay)
+def typing_keystroke_interval():
+  delay = alpha.rvs(3.1879398378968498, -110.84263781443948, 851.5066517961222)
   return delay
 
 def isFirstVisit():
-    df = pd.read_csv('daily-website-visitors.csv')
-    day_now = (datetime.datetime.today().weekday()+2)%8
-    is_day = np.where((df['Day.Of.Week'] == day_now))
-    df_filtered = df.loc[is_day]
-    random_row = df_filtered.sample()
-    first_time = float((random_row['First.Time.Visits'].values[0]).replace(",", ''))
-    total = float((random_row['Unique.Visits'].values[0]).replace(",", ''))
-    probability_first_visit = first_time/total
+    probability_first_visit = norm.rvs(0.8236704982827954, 0.02694605769237343)
     print("Probability: " + str(probability_first_visit))
-    return decision(probability_first_visit)
+    is_first_visit = decision(probability_first_visit)
+    with open('first_visit.csv','a') as fd:
+        myCsvRow = str(probability_first_visit) + "," + str(is_first_visit) + "\n"
+        fd.write(myCsvRow)
+    return is_first_visit
 
-df_reading = pd.read_csv('reading_processed.csv')
-reading_rate = reading_rate(df_reading)
+reading_rate = reading_rate()
 print("Reading rate:" + str(reading_rate))
 
 df_password = pd.read_csv('DSL-StrongPasswordData-processed.csv')
 df_typing = pd.read_csv('activity_keyboard_processed.csv')
-
-df_password_session = password_keystroke_session(df_password)
-df_typing_session = typing_keystroke_session(df_typing)
 
 def slow_type(element, pageInput, isPassword=False):
 
@@ -84,14 +69,20 @@ def slow_type(element, pageInput, isPassword=False):
         None
     '''
     for letter in pageInput:
+        reading_rate()
+        isFirstVisit()
         if isPassword:
-            delay = password_keystroke_interval(df_password_session)
+            delay = password_keystroke_interval()
             with open('password_keystroke_durations.csv','a') as fd:
-                myCsvRow = str(bot_run_id) + "," + str(password_keystroke_interval(df_password_session)) + "\n"
+                myCsvRow = str(bot_run_id) + "," + str(delay) + "\n"
                 fd.write(myCsvRow)
             time.sleep(delay)
         else:
-            time.sleep(typing_keystroke_interval(df_typing_session))
+            delay = typing_keystroke_interval()
+            with open('_keystroke_durations.csv','a') as fd:
+                myCsvRow = str(bot_run_id) + "," + str(delay) + "\n"
+                fd.write(myCsvRow)
+            time.sleep(delay)
         element.send_keys(letter)
 
 def move_cursor_to_element(element, driver): ##move mouse to middle of element
@@ -251,16 +242,15 @@ def reading_delay(driver):
     # # Reading rate from How many words do we read per minute? A review and meta-analysis of reading rate by Marc Brysbaert
     # reading_rate = np.abs(np.random.normal(238, 51.2))
     delay = (num_words / reading_rate) * 60
-    print("Num of words: " + str(num_words))
-    print("Delay by: " + str(delay) + "s")
     time.sleep(delay)
     reading_end_t = time.time()
     reading_time = reading_end_t - reading_start_t
 
-    f.write("Reading Rate:" + str(reading_rate) + "\n")
     print("Reading Rate:" + str(reading_rate) + "\n")
-    f.write("Reading Time:" + str(reading_time) + "\n")
     print("Reading Time:" + str(reading_time) + "\n")
+    with open('reading_durations.csv','a') as fd:
+        myCsvRow = str(bot_run_id) + "," + str(reading_rate) + "," + str(delay) + "\n"
+        fd.write(myCsvRow)
 
 
 
@@ -334,7 +324,7 @@ def login(driver, username, password):
     username_duration = username_end_t - username_start_t
     # f.write("Username Start Time:" + str(username_start_t) + "\n")
     # f.write("Username End Time:" + str(username_end_t) + "\n")
-    f.write("Username Duration:" + str(username_duration) + "\n")
+    # f.write("Username Duration:" + str(username_duration) + "\n")
     print("Username Duration:" + str(username_duration) + "\n")
 
 
@@ -347,7 +337,7 @@ def login(driver, username, password):
     password_duration = password_end_t - password_start_t
     # f.write("Password Start Time:" + str(password_start_t) + "\n")
     # f.write("Password End Time:" + str(password_end_t) + "\n")
-    f.write("Password Duration:" + str(password_duration) + "\n")
+    # f.write("Password Duration:" + str(password_duration) + "\n")
     print("Password Duration:" + str(password_duration) + "\n")
 
 

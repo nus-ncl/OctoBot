@@ -166,7 +166,7 @@ if __name__== "__main__":
             amount = round(np.abs(np.random.normal(100.0, 25.0)), 2)
 
     driver.quit()
-    closeReader()
+    # closeReader()
     
     if (showDisplay != 1):
         display.stop()
