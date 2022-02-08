@@ -23,7 +23,7 @@ def decision(probability):
     return random.random() < probability
 
 # returns a random reading rate (wpm)
-def reading_rate():
+def get_reading_rate():
   rate = norm.rvs(237.77494517552086, 51.556265763722024)
   with open('reading_rates.csv','a') as fd:
         myCsvRow = str(rate) + "\n"
@@ -39,18 +39,18 @@ def password_keystroke_interval():
 # 
 def typing_keystroke_interval():
   delay = alpha.rvs(3.1879398378968498, -110.84263781443948, 851.5066517961222)
-  return delay
+  return delay / 1000
 
 def isFirstVisit():
     probability_first_visit = norm.rvs(0.8236704982827954, 0.02694605769237343)
-    print("Probability: " + str(probability_first_visit))
+    # print("Probability: " + str(probability_first_visit))
     is_first_visit = decision(probability_first_visit)
     with open('first_visit.csv','a') as fd:
         myCsvRow = str(probability_first_visit) + "," + str(is_first_visit) + "\n"
         fd.write(myCsvRow)
     return is_first_visit
 
-reading_rate = reading_rate()
+reading_rate = get_reading_rate()
 print("Reading rate:" + str(reading_rate))
 
 df_password = pd.read_csv('DSL-StrongPasswordData-processed.csv')
@@ -69,7 +69,7 @@ def slow_type(element, pageInput, isPassword=False):
         None
     '''
     for letter in pageInput:
-        reading_rate()
+        get_reading_rate()
         isFirstVisit()
         if isPassword:
             delay = password_keystroke_interval()
@@ -79,7 +79,7 @@ def slow_type(element, pageInput, isPassword=False):
             time.sleep(delay)
         else:
             delay = typing_keystroke_interval()
-            with open('_keystroke_durations.csv','a') as fd:
+            with open('normal_keystroke_durations.csv','a') as fd:
                 myCsvRow = str(bot_run_id) + "," + str(delay) + "\n"
                 fd.write(myCsvRow)
             time.sleep(delay)
