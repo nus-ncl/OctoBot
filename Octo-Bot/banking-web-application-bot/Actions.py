@@ -8,7 +8,7 @@ import pyautogui
 import bezier
 import Xlib.display
 from random import randint
-from scipy.stats import burr, nbinom, norm, alpha
+from scipy.stats import burr, nbinom, norm, alpha, truncnorm, expon
 
 pyautogui._pyautogui_x11._display = Xlib.display.Display(os.environ['DISPLAY'])
 print("pyautogui can connect")
@@ -22,14 +22,27 @@ bot_run_id = time.time()
 def decision(probability):
     return random.random() < probability
 
-# returns a random reading rate (wpm)
-def get_reading_rate():
-  rate = norm.rvs(237.77494517552086, 51.556265763722024)
-  with open('reading_rates.csv','a') as fd:
-        myCsvRow = str(rate) + "\n"
+# returns a random reading time for a word
+def get_reading_time():
+  time = expon.rvs(221.0, 147.03110198327164)/1000
+  with open('reading_time.csv','a') as fd:
+        myCsvRow = str(time) + "\n"
         fd.write(myCsvRow)
-  return rate
+  return time
 
+def get_deposit_amount():
+    amount = truncnorm.rvs(0, 800000, 18648.843055636993, 202581.31575661452)
+    with open('deposit.csv','a') as fd:
+        myCsvRow = str(bot_run_id) + "," + str(amount) + "\n"
+        fd.write(myCsvRow)
+    return amount
+
+def get_transfer_amount():
+    amount = expon.rvs(200002.41, 660234.5503649375)
+    with open('transfer.csv','a') as fd:
+        myCsvRow = str(bot_run_id) + "," + str(amount) + "\n"
+        fd.write(myCsvRow)
+    return amount
 
 def password_keystroke_interval():
   delay = burr.rvs(4.289777387693453, 47.7910905923293, -0.060201085383768366, 0.1046643273221228)
@@ -50,9 +63,6 @@ def isFirstVisit():
         fd.write(myCsvRow)
     return is_first_visit
 
-reading_rate = get_reading_rate()
-print("Reading rate:" + str(reading_rate))
-
 df_password = pd.read_csv('DSL-StrongPasswordData-processed.csv')
 df_typing = pd.read_csv('activity_keyboard_processed.csv')
 
@@ -69,8 +79,9 @@ def slow_type(element, pageInput, isPassword=False):
         None
     '''
     for letter in pageInput:
-        get_reading_rate()
-        isFirstVisit()
+        get_reading_time()
+        get_deposit_amount()
+        get_transfer_amount()
         if isPassword:
             delay = password_keystroke_interval()
             with open('password_keystroke_durations.csv','a') as fd:
@@ -238,22 +249,11 @@ def reading_delay(driver):
     num_words = 0
     list_strings = driver.find_element_by_xpath("/html/body").text # extract all text on page
     num_words += 1 + list_strings.count(' ') # 1 initial and 1 for each add space
+    print("Num words: " + str(num_words))
     
-    # # Reading rate from How many words do we read per minute? A review and meta-analysis of reading rate by Marc Brysbaert
-    # reading_rate = np.abs(np.random.normal(238, 51.2))
-    delay = (num_words / reading_rate) * 60
-    time.sleep(delay)
-    reading_end_t = time.time()
-    reading_time = reading_end_t - reading_start_t
 
-    print("Reading Rate:" + str(reading_rate) + "\n")
-    print("Reading Time:" + str(reading_time) + "\n")
-    with open('reading_durations.csv','a') as fd:
-        myCsvRow = str(bot_run_id) + "," + str(reading_rate) + "," + str(delay) + "\n"
-        fd.write(myCsvRow)
-
-
-
+    for word in range(num_words):
+        time.sleep(get_reading_time())
 
 def register(driver, username, password, name, email):
 
@@ -411,11 +411,9 @@ def getAccountNumber(driver):
 def getAccountBalance(driver):
     return driver.find_element_by_css_selector('[id^=accountBalance]').text
 
-def verifyUpdatedBalance(oldBalance, amount):
-    newBalance = getAccountBalance
-    print((oldBalance + amount == newBalance))
+def deposit(driver, accountNumber):
+    amount = get_deposit_amount()
 
-def deposit(driver, accountNumber, amount):
     accountNumber_box = driver.find_element_by_id('depositAccountNumber')
     go_to_element(accountNumber_box, driver)
     move_cursor_to_element(accountNumber_box, driver)
@@ -435,9 +433,11 @@ def deposit(driver, accountNumber, amount):
     go_to_element(deposit_button, driver)
     move_cursor_to_element(deposit_button, driver)
     deposit_button.click()
-    print("Deposited " + str(amount) + " intoto account number " + str(accountNumber))
+    print("Deposited " + str(amount) + " into account number " + str(accountNumber))
 
-def transfer(driver, accountNumber, amount):
+def transfer(driver, accountNumber):
+    amount = get_transfer_amount()
+
     accountNumber_box = driver.find_element_by_id('toAccountNumber')
     go_to_element(accountNumber_box, driver)
     move_cursor_to_element(accountNumber_box, driver)
@@ -456,7 +456,7 @@ def transfer(driver, accountNumber, amount):
 
 
 
-def depositFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount):
+def depositFromAToB(driver, usernameA, passwordA, usernameB, passwordB):
 
     '''
     Main Logic behind workflow to deposit funds into account
@@ -485,7 +485,7 @@ def depositFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount):
     login(driver, usernameA, passwordA)
 
     print("deposit")
-    deposit(driver, accountNumberB, amount)
+    deposit(driver, accountNumberB)
 
     print("logout")
     logout(driver)
@@ -505,7 +505,6 @@ def transferFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount)
         driver(obj): Firefox webdriver instance in python
         username(str) : username of account for funds  
         password(str) : password of account to deposit money into 
-        amount(str) : amount to be deposited into account 
         
     Returns:
         None
@@ -526,7 +525,7 @@ def transferFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount)
     login(driver, usernameA, passwordA)
 
     print("transfer A to B")
-    transfer(driver, accountNumberB, amount)
+    transfer(driver, accountNumberB)
 
     print("logout A")
     logout(driver)
@@ -537,7 +536,7 @@ def transferFromAToB(driver, usernameA, passwordA, usernameB, passwordB, amount)
     print("logout B")
     logout(driver)
 
-def depositTransferParentToAToB(driver, usernameParent, passwordParent, usernameA, passwordA, usernameB, passwordB, amountDeposit, amountTransfer):
+def depositTransferParentToAToB(driver, usernameParent, passwordParent, usernameA, passwordA, usernameB, passwordB):
 
     '''
     Main Logic behind workflow to deposit funds from Parent to A and transfer from A to B
@@ -546,7 +545,6 @@ def depositTransferParentToAToB(driver, usernameParent, passwordParent, username
         driver(obj): Firefox webdriver instance in python
         username(str) : username of account for funds  
         password(str) : password of account to deposit money into 
-        amount(str) : amount to be deposited into account 
         
     Returns:
         None
@@ -567,7 +565,7 @@ def depositTransferParentToAToB(driver, usernameParent, passwordParent, username
     login(driver, usernameParent, passwordParent)
 
     print("deposit parent to A")
-    deposit(driver, accountNumberA, amountDeposit)
+    deposit(driver, accountNumberA)
 
     print("logout parent")
     logout(driver)
@@ -594,7 +592,7 @@ def depositTransferParentToAToB(driver, usernameParent, passwordParent, username
     login(driver, usernameA, passwordA)
 
     print("transfer A to B")
-    transfer(driver, accountNumberB, amountTransfer)
+    transfer(driver, accountNumberB)
 
     print("logout A")
     logout(driver)

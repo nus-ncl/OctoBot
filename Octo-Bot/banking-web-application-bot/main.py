@@ -148,22 +148,22 @@ if __name__== "__main__":
         login(driver, username, password)
     elif workflow == 'deposit':
         while True:
-            depositFromAToB(driver, username, password, usernameB, passwordB, amount)
+            depositFromAToB(driver, username, password, usernameB, passwordB)
             if loop != 1:
                 break
-            amount = round(np.abs(np.random.normal(100.0, 25.0)), 2)
+            # amount = round(np.abs(np.random.normal(100.0, 25.0)), 2)
     elif workflow == 'transfer':
         while True:
-            transferFromAToB(driver, username, password, usernameB, passwordB, amount)
+            transferFromAToB(driver, username, password, usernameB, passwordB)
             if loop != 1:
                 break
-            amount = round(np.abs(np.random.normal(100.0, 25.0)), 2)
+            # amount = round(np.abs(np.random.normal(100.0, 25.0)), 2)
     elif workflow == 'parentSub':
         while True:
-            depositTransferParentToAToB(driver, usernameParent, passwordParent, username, password, usernameB, passwordB, amount, amount)
+            depositTransferParentToAToB(driver, usernameParent, passwordParent, username, password, usernameB, passwordB)
             if loop != 1:
                 break
-            amount = round(np.abs(np.random.normal(100.0, 25.0)), 2)
+            # amount = round(np.abs(np.random.normal(100.0, 25.0)), 2)
 
     driver.quit()
     # closeReader()
