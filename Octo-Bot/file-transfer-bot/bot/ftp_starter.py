@@ -23,9 +23,9 @@ def main():
                         help="download function(upload/download)",
                             default=['download'])
     parser.add_argument("-uf", metavar = 'uploaded_file',
-                        help="file to be uploaded",  required=False,
+                        help="file to be uploaded",  required=False, nargs='+',
                           default=['/large_file'])
-    parser.add_argument("-df", metavar = 'downloaded_file',required=False,
+    parser.add_argument("-df", metavar = 'downloaded_file',required=False, nargs='+',
                         help="file to be downloaded",default=['large_file'])
 
     args = parser.parse_args()
