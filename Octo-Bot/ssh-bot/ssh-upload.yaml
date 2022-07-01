@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssh
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: linux
+  template:
+    metadata:
+      labels:
+        app: linux
+    spec:
+      containers:
+      - name: worker-1
+        image: <image>
+        command:
+        - python3
+        - start.py
+        - --REMOTE_USERNAME
+        - <remote_username>
+        - --SSHD_USERNAME
+        - <sshd_username>
+        - --SSHD_SERVER
+        - <sshd_server_ip>
+        - --UPLOAD
+        - '1'
+        imagePullPolicy: Always
+      nodeSelector:
+        kubernetes.io/os: linux
