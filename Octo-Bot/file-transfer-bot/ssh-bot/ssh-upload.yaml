@@ -19,11 +19,13 @@ spec:
         command:
         - python3
         - start.py
+        - --REMOTE_USERNAME
+        - <remote_username>
         - --SSHD_USERNAME
         - <sshd_username>
         - --SSHD_SERVER
         - <sshd_server_ip>
-        - --CONCURRENCY
+        - --UPLOAD
         - '1'
         imagePullPolicy: Always
       nodeSelector:

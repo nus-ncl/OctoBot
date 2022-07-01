@@ -35,5 +35,5 @@ COPY start.py start.py
 
 RUN chmod 0400 .ssh/id_rsa
 
-CMD [ "python3", "start.py" ]
+ENTRYPOINT [ "python3", "start.py" ]
 
