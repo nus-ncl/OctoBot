@@ -31,6 +31,10 @@ if __name__ == '__main__':
 
     parser.add_argument('--SSHD_USERNAME', type=str, help='SSHD server username')
 
+    parser.add_argument('--SSHD_PORT', type=str, help='SSHD server port', default=22)
+
+    parser.add_argument('--SSHD_PASSWORD', type=str, help='SSHD server password')
+
     parser.add_argument('--SSHD_SERVER', type=str, help="SSHD server ip")
 
     parser.add_argument('--REMOTE_SERVER', type=str, help='remote server ip', default='localhost')
@@ -39,6 +43,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--REMOTE_USERNAME', type=str, help='remote server username')
 
+    parser.add_argument('--REMOTE_PASSWORD', type=str, help='remote server password')
+
     parser.add_argument('--CONCURRENCY', type=int, help='enable/disable ssh concurrency test', default=0)
 
     parser.add_argument('--UPLOAD', type=int, help='enable/disable ssh upload test', default=0)
@@ -46,7 +52,10 @@ if __name__ == '__main__':
     parser.add_argument('--DOWNLOAD', type=int, help='enable/disable ssh download test', default=0)
 
     args = parser.parse_args()
-
+    if args.REMOTE_PASSWORD is None:
+        args.REMOTE_PASSWORD = args.SSHD_PASSWORD
+    if args.REMOTE_USERNAME is None:
+        args.REMOTE_USERNAME = args.SSHD_USERNAME
     local_addr = '127.0.0.1'
     local_port = 12345
     while (is_port_used(local_addr, local_port)):
@@ -63,7 +72,7 @@ if __name__ == '__main__':
     if args.CONCURRENCY == 1:
         print(f"CONCURRENCY enabled")
         output = subprocess.check_call(
-            f"ssh -o StrictHostKeyChecking=no -fNT -L {local_port}:{args.REMOTE_SERVER}:{args.REMOTE_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER}",
+            f"sshpass -p '{args.SSHD_PASSWORD}' ssh -o StrictHostKeyChecking=no -fNT -p {args.SSHD_PORT} -L {local_port}:{args.REMOTE_SERVER}:{args.REMOTE_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER}",
             stderr=subprocess.STDOUT, shell=True)
 
         if output == 0:
@@ -74,13 +83,13 @@ if __name__ == '__main__':
         print(f"UPLOAD enabled")
         # port forwarding
         output = subprocess.check_call(
-            f"ssh -o StrictHostKeyChecking=no -fNT -L {local_port}:{args.REMOTE_SERVER}:{args.REMOTE_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER}",
+            f"sshpass -p '{args.SSHD_PASSWORD}' ssh -o StrictHostKeyChecking=no -fNT -p {args.SSHD_PORT} -L {local_port}:{args.REMOTE_SERVER}:{args.REMOTE_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER}",
             stderr=subprocess.STDOUT, shell=True)
 
         if output == 0:
             print("Port Forwarded!")
             os.system(
-                f"scp -P {local_port} -o StrictHostKeyChecking=no little_file {args.REMOTE_USERNAME}@localhost:/tmp/little_file" + str(
+                f"sshpass -p '{args.REMOTE_PASSWORD}' scp -P {local_port} -o StrictHostKeyChecking=no little_file {args.REMOTE_USERNAME}@localhost:/tmp/little_file" + str(
                     time.time()))
 
     # Scp Download
@@ -88,13 +97,12 @@ if __name__ == '__main__':
         print(f"DOWNLOAD enabled")
         # port forwarding
         output = subprocess.check_call(
-            f"ssh -o StrictHostKeyChecking=no -fNT -L {local_port}:{args.REMOTE_SERVER}:{args.REMOTE_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER}",
+            f"sshpass -p '{args.SSHD_PASSWORD}' ssh -o StrictHostKeyChecking=no -fNT -p {args.SSHD_PORT} -L {local_port}:{args.REMOTE_SERVER}:{args.REMOTE_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER}",
             stderr=subprocess.STDOUT, shell=True)
 
         if output == 0:
             print("Port Forwarded!")
-            # os.system(f"sshpass -p '{args.REMOTE_PASSWD}' scp -P {local_port} -o StrictHostKeyChecking=no -r {args.REMOTE_USERNAME}@localhost:/tmp/downloaded_file ./downloaded_file" + str(time.time()))
-            os.system(f"scp -P {local_port} -o StrictHostKeyChecking=no -r {args.REMOTE_USERNAME}@localhost:/tmp/downloaded_file ./downloaded_file" + str(time.time()))
+            os.system(f"sshpass -p '{args.REMOTE_PASSWORD}' scp -P {local_port} -o StrictHostKeyChecking=no -r {args.REMOTE_USERNAME}@localhost:/tmp/downloaded_file ./downloaded_file" + str(time.time()))
             os.system("ls -l .")
 
     # keep running
