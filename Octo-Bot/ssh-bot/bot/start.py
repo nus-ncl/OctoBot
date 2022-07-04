@@ -5,6 +5,7 @@ import os
 import time
 import subprocess
 
+loop_script = 'for ((;;)); do sleep 1; echo "hello"; done'
 
 def is_port_used(ip, port):
     """
@@ -71,9 +72,8 @@ if __name__ == '__main__':
     # Test Concurrency
     if args.CONCURRENCY == 1:
         print(f"CONCURRENCY enabled")
-        output = subprocess.check_call(
-            f"sshpass -p '{args.SSHD_PASSWORD}' ssh -o StrictHostKeyChecking=no -fNT -p {args.SSHD_PORT} -L {local_port}:{args.REMOTE_SERVER}:{args.REMOTE_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER}",
-            stderr=subprocess.STDOUT, shell=True)
+        # output = subprocess.check_call(f"sshpass -p '{args.SSHD_PASSWORD}' ssh -o StrictHostKeyChecking=no -fNT -p {args.SSHD_PORT} -L {local_port}:{args.REMOTE_SERVER}:{args.REMOTE_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER}",stderr=subprocess.STDOUT, shell=True)
+        output = subprocess.check_call(f"sshpass -p '{args.SSHD_PASSWORD}' ssh -o StrictHostKeyChecking=no -p {args.SSHD_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER} '{loop_script}'",stderr=subprocess.STDOUT, shell=True)
 
         if output == 0:
             print("Port Forwarded!")
