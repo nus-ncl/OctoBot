@@ -1,29 +1,12 @@
-FROM ubuntu:18.04
-
+FROM alpine:3.15
 ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update && \
-  apt-get install -y \
+RUN apk add --no-cache \
   ca-certificates \
   python3 \
-  openssh-server \
-  netcat \
-  sshpass \
-#  iproute2 \
-#  ipppd \
-#  expect \
-#  wget \
-  && apt-get clean -q && apt-get autoremove --purge \
-  && rm -rf /var/lib/apt/lists/*
-
-#WORKDIR /root
-
-# Copy files
-# COPY id_rsa .ssh/id_rsa
-#COPY little_file little_file
-#COPY start.py start.py
-
-# RUN chmod 0400 .ssh/id_rsa
+  openssh-client \
+  ca-certificates \
+  bash \
+  sshpass 
 
 ADD ./bot /
 VOLUME [ "/root" ]
