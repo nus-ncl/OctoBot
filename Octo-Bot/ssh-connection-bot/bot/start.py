@@ -62,13 +62,6 @@ if __name__ == '__main__':
     while (is_port_used(local_addr, local_port)):
         local_port += 1
 
-    # os.environ['LOCAL_PORT'] = str(local_port)
-    # UPLOAD = os.getenv('UPLOAD')
-    # DOWNLOAD = os.getenv('DOWNLOAD')
-    # LOCAL_PORT = os.getenv('LOCAL_PORT')
-    # REMOTE_USERNAME = os.getenv('REMOTE_USERNAME')
-    # CONCURRENCY = os.getenv('CONCURRENCY')
-
     # Test Concurrency
     if args.CONCURRENCY == 1:
         print(f"CONCURRENCY enabled")
@@ -107,7 +100,6 @@ if __name__ == '__main__':
 
     # keep running
     while True:
-        # output = subprocess.check_output("nc -zv localhost " + LOCAL_PORT, shell=True)
-        # print(output)
+
         print('running')
         time.sleep(5)
