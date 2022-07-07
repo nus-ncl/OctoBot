@@ -1,11 +1,13 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+
 import socket
 import argparse
 import os
 import time
 import subprocess
 
-loop_script = 'for ((;;)); do sleep 1; echo "hello"; done'
+#loop_script = 'for ((;;)); do sleep 1; echo "hello"; done'
+
 
 def is_port_used(ip, port):
     """
@@ -46,6 +48,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--REMOTE_PASSWORD', type=str, help='remote server password')
 
+    parser.add_argument('--JUMP', type=int, help='enable/disable ssh jump to the remote host test', default=0)
+
     parser.add_argument('--CONCURRENCY', type=int, help='enable/disable ssh concurrency test', default=0)
 
     parser.add_argument('--UPLOAD', type=int, help='enable/disable ssh upload test', default=0)
@@ -62,11 +66,27 @@ if __name__ == '__main__':
     while (is_port_used(local_addr, local_port)):
         local_port += 1
 
+    # Test Jump
+    if args.JUMP == 1:
+        print(f"JUMP enabled")
+        output = subprocess.check_call(
+            f"sshpass -p '{args.SSHD_PASSWORD}' ssh -o StrictHostKeyChecking=no -fNT -p {args.SSHD_PORT} -L {local_port}:{args.REMOTE_SERVER}:{args.REMOTE_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER}",
+            stderr=subprocess.STDOUT, shell=True)
+
+        if output == 0:
+            print("Port Forwarded!")
+            result = subprocess.check_call(
+                f"sshpass -p '{args.REMOTE_PASSWORD}' ssh -o StrictHostKeyChecking=no -p {local_port} {args.REMOTE_USERNAME}@localhost 'bash -s' < loop.sh",
+                stderr=subprocess.STDOUT, shell=True)
+            print(result)
+
     # Test Concurrency
     if args.CONCURRENCY == 1:
         print(f"CONCURRENCY enabled")
         # output = subprocess.check_call(f"sshpass -p '{args.SSHD_PASSWORD}' ssh -o StrictHostKeyChecking=no -fNT -p {args.SSHD_PORT} -L {local_port}:{args.REMOTE_SERVER}:{args.REMOTE_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER}",stderr=subprocess.STDOUT, shell=True)
-        output = subprocess.check_call(f"sshpass -p '{args.SSHD_PASSWORD}' ssh -o StrictHostKeyChecking=no -p {args.SSHD_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER} '{loop_script}'",stderr=subprocess.STDOUT, shell=True)
+        output = subprocess.check_call(
+            f"sshpass -p '{args.SSHD_PASSWORD}' ssh -o StrictHostKeyChecking=no -p {args.SSHD_PORT} {args.SSHD_USERNAME}@{args.SSHD_SERVER} 'bash -s' < loop.sh",
+            stderr=subprocess.STDOUT, shell=True)
 
         if output == 0:
             print("Port Forwarded!")
@@ -95,11 +115,12 @@ if __name__ == '__main__':
 
         if output == 0:
             print("Port Forwarded!")
-            os.system(f"sshpass -p '{args.REMOTE_PASSWORD}' scp -P {local_port} -o StrictHostKeyChecking=no -r {args.REMOTE_USERNAME}@localhost:/tmp/downloaded_file ./downloaded_file" + str(time.time()))
+            os.system(
+                f"sshpass -p '{args.REMOTE_PASSWORD}' scp -P {local_port} -o StrictHostKeyChecking=no -r {args.REMOTE_USERNAME}@localhost:/tmp/downloaded_file ./downloaded_file" + str(
+                    time.time()))
             os.system("ls -l .")
 
     # keep running
     while True:
-
         print('running')
         time.sleep(5)
