@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssh
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: linux
+  template:
+    metadata:
+      labels:
+        app: linux
+    spec:
+      containers:
+      - name: worker-1
+        image: hkwany/ssh-bot:sshpass
+        command:
+        - python3
+        - start.py
+        - --SSHD_USERNAME
+        - hkwany
+        - --SSHD_PASSWORD
+        - a1b2c3d4
+        - --SSHD_SERVER
+        - 172.26.191.220
+        - --CONCURRENCY
+        - '1'
+        imagePullPolicy: Always
+      nodeSelector:
+        kubernetes.io/os: linux
