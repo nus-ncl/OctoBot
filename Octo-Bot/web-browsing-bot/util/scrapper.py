@@ -16,6 +16,9 @@ import requests
 
 import numpy as np
 
+if "twisted.internet.reactor" in sys.modules:
+    del sys.modules["twisted.internet.reactor"]
+
 SAME_DOMAIN = True
 start_urls = []
 allowed_domains = []
