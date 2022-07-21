@@ -10,6 +10,7 @@ SLEEP_SD = 3
 from util.scrapper import *
 import random
 import time
+import sys
 
 def randomBrowsing(url = "https://ncl.sg", timeAllowed = 1000, \
                 maxDepth = MAX_DEPTH, debug = False, sleep = True, \
@@ -31,7 +32,9 @@ def randomBrowsing(url = "https://ncl.sg", timeAllowed = 1000, \
         try:
             listOfPages = crawl(url = currUrl, \
                 sameDomain = onlySameDomain)
-            if (len(listOfPages) > 1):
+            if (len(listOfPages) == 0):
+                sys.exit("Failed to Crawl the URL")
+            elif (len(listOfPages) > 1):
                 linkStack.append(currUrl)
             else:
                 goBack = True 
