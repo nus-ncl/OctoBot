@@ -10,7 +10,6 @@ from util.scrapper import *
 import random
 import time
 import requests
-import sys
 
 def crawlThenBrowse(url = "https://ncl.sg", timeAllowed = 1000, \
                 maxDepth = 2, onlySameDomain = True, debug = False, \
@@ -18,11 +17,8 @@ def crawlThenBrowse(url = "https://ncl.sg", timeAllowed = 1000, \
     
     linkStack = [url]
     
-    try:
-        listOfPages = crawl(url, maxDepth, onlySameDomain)
-    except:
-        sys.exit("Error in Crawling URL")
-
+    listOfPages = crawl(url, maxDepth, onlySameDomain)   
+    
     try:
         listOfPages[0]
     except:
