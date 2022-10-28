@@ -1,7 +1,8 @@
 from smb.SMBConnection import SMBConnection
 import time
+import argparse
 
-def getSharedFolder(userID, password, client_machine_name, server_name, domain_name):
+def ShareFile(userID, password, client_machine_name, server_name, domain_name, remote_file, local_file):
 
     conn = SMBConnection(userID, password, client_machine_name, server_name, domain=domain_name, use_ntlm_v2=True,
                      is_direct_tcp=True)
@@ -14,27 +15,59 @@ def getSharedFolder(userID, password, client_machine_name, server_name, domain_n
           sharedfiles = conn.listPath(share.name, '/')
           for sharedfile in sharedfiles:
               print(sharedfile.filename)
-              if sharedfile.filename == "File-in-windows.txt":
-                  fileObj = open('File-in-windows.txt','wb') 
+              if sharedfile.filename == remote_file:
+                  fileObj = open(remote_file,'wb')
                   conn.retrieveFile(share.name,sharedfile.filename,fileObj)
                   fileObj.close() 
                   print(sharedfile.filename+" is downloaded in the current local directory")
-                  fileObj2 = open('File-in-linux.txt','rb')
-                  file = 'File-in-linux.txt' 
+                  fileObj2 = open(local_file,'rb')
+                  file = local_file
                   conn.storeFile(share.name,'/'+file,fileObj2)
                   print(file+" is uploaded in remote shared directory") 
     conn.close()
 
 if __name__ == "__main__":
 
-  userID = 'workshop'
-  password = 'MySOC'
-  client_machine_name = 'ubuntu-18'
-  server_name = 'ncl012'
-  server_ip = '172.26.191.217'
-  domain_name = 'NCL012'
+  parser = argparse.ArgumentParser(description = \
+                                       "Arguments for program")
 
-  while True:
-     getSharedFolder(userID, password, client_machine_name, server_name, domain_name)
+  parser.add_argument('-u', type=str, \
+                      help='Remote Windows user account')
+
+  parser.add_argument('-p', type=str, \
+                      help='Remote Windows user password')
+
+  parser.add_argument('-c', type=str, \
+                      help='Local SMB cLient name')
+
+  parser.add_argument('-s', type=str, \
+                      help='Remote Windows hostname')
+
+  parser.add_argument('-i', type=str, \
+                      help='Remote Windows IP address')
+
+  parser.add_argument('-d', type=str, \
+                      help='Remote Windows domain name')
+
+  parser.add_argument('-r', type=str, \
+                      help='Remote file in Windows machine')
+
+  parser.add_argument('-l', type=str, \
+                      help='Local file in this bot')
+
+  args = parser.parse_args()
+
+  server_ip = args.i
+
+
+
+while True:
+     ShareFile(userID = args.u,
+                     password = args.p,
+                     client_machine_name = args.c,
+                     server_name = args.s,
+                     domain_name = args.d,
+                     remote_file = args.r,
+                     local_file = args.l
+               )
      time.sleep(5)
-
