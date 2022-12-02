@@ -11,7 +11,7 @@ KUBECTL_CMD = 'kubectl'
 def push_yaml_file(filename):
     try:
         u = "http://localhost:{}/".format(K8S_PORT) + \
-            "apis/apps/v1/namespaces/default/deployments"
+            "apis/apps/v1/namespaces/octobot/deployments"
 
         print(u)
         with open(filename, "r") as stream:
@@ -71,7 +71,7 @@ def parse_status_json(dct):
 
 def get_executor_by_command(bot_name, command):
     url = f"http://localhost:{K8S_PORT}/" \
-          f"api/v1/namespaces/default/pods/{bot_name}"
+          f"api/v1/namespaces/octobot/pods/{bot_name}"
 
     resp = requests.get(url)
     if resp.status_code != 200:
