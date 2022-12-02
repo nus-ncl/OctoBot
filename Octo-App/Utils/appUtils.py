@@ -233,7 +233,7 @@ def get_bot_api():
     :return: JSON output from bots/pods list"""
 
     url = "http://localhost:{}/".format(K8S_PORT) + \
-          "api/v1/namespaces/default/pods"
+          "api/v1/namespaces/octobot/pods"
     resp = requests.get(url)
 
     if resp.status_code != 200:
@@ -312,7 +312,7 @@ def get_logs(params):
         executor = False
 
     url = "http://localhost:{}/".format(K8S_PORT) + \
-          "api/v1/namespaces/default/pods/" + \
+          "api/v1/namespaces/octobot/pods/" + \
           "{}/log".format(bot)
 
     if executor:
@@ -425,7 +425,7 @@ def push_pod_yaml_file(filename):
 
     try:
         u = "http://localhost:{}/".format(K8S_PORT) + \
-            "api/v1/namespaces/default/pods"
+            "api/v1/namespaces/octobot/pods"
 
         print(u)
         with open(filename, "r") as stream:
@@ -450,7 +450,7 @@ def delete_bot(bot):
     bot: Name of the bot/pod to delete"""
 
     url = "http://localhost:{}/".format(K8S_PORT) + \
-          "api/v1/namespaces/default/pods/{}".format(bot)
+          "api/v1/namespaces/octobot/pods/{}".format(bot)
 
     resp = requests.delete(url)
 
@@ -475,7 +475,7 @@ def move_bot_to_node(params):
 
     try:
         url = "http://localhost:{}/".format(K8S_PORT) + \
-              "api/v1/namespaces/default/pods/" + \
+              "api/v1/namespaces/octobot/pods/" + \
               "{}/status".format(params[0])
         resp = requests.get(url)
 

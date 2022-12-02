@@ -256,7 +256,7 @@ def patch_file(filename):
 
     # Make API Call
     url = f'http://localhost:{utils.K8S_PORT}'\
-          f'/apis/apps/v1/namespaces/default/deployments/{deployment_name}'
+          f'/apis/apps/v1/namespaces/octobot/deployments/{deployment_name}'
     headers = {'Content-Type': 'application/strategic-merge-patch+json'}
     resp = requests.patch(url, headers=headers, json=deployment_content)
 
@@ -288,7 +288,7 @@ def stop_file(filename):
         raise Exception("An error occurred obtaining deployment name")
 
     api_url = f"http://localhost:{utils.K8S_PORT}"\
-              f"/apis/apps/v1/namespaces/default/deployments/{deployment_name}"
+              f"/apis/apps/v1/namespaces/octobot/deployments/{deployment_name}"
 
     resp = requests.delete(api_url)
 
@@ -318,7 +318,7 @@ def check_status():
     if pid == 0:
         try:
             url = "http://localhost:{}/".format(utils.K8S_PORT) + \
-                "api/v1/namespaces/default/pods"
+                "api/v1/namespaces/octobot/pods"
 
             resp = requests.get(url)
             if resp.status_code != 200:
@@ -371,7 +371,7 @@ def delete_bot(bot_name):
     """
 
     url = "http://localhost:{}/".format(utils.K8S_PORT) + \
-          "api/v1/namespaces/default/pods/{}".format(bot_name)
+          "api/v1/namespaces/octobot/pods/{}".format(bot_name)
 
     resp = requests.delete(url)
 
@@ -400,7 +400,7 @@ def get_logs(args):
     executor = executor if executor != '' else None
 
     url = "http://localhost:{}/".format(utils.K8S_PORT) + \
-          "api/v1/namespaces/default/pods/" + \
+          "api/v1/namespaces/octobot/pods/" + \
           "{}/log".format(bot)
 
     # Figure out whether there is a executor/container or not
