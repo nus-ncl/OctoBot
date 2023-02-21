@@ -1,7 +1,7 @@
 #Set permissions
 chmod a+x *.sh &&
 
-if [[ ! -d "web-browsing-bot/target/classes/" ]]
+if [[ ! -d "web-browsing-bot/target/" ]]
 then
     cd web-browsing-bot
     mvn clean install
