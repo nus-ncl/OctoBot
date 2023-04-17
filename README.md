@@ -21,6 +21,7 @@ CLI (command-line interface) or API (application programming interface).
 
 1. [OctoBot: Human Activity Orchestration System for Cybersecurity Experiment and Exercise](https://ieeexplore.ieee.org/abstract/document/9458202)
 2. [OctoBot: An Open-Source Orchestration System for a Wide Range Network Activity Generation](https://ieeexplore.ieee.org/abstract/document/9484537)
+3. [Design and Implementation of Human-behave Bot for Realistic Web Browsing Activity Generation](https://informs-sim.org/wsc22papers/070.pdf)
 
 ## Credits
 

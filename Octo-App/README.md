@@ -64,7 +64,7 @@ First, create bot in specific node with this following format `setBotNode
 setBotNode dynamic-bot-1 octobot-wk-1 nusncl1/healthcare-web-bot:latest python -u ./main.py -r patient
 botname : dynamic-bot-1
 nodename: octobot-wk-1
-http://localhost:12321/api/v1/namespaces/default/pods
+http://localhost:12321/api/v1/namespaces/octobot/pods
 bot successfully in designated node
 ```
 
@@ -80,7 +80,7 @@ dynamic-bot-1 still terminating
 ....
 botname : dynamic-bot-1
 nodename: octobot-wk-2
-http://localhost:12321/api/v1/namespaces/default/pods
+http://localhost:12321/api/v1/namespaces/octobot/pods
 bot successfully in designated node
 ```
 

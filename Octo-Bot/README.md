@@ -11,16 +11,19 @@ please check each of the type of bot documentation below:
 6. [TCP Sync attack bot for simulating DDoS using Python Scapy](synflood-attack-bot/README.md)
 7. [File Transfer using SSH Protocol](file-transfer-bot/README.md)
 8. [Customized web browsing for banking web application](banking-web-application-bot/README.md)
+9. [Human-behave web browsing for banking web application](banking-web-app-human-bot/README.md)
+10. [SSH client for simulating/testing SSH connection](ssh-connection-bot/README.md)
+11. [Windows file sharing bot using SMB protocol](windows-share-smb-bot/README.md)
 
 All the bots are also publish in [DockerHub](https://hub.docker.com/repositories/nusncl1/) to be pulled easier from the 
 orchestrator. 
 
-But in order to setup automatic build in the DockerHub when there is any changes 
-in the master branch of the Github repository, please follow this steps:
-- Create repository in the Dockerhub with the same as in the Github
+But in order to set up automatic build in the DockerHub when there is any changes 
+in the master branch of the GitHub repository, please follow this steps:
+- Create repository in the Dockerhub with the same as in the GitHub
 - In the `Builds Settings` section please check and do these sub-steps:
 
-  - Status Github Repository should be `Connected`
+  - Status GitHub Repository should be `Connected`
   - Choose the name of repository name
   - Add `BUILD RULES` by clicking `+` character
   - Source Type `Branch`, Source `master`, Docker Tag `latest`, Dockerfile location `Octo-Bot/<botname>/`

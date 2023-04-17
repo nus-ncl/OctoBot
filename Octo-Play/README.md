@@ -52,7 +52,7 @@ main.py:~$ setBotNumbers 2
 main.py:~$ addExecutor worker-1 busybox ping 8.8.8.8
 main.py:~$ writeFile test5.yaml
 main.py:~$ runFile test5.yaml
-http://localhost:8001/apis/apps/v1/namespaces/default/deployments
+http://localhost:8001/apis/apps/v1/namespaces/octobot/deployments
 Success with status code 201
 ```
 
@@ -103,7 +103,7 @@ Please use this command to run the file in batch:
 
 ```console
 main.py:~$ runFile test5.yaml test6.yaml test7.yaml 
-http://localhost:12321/apis/apps/v1/namespaces/default/deployments Success with status code 201
-http://localhost:12321/apis/apps/v1/namespaces/default/deployments Success with status code 201
-http://localhost:12321/apis/apps/v1/namespaces/default/deployments Success with status code 201
+http://localhost:12321/apis/apps/v1/namespaces/octobot/deployments Success with status code 201
+http://localhost:12321/apis/apps/v1/namespaces/octobot/deployments Success with status code 201
+http://localhost:12321/apis/apps/v1/namespaces/octobot/deployments Success with status code 201
 ```
