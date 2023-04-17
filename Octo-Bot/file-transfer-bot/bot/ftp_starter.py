@@ -27,17 +27,22 @@ def main():
                           default=['/large_file'])
     parser.add_argument("-df", metavar = 'downloaded_file',required=False, nargs='+',
                         help="file to be downloaded",default=['large_file'])
+    parser.add_argument("-l", metavar = 'loop', help="number of loop (default 1)", type=int,required=False,
+                          default=1)
 
     args = parser.parse_args()
+    loop = 0
 
     if args.f[0] == 'upload':
-        while True:
+        while loop < args.l:
             scheduleUpload(args)
             time.sleep(random.uniform(0, args.d))
+            loop = loop+1
     elif args.f[0] == 'download':
-        while True:
+        while loop < args.l:
             scheduleDownload(args)
             time.sleep(random.uniform(0, args.d))
+            loop = loop+1
     else:
         parser.print_help()
 
