@@ -102,6 +102,22 @@ worker-node   Ready    <none>   47h   v1.16.0   10.0.0.215   <none>        Ubunt
 ...
 ```
 
+### Create Namespace for OctoBot
+Create our own custom namespace for OctoBot with this following command:
+
+```console
+ncl@orchestrator:~/OctoBot/Octo-Pro$ kubectl create namespace octobot
+namespace "octobot" created
+```
+
+Check namespace for OctoBot with this following command:
+
+```console
+ncl@orchestrator:~/OctoBot/Octo-Pro$ kubectl get namespaces
+NAME    STATUS  ACTIVE
+octobot Active  1m
+```
+
 ### (Optional) Re-configure Broken Node or Failed Provisioning
 If one of the node have some problem, use `config.sh` script with this following
 to reconfigure the node without to do full installation:
