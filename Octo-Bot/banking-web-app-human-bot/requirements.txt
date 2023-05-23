@@ -1,5 +1,5 @@
 python-xlib==0.27
-requests==2.24.0
+requests==2.31.0
 opencv-python==4.2.0.34
 PyVirtualDisplay==0.2.5
 pyscreenshot==1.0
